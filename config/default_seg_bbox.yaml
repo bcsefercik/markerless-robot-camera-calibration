@@ -1,0 +1,54 @@
+# Top Level Params
+log_path: log3_seg_bbox.log
+exp_path: 'exp/exp3_seg_bbox/'
+result_path: 'results3_seg_bbox.txt'
+
+GENERAL:
+  save_freq: 16
+  seed: 13
+
+DATA:
+  folder: 'dataset/alivev1'
+  suffix: .pickle
+
+  workers: 16
+  batch_size: 8
+
+  scale: 100  # voxel_size = 1 / scale, scale 50 (2cm)
+  full_scale: [128, 512]
+  max_npoint: 250000
+  mode: 4  # 4: mean
+  input_channel: 3 # rgb, coordinates not included
+
+  classes: 2
+  ignore_label: -100
+  pose_dim: 7
+
+  test_split: 'test'
+
+STRUCTURE:
+  m: 32 # 16 or 32  TODO: what is it?
+  block_reps: 2
+  block_residual: True
+  use_coords: True
+
+TRAIN:
+  fixed_modules: []
+  optim: 'Adam' # Adam or SGD
+
+  epochs: 1200
+  lr: 0.00005
+  momentum: 0.9
+  weight_decay: 0.01
+  multiplier: 0.5
+  step_epoch: 120
+
+  data_type: 'seg_bbox'  #'seg'  # ['seg', 'gt_seg', null]
+
+TEST:
+  batch_size: 8
+  split: test
+  workers: 16
+  seed: 13
+  epoch: 352
+

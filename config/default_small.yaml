@@ -1,0 +1,44 @@
+# Top Level Params
+log_path: log2_small.log
+exp_path: 'exp/exp2_small/'
+result_path: 'results2_small.txt'
+
+GENERAL:
+  save_freq: 32
+
+DATA:
+  folder: 'dataset/alivev1_small'
+  suffix: .pickle
+
+  workers: 16
+  batch_size: 2
+
+  scale: 100  # voxel_size = 1 / scale, scale 50 (2cm)
+  full_scale: [128, 512]
+  max_npoint: 250000
+  mode: 4  # 4: mean
+  input_channel: 3 # rgb, coordinates not included
+
+  classes: 2
+  ignore_label: -100
+  pose_dim: 7
+
+  test_split: 'test'
+
+STRUCTURE:
+  m: 16  # 16 or 32  TODO: what is it?
+  block_reps: 2
+  block_residual: True
+  use_coords: True
+
+TRAIN:
+  fixed_modules: []
+  optim: 'Adam' # Adam or SGD
+
+  epochs: 1300
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0001
+
+  step_epoch: 120
+  multiplier: 0.5
