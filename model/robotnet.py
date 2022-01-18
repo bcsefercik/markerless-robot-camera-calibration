@@ -1,5 +1,5 @@
-from model.backbone.resnet import ResNet50
+from model.backbone.minkunet import *
 
 
-class RobotNet(ResNet50):
+class RobotNet(MinkUNet34A):
     name = 'robotnet'

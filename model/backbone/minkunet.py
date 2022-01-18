@@ -29,7 +29,9 @@ import MinkowskiEngine as ME
 
 from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
-from examples.resnet import ResNetBase
+from model.backbone.resnet import ResNetBase
+
+import ipdb
 
 
 class MinkUNetBase(ResNetBase):
@@ -117,6 +119,8 @@ class MinkUNetBase(ResNetBase):
             kernel_size=1,
             bias=True,
             dimension=D)
+
+
         self.relu = ME.MinkowskiReLU(inplace=True)
 
     def forward(self, x):
