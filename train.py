@@ -2,8 +2,7 @@ import random
 from collections import defaultdict
 
 import torch
-import torch.nn as nn
-from torch.optim import SGD
+import torch.optim as optim
 import numpy as np
 import MinkowskiEngine as ME
 import open3d as o3d
@@ -49,19 +48,35 @@ if __name__ == '__main__':
     random.seed(_config.GENERAL.seed)
     np.random.seed(_config.GENERAL.seed)
     torch.manual_seed(_config.GENERAL.seed)
-    torch.cuda.manual_seed_all(_config.GENERAL.seed)
 
-    from model.robotnet import RobotNet
+    if _use_cuda:
+        torch.cuda.manual_seed_all(_config.GENERAL.seed)
+        torch.cuda.empty_cache()
+
+    from model.robotnet import RobotNet, get_criterion
 
     voxel_size = 0.02
-    N_labels = 4
+    N_labels = 7
 
-    criterion = nn.MSELoss()
-    net = RobotNet(in_channels=3, out_channels=N_labels, D=3)
-    print(net)
+    # criterion = nn.MSELoss()
+    criterion = get_criterion(device=_device)
+    model = RobotNet(in_channels=3, out_channels=N_labels, D=3)
+    print(model)
 
-    net = net.to(_device)
-    optimizer = SGD(net.parameters(), lr=1e-2)
+    model = model.to(_device)
+
+    if _config.TRAIN.optim == 'Adam':
+        optimizer = optim.Adam(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=_config.TRAIN.lr
+        )
+    elif _config.TRAIN.optim == 'SGD':
+        optimizer = optim.SGD(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=_config.TRAIN.lr,
+            momentum=_config.TRAIN.momentum,
+            weight_decay=_config.TRAIN.weight_decay
+        )
 
     coords, colors, pcd = load_file("1.ply")
     coords = torch.from_numpy(coords)
@@ -72,33 +87,33 @@ if __name__ == '__main__':
     #     device=_device
     # )
 
-    # colors = torch.from_numpy(colors[:10000]).to(_device, dtype=coordinates.dtype)
-    # features = colors
-    # # features = torch.cat((colors, colors), dim=0)
+    colors = torch.from_numpy(colors).to(_device, dtype=torch.float32)
+    colors = normalize_color(colors)
+    features = colors
+    # features = torch.cat((colors[:100], colors[:100]), dim=0)
 
     # dummy_label = torch.randint(0, N_labels, (2,), device=_device)
 
     # input = ME.SparseTensor(features, coordinates, device=_device)
 
     # # Forward
-    # output = net(input)
+    # output = model(input)
     # ipdb.set_trace()
     # in_field = ME.TensorField(
-    #     features=normalize_color(torch.from_numpy(colors)),
-    #     coordinates=ME.utils.batched_coordinates([coords / voxel_size], dtype=torch.float32),
+    #     features=normalize_color(features),
+    #     coordinates=ME.utils.batched_coordinates([coords / voxel_size, coords], dtype=torch.float32),
     #     quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
     #     minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
-    #     device=_device,
-    #     requires_grad=True
+    #     device=_device
     # )
     # # Convert to a sparse tensor
     # sinput = in_field.sparse()
     # # Output sparse tensor
-    # soutput = net(sinput)
+    # soutput = model(sinput)
     # # get the prediction on the input tensor field
     # out_field = soutput.slice(in_field)
-    # logits = out_field.F
-
+    # # logits = out_field.F
+    # ipdb.set_trace()
     # Loss
     # loss = criterion(output.F, dummy_label)
 
@@ -108,25 +123,32 @@ if __name__ == '__main__':
 
 
         in_field = ME.TensorField(
-            features=normalize_color(torch.from_numpy(colors)),
+            features=features,
             coordinates=ME.utils.batched_coordinates([coords / voxel_size], dtype=torch.float32),
             quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
             minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+            # minkowski_algorithm=ME.MinkowskiAlgorithm.MEMORY_EFFICIENT,
             device=_device,
             requires_grad=True
         )
         # Convert to a sparse tensor
         sinput = in_field.sparse()
         # Output sparse tensor
-        soutput = net(sinput)
-        out_field = soutput.slice(in_field)
-        dummy_label = torch.randint(0, 1, out_field.F.size(), device=_device, dtype=torch.float32)
+        soutput = model(sinput)
+        if i == 130:
+            ipdb.set_trace()
+        # out_field = soutput.slice(in_field)
+        dummy_label = torch.randint(0, 1, soutput.F.size(), device=_device, dtype=torch.float32)
+        # ipdb.set_trace()
         # Loss
-        loss = criterion(out_field.F, dummy_label)
+        loss = criterion(soutput.F, dummy_label)
+
         print("Iteration: ", i, ", Loss: ", loss.item())
 
         # Gradient
         loss.backward()
         optimizer.step()
+
+
 
     print('no error')

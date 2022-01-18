@@ -120,7 +120,6 @@ class MinkUNetBase(ResNetBase):
             bias=True,
             dimension=D)
 
-
         self.relu = ME.MinkowskiReLU(inplace=True)
 
     def forward(self, x):
