@@ -54,6 +54,7 @@ if __name__ == '__main__':
         torch.cuda.empty_cache()
 
     from model.robotnet import RobotNet, get_criterion
+    from data.alivev1 import AliveV1Dataset
 
     voxel_size = 0.02
     N_labels = 7
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     # criterion = nn.MSELoss()
     criterion = get_criterion(device=_device)
     model = RobotNet(in_channels=3, out_channels=N_labels, D=3)
-    print(model)
+    # print(model)
 
     model = model.to(_device)
 
@@ -77,6 +78,10 @@ if __name__ == '__main__':
             momentum=_config.TRAIN.momentum,
             weight_decay=_config.TRAIN.weight_decay
         )
+
+    train_dataset = AliveV1Dataset()
+
+    ipdb.set_trace()
 
     coords, colors, pcd = load_file("1.ply")
     coords = torch.from_numpy(coords)

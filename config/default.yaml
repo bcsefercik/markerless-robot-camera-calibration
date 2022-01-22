@@ -8,7 +8,7 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: 'dataset/alivev1'
+  folder: '/kuacc/users/bsefercik/dataset/alivev1'
   suffix: .pickle
   prefix: ''
 
