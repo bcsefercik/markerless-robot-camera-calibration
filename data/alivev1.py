@@ -2,6 +2,8 @@ import os
 import pickle
 import glob
 
+import ipdb
+import torch
 import numpy as np
 from torch.utils.data import Dataset
 import MinkowskiEngine as ME
@@ -14,7 +16,7 @@ _logger = logger.Logger().get()
 
 
 class AliveV1Dataset(Dataset):
-    def __init__(self, set_name="train", quantization_size=0.02, augment=False):
+    def __init__(self, set_name="train", augment=False):
         self.dataset = _config.DATA.folder
         self.dataset = os.path.join(self.dataset, set_name)
 
@@ -28,7 +30,9 @@ class AliveV1Dataset(Dataset):
         self.scale = _config.DATA.scale
         self.max_npoint = _config.DATA.max_npoint
         self.mode = _config.DATA.mode
-        self.quantization_size = quantization_size
+        self.quantization_size = _config()["DATA"].get(
+            "quantization_size", 1 / _config.DATA.scale
+        )
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -43,11 +47,17 @@ class AliveV1Dataset(Dataset):
 
     def __getitem__(self, i):
         # TODO: extract instance, semantic here
-        (xyz_origin, rgb, labels, instance_label, pose), semantic_pred, file_name = self.load_data_file(i)
+        (
+            (xyz_origin, rgb, labels, instance_label, pose),
+            semantic_pred,
+            file_name,
+        ) = self.load_data_file(i)
         xyz_origin = xyz_origin.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
+        labels = np.reshape(labels, (-1, 1))
         pose = np.array(pose, dtype=np.float32)
+        pose = np.reshape(pose, (1, -1))
 
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,
@@ -95,3 +105,15 @@ class AliveV1Dataset(Dataset):
                 semantic_pred = pickle.load(fp, encoding="bytes")
 
         return x, semantic_pred, curr_file_name
+
+
+def collate(data):
+    coords, feats, labels, poses = list(zip(*data))  # same size as getitem's return's
+
+    coords_batch = ME.utils.batched_coordinates(coords)
+    feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
+    labels_batch = torch.from_numpy(np.concatenate(labels, 0)).to(dtype=torch.int32)
+    poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
+    others = ()
+
+    return coords_batch, feats_batch, labels_batch, poses_batch, others
