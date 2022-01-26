@@ -3,6 +3,9 @@
 *.ply
 *.pth
 exp/
+log/
+data/
+jobs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
