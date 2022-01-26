@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: log.log
-exp_path: 'exp/exp3_e2e/'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp2.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp2'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -12,10 +12,10 @@ DATA:
   suffix: .pickle
   prefix: ''
 
-  workers: 16
-  batch_size: 2
+  workers: 6
+  batch_size: 24
 
-  scale: 100  # voxel_size = 1 / scale, scale 50 (2cm)
+  scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean
@@ -51,5 +51,5 @@ TEST:
   split: test
   workers: 16
   seed: 13
-  epoch: 400
+  epoch: 320
 
