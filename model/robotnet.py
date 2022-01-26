@@ -1,11 +1,14 @@
+import torch
+import numpy as np
 import torch.nn as nn
 import MinkowskiEngine as ME
 
 from model.backbone.minkunet import MinkUNet34A as UNet
+from utils.quaternion import qeuler
 
 
 class RobotNet(UNet):
-    name = 'robotnet'
+    name = "robotnet"
 
     def __init__(self, in_channels, out_channels, D=3):
         UNet.__init__(self, in_channels, out_channels, D)
@@ -14,7 +17,7 @@ class RobotNet(UNet):
         self.leaky_relu = ME.MinkowskiLeakyReLU(inplace=True)
         self.final_bn = ME.MinkowskiBatchNorm(out_channels)
 
-    def forward(self, x):
+    def forward(self, x):  # WXYZ
         unet_output = super().forward(x)
         unet_output = self.final_bn(unet_output)
         unet_output = self.leaky_relu(unet_output)
@@ -22,18 +25,25 @@ class RobotNet(UNet):
 
 
 def get_criterion(device="cuda"):
-    regression_criterion = nn.MSELoss(reduction='sum').to(device)
-    cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).to(device)
+    regression_criterion = nn.MSELoss(reduction="mean").to(device)
 
     gamma = 2
     gamma2 = 2
 
+    def compute_angle_loss(q_expected, q_pred, reduction="mean"):
+        expected_euler = qeuler(q_expected, order='zyx', epsilon=1e-6)
+        predicted_euler = qeuler(q_pred, order='zyx', epsilon=1e-6)
+        angle_distance = torch.remainder(predicted_euler - expected_euler + np.pi, 2*np.pi) - np.pi
+
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
+        return reduction_func(torch.abs(angle_distance))
+
     def compute_loss(y, y_pred):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        loss_coor *= gamma2
-        loss_quaternion = (gamma * (1. - cos_regression_criterion(y[:, 3:], y_pred[:, 3:]))).sum()
+        loss_quaternion = compute_angle_loss(y[:, 3:], y_pred[:, 3:])
 
-        loss = loss_coor + loss_quaternion
+        loss = gamma * loss_coor + gamma2 * loss_quaternion
 
         return loss
 
