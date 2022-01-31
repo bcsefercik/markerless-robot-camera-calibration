@@ -41,7 +41,7 @@ def get_criterion(device="cuda"):
         return reduction_func(torch.abs(angle_distance))
 
     def compute_cos_loss(q_expected, q_pred, reduction="mean"):
-        cos_dist = 1. - cos_regression_criterion(q_expected, q_pred))
+        cos_dist = 1. - cos_regression_criterion(q_expected, q_pred)
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
