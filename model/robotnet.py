@@ -3,7 +3,7 @@ import numpy as np
 import torch.nn as nn
 import MinkowskiEngine as ME
 
-from model.backbone.minkunet import MinkUNet34A as UNet
+from model.backbone.minkunet import MinkUNet18D as UNet
 from utils.quaternion import qeuler
 
 
@@ -27,8 +27,8 @@ class RobotNet(UNet):
 def get_criterion(device="cuda"):
     regression_criterion = nn.MSELoss(reduction="mean").to(device)
 
-    gamma = 2
-    gamma2 = 2
+    gamma = 50
+    gamma2 = 1
 
     def compute_angle_loss(q_expected, q_pred, reduction="mean"):
         expected_euler = qeuler(q_expected, order='zyx', epsilon=1e-6)

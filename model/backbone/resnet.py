@@ -38,11 +38,6 @@ import MinkowskiEngine as ME
 from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
 
-if not os.path.isfile("1.ply"):
-    print('Downloading an example pointcloud...')
-    urlretrieve("https://bit.ly/3c2iLhg", "1.ply")
-
-
 def load_file(file_name):
     pcd = o3d.io.read_point_cloud(file_name)
     coords = np.array(pcd.points)

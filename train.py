@@ -125,14 +125,14 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 )
             )
         # For better debugging
-        except Exception as e:
-            print(str(batch))
-            print(str(e))
-            print(traceback.format_exc())
-            ipdb.set_trace()
-            raise e
-        # except Exception:
-        #     _logger.exception(str(batch))
+        # except Exception as e:
+        #     print(str(batch))
+        #     print(str(e))
+        #     print(traceback.format_exc())
+        #     ipdb.set_trace()
+        #     raise e
+        except Exception:
+            _logger.exception(str(batch))
 
     for k in am_dict:
         # if k in visual_dict.keys():
