@@ -76,7 +76,7 @@ def checkpoint_save(model, exp_path, exp_name, epoch, optimizer=None, save_freq=
 
 
 def checkpoint_restore(
-    model, exp_path, exp_name, optimizer=None, use_cuda=True, epoch=0, f=""
+    model, exp_path="", exp_name="", optimizer=None, use_cuda=True, epoch=0, f=""
 ):
     if use_cuda:
         model.cpu()
@@ -172,3 +172,9 @@ def seed_worker(worker_id):
 
 torch_generator = torch.Generator()
 torch_generator.manual_seed(_config.GENERAL.seed)
+
+
+def remove_suffix(s, suffix):
+    if s.endswith(suffix):
+        return s[:-len(suffix)]
+    return s

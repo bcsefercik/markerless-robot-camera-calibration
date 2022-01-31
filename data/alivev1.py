@@ -59,6 +59,9 @@ class AliveV1Dataset(Dataset):
         pose = np.array(pose, dtype=np.float32)  # xyzw
         pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
         pose = np.reshape(pose, (1, -1))
+        other = {
+            "filename": file_name
+        }
 
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,
@@ -68,7 +71,7 @@ class AliveV1Dataset(Dataset):
             ignore_label=-100,
         )
 
-        return discrete_coords, unique_feats, unique_labels, pose
+        return discrete_coords, unique_feats, unique_labels, pose, other
 
     def __len__(self):
         return len(self.file_names)
@@ -109,12 +112,14 @@ class AliveV1Dataset(Dataset):
 
 
 def collate(data):
-    coords, feats, labels, poses = list(zip(*data))  # same size as getitem's return's
+    coords, feats, labels, poses, others = list(zip(*data))  # same size as getitem's return's
 
     coords_batch = ME.utils.batched_coordinates(coords)
     feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
     labels_batch = torch.from_numpy(np.concatenate(labels, 0)).to(dtype=torch.int32)
     poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
-    others = ()
+    others = {
+        "filenames": [o["filename"].split("/")[-1] for o in others]
+    }
 
     return coords_batch, feats_batch, labels_batch, poses_batch, others

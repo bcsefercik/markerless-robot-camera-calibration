@@ -28,7 +28,7 @@ def get_criterion(device="cuda"):
     regression_criterion = nn.MSELoss(reduction="mean").to(device)
     cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
 
-    gamma = 1
+    gamma = 50
     gamma2 = 1
 
     def compute_angle_loss(q_expected, q_pred, reduction="mean"):
@@ -49,7 +49,7 @@ def get_criterion(device="cuda"):
 
     def compute_loss(y, y_pred):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        loss_quaternion = compute_cos_loss(y, y_pred)
+        loss_quaternion = compute_angle_loss(y[:, 3:], y_pred[:, 3:])
 
         loss = gamma * loss_coor + gamma2 * loss_quaternion
 
