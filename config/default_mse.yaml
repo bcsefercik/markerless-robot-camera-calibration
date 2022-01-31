@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/dev.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp4_mink18D'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp4_mse.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp4_mse'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -12,8 +12,9 @@ DATA:
   suffix: .pickle
   prefix: ''
 
-  workers: 8
-  batch_size: 26  # v100->72, t4->24
+  workers: 10
+  # batch_size: # v100->72 mink34d, t4->24 mink34d
+  batch_size: 20  # v100->26, t4->8 mink18d
 
   scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -49,9 +50,7 @@ TRAIN:
 TEST:
   batch_size: 2
   split: test
-  workers: 8
+  workers: 16
   seed: 13
-  checkpoint: "default-000000128.pth"
-  print_precision: 4
-
+  epoch: 320
 

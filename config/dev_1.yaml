@@ -51,7 +51,7 @@ TEST:
   split: test
   workers: 8
   seed: 13
-  checkpoint: "default-000000128.pth"
+  checkpoint: "default-000000080.pth"
   print_precision: 4
 
 

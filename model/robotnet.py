@@ -26,8 +26,9 @@ class RobotNet(UNet):
 
 def get_criterion(device="cuda"):
     regression_criterion = nn.MSELoss(reduction="mean").to(device)
+    cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
 
-    gamma = 50
+    gamma = 1
     gamma2 = 1
 
     def compute_angle_loss(q_expected, q_pred, reduction="mean"):
@@ -39,9 +40,16 @@ def get_criterion(device="cuda"):
 
         return reduction_func(torch.abs(angle_distance))
 
+    def compute_cos_loss(q_expected, q_pred, reduction="mean"):
+        cos_dist = 1. - cos_regression_criterion(q_expected, q_pred))
+
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
+        return reduction_func(cos_dist)
+
     def compute_loss(y, y_pred):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        loss_quaternion = compute_angle_loss(y[:, 3:], y_pred[:, 3:])
+        loss_quaternion = compute_cos_loss(y, y_pred)
 
         loss = gamma * loss_coor + gamma2 * loss_quaternion
 
