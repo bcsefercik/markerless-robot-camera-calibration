@@ -10,7 +10,7 @@ import open3d as o3
 # Parameters
 # ycb_data_folder = "./ycb//"	# Folder that contains the ycb data.
 ycb_data_folder = "/kuacc/users/bsefercik/dataset/ycb/"
-viewpoint_cameras = ["NP1", "NP2", "NP3", "NP4", "NP5"]	# Camera which the viewpoint will be generated.
+viewpoint_cameras = ["NP4", "NP5"]	# Camera which the viewpoint will be generated.
 viewpoint_angles = [str(i) for i in range(0, 360, 3)] # Relative angle of the object w.r.t the camera (angle of the turntable).
 
 # Objects
@@ -22,11 +22,73 @@ viewpoint_angles = [str(i) for i in range(0, 360, 3)] # Relative angle of the ob
 #     object_list[i] = object_name.rstrip()
 
 object_list = [
-    '001_chips_can',
-    '011_banana',
-    '013_apple',
-    '019_pitcher_base',
-    '037_scissors'
+#     "001_chips_can",
+# "002_master_chef_can",
+# "003_cracker_box",
+# "004_sugar_box",
+# "005_tomato_soup_can",
+# "006_mustard_bottle",
+# "007_tuna_fish_can",
+# "008_pudding_box",
+# "009_gelatin_box",
+# "010_potted_meat_can",
+# "011_banana",
+# "012_strawberry",
+# "013_apple",
+# "014_lemon",
+# "015_peach",
+# "016_pear",
+# "017_orange",
+# "018_plum",
+# "019_pitcher_base",
+# "021_bleach_cleanser",
+# "022_windex_bottle",
+# "023_wine_glass",
+# "024_bowl",
+# "025_mug",
+# "026_sponge",
+# "027-skillet",
+# "028_skillet_lid",
+# "029_plate",
+# "030_fork",
+# "031_spoon",
+# "032_knife",
+# "033_spatula",
+# "035_power_drill",
+# "036_wood_block",
+# "037_scissors",
+# "038_padlock",
+# "039_key",
+# "040_large_marker",
+# "041_small_marker",
+# "042_adjustable_wrench",
+# "043_phillips_screwdriver",
+# "044_flat_screwdriver",
+# "046_plastic_bolt",  # gg
+# "047_plastic_nut",
+# "048_hammer",
+# "049_small_clamp",
+# "050_medium_clamp",
+# "051_large_clamp",
+# "052_extra_large_clamp",
+# "053_mini_soccer_ball",
+# "054_softball",
+# "055_baseball",
+# "056_tennis_ball",
+# "057_racquetball",
+# "058_golf_ball",
+# "059_chain",
+# "061_foam_brick",
+# "062_dice",
+# "063-a_marbles",
+# "063-b_marbles",
+# "065-a_cups",
+# "070-a_colored_wood_blocks",
+# "071_nine_hole_peg_test",
+# "072-a_toy_airplane",
+# "073-a_lego_duplo",
+"076_timer",
+# "077_rubiks_cube"
     ]
 # object_list = object_list[1:]
 # object_list = object_list[3:20]

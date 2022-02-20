@@ -15,11 +15,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     class_folders = glob.glob(os.path.join(args.infolder, '*'))
+    class_folders = [cf for cf in class_folders if os.path.isdir(cf)]
     data_types = [
         'train',
         'val',
         'test'
     ]
+
+    if not os.path.exists(args.outfolder):
+        os.mkdir(args.outfolder)
 
     for i, dt in enumerate(data_types):
         destination = os.path.join(args.outfolder, dt)
