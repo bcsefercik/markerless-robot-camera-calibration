@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp4_cos.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp4_cos'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp4_cos_100.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp4_cos_100'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -14,9 +14,9 @@ DATA:
 
   workers: 10
   # batch_size: # v100->72 mink34d, t4->24 mink34d
-  batch_size: 20  # v100->26, t4->8 mink18d
+  batch_size: 12  # v100->26, t4->8 mink18d
 
-  scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean

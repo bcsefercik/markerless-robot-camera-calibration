@@ -86,6 +86,9 @@ class YCBDataset(Dataset):
         curr_file_name = curr_file_path.split("/")[-1]
         pcd = o3d.io.read_point_cloud(curr_file_path)
         coords = np.array(pcd.points)
+        if not len(coords):
+            print(curr_file_path,'CORT')
+            os.remove(curr_file_path)
         colors = np.array(pcd.colors)
         labels = int(curr_file_name[:3]) * np.ones(
             (coords.shape[0], 1), dtype=np.int32

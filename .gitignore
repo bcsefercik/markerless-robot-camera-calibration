@@ -1,10 +1,10 @@
 *.log
-.vscode/
 *.ply
 *.pth
+*.out
+.vscode/
 exp/
 log/
-data/
 jobs/
 
 # Byte-compiled / optimized / DLL files

@@ -1,3 +1,5 @@
+from enum import Enum
+
 import torch
 import numpy as np
 import torch.nn as nn
@@ -24,7 +26,13 @@ class RobotNet(UNet):
         return self.global_pool(unet_output)
 
 
-def get_criterion(device="cuda"):
+class LossType(Enum):
+    MSE = 1
+    COS = 2
+    ANGLE = 3
+
+
+def get_criterion(device="cuda", loss_type=LossType.ANGLE):
     regression_criterion = nn.MSELoss(reduction="mean").to(device)
     cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
 
@@ -40,12 +48,13 @@ def get_criterion(device="cuda"):
 
         return reduction_func(torch.abs(angle_distance))
 
-    def compute_cos_loss(q_expected, q_pred, reduction="mean"):
-        cos_dist = 1. - cos_regression_criterion(q_expected, q_pred)
+    def compute_cos_loss(y, y_pred, reduction="mean"):
+        loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
+        cos_dist = 1. - cos_regression_criterion(y, y_pred)
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
-        return reduction_func(cos_dist)
+        return reduction_func(cos_dist) + loss_coor
 
     def compute_loss(y, y_pred):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
@@ -55,4 +64,9 @@ def get_criterion(device="cuda"):
 
         return loss
 
-    return compute_loss
+    if loss_type == LossType.COS:
+        return compute_cos_loss
+    elif loss_type == LossType.MSE:
+        return regression_criterion
+    else:
+        return compute_loss

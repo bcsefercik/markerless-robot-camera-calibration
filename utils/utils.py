@@ -55,15 +55,20 @@ def intersectionAndUnion(output, target, K, ignore_index=255):
     return area_intersection, area_union, area_target
 
 
-def checkpoint_save(model, exp_path, exp_name, epoch, optimizer=None, save_freq=16, use_cuda=True):
+def checkpoint_save(
+    model, exp_path, exp_name, epoch, optimizer=None, save_freq=16, use_cuda=True
+):
     f = os.path.join(exp_path, exp_name + "-%09d" % epoch + ".pth")
     _logger.info("Saving " + f)
     model.cpu()
-    torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict() if optimizer is not None else optimizer,
-            }, f)
+    torch.save(
+        {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict() if optimizer is not None else optimizer,
+        },
+        f,
+    )
     if use_cuda:
         model.cuda()
 
@@ -94,10 +99,10 @@ def checkpoint_restore(
     if len(f) > 0:
         _logger.info("Restore from " + f)
         checkpoint = torch.load(f)
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(checkpoint["model_state_dict"])
 
         if optimizer is not None:
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
             if use_cuda:
                 for state in optimizer.state.values():
                     for k, v in state.items():
@@ -166,9 +171,10 @@ def print_error(message, user_fault=False):
 
 
 def seed_worker(worker_id):
-    worker_seed = torch.initial_seed() % 2**32
+    worker_seed = torch.initial_seed() % 2 ** 32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+
 
 torch_generator = torch.Generator()
 torch_generator.manual_seed(_config.GENERAL.seed)
@@ -176,5 +182,5 @@ torch_generator.manual_seed(_config.GENERAL.seed)
 
 def remove_suffix(s, suffix):
     if s.endswith(suffix):
-        return s[:-len(suffix)]
+        return s[: -len(suffix)]
     return s
