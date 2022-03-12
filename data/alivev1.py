@@ -16,7 +16,7 @@ _logger = logger.Logger().get()
 
 
 class AliveV1Dataset(Dataset):
-    def __init__(self, set_name="train", augment=False):
+    def __init__(self, set_name="train", augment=False, file_names=list()):
         self.dataset = _config.DATA.folder
         self.dataset = os.path.join(self.dataset, set_name)
 
@@ -42,7 +42,7 @@ class AliveV1Dataset(Dataset):
         self.val_data_loader = None
         self.test_data_loader = None
 
-        self.file_names = None
+        self.file_names = file_names
         self.load_file_names()
 
     def __getitem__(self, i):
@@ -89,9 +89,10 @@ class AliveV1Dataset(Dataset):
         return result
 
     def load_file_names(self):
-        self.file_names = glob.glob(
-            os.path.join(self.dataset, "*" + self.filename_suffix)
-        )
+        if not self.file_names:
+            self.file_names = glob.glob(
+                os.path.join(self.dataset, "*" + self.filename_suffix)
+            )
         self.file_names = [fn for fn in self.file_names if self.filter_filename(fn)]
         self.file_names.sort()
 

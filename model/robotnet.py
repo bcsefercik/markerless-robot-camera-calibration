@@ -27,9 +27,9 @@ class RobotNet(UNet):
 
 
 class LossType(Enum):
-    MSE = 1
-    COS = 2
-    ANGLE = 3
+    MSE = 'mse'
+    COS = 'cos'
+    ANGLE = 'angle'
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE):

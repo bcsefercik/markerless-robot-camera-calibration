@@ -7,7 +7,8 @@ import MinkowskiEngine as ME
 
 from pytorch_metric_learning import miners, losses
 
-from model.backbone.minkunet import MinkUNet18 as UNet
+# from model.backbone.minkunet import MinkUNet18 as UNet
+from model.backbone.minkunet import MinkUNet34A as UNet
 
 
 class FeatureNet(UNet):
