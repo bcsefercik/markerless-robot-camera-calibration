@@ -1,3 +1,4 @@
+import os
 import random
 import time
 import json
@@ -19,6 +20,11 @@ from utils import config, logger, utils, metrics
 
 import ipdb
 
+import warnings
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+os.environ["PYTHONWARNINGS"] = "ignore"
 
 _config = config.Config()
 _logger = logger.Logger().get()
@@ -34,7 +40,6 @@ def train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch):
     am_dict = defaultdict(utils.AverageMeter)
 
     train_iter = iter(train_data_loader)
-    print(len(train_iter))
     model.train()
 
     start_epoch = time.time()
@@ -58,8 +63,12 @@ def train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch):
             out = model(model_input)
 
             hard_pairs = miner(out.features, labels)
-            pos_perm_size = min(len(hard_pairs[0]), _config.DATA.batch_size * _config.DATA.max_pair)
-            neg_perm_size = min(len(hard_pairs[2]), _config.DATA.batch_size * _config.DATA.max_pair)
+            pos_perm_size = min(
+                len(hard_pairs[0]), _config.DATA.batch_size * _config.DATA.max_pair
+            )
+            neg_perm_size = min(
+                len(hard_pairs[2]), _config.DATA.batch_size * _config.DATA.max_pair
+            )
             pos_idx = torch.randperm(pos_perm_size)
             neg_idx = torch.randperm(neg_perm_size)
 
@@ -104,15 +113,15 @@ def train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch):
                     remain_time=remain_time,
                 )
             )
-        # For better debugging
-        # except Exception as e:
-        #     print(str(batch))
-        #     print(str(e))
-        #     print(traceback.format_exc())
-        #     ipdb.set_trace()
-        #     raise e
-        except Exception:
-            _logger.exception(str(batch))
+        # # For better debugging
+        except Exception as e:
+            print(str(batch))
+            print(str(e))
+            print(traceback.format_exc())
+            ipdb.set_trace()
+            raise e
+        # except Exception:
+        #     _logger.exception(str(batch))
 
     for k in am_dict:
         # if k in visual_dict.keys():
@@ -174,7 +183,7 @@ if __name__ == "__main__":
     _logger.info(f"Device: {_device}")
     _logger.info("Starting new training.")
 
-    _logger.info(f"CONFIG: {_config()}")
+    _logger.info(f"CONFIG: {json.dumps(_config(), indent=4)}")
 
     _logger.info(f"Setting seed: {_config.GENERAL.seed}")
     random.seed(_config.GENERAL.seed)
@@ -186,10 +195,12 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
 
     from model.featurenet import FeatureNet, get_criterion
-    from data.ycb import YCBDataset, collate
+    from data.ycbv2 import YCBDataset, collate
 
     criterion, miner = get_criterion(device=_device)
-    model = FeatureNet(in_channels=3, out_channels=128, D=3)
+    model = FeatureNet(
+        in_channels=3, out_channels=_config.STRUCTURE.embedding_size, D=3
+    )
     if _use_cuda:
         model.cuda()
     _logger.info(f"Model: {str(model)}")
@@ -206,7 +217,14 @@ if __name__ == "__main__":
             weight_decay=_config.TRAIN.weight_decay,
         )
 
-    train_dataset = YCBDataset(set_name="train")
+    file_names = defaultdict(list)
+    file_names_path = _config()['DATA'].get('file_names')
+    if file_names_path:
+        with open(file_names_path, 'r') as fp:
+            file_names = json.load(fp)
+
+
+    train_dataset = YCBDataset(set_name="train", file_names=file_names["train"])
     train_data_loader = DataLoader(
         train_dataset,
         batch_size=_config.DATA.batch_size,
@@ -232,26 +250,28 @@ if __name__ == "__main__":
     start_epoch = utils.checkpoint_restore(
         model,
         _config.exp_path,
-        _config.config.split('/')[-1][:-5],
+        _config.config.split("/")[-1][:-5],
         optimizer=optimizer,
-        use_cuda=_use_cuda
+        use_cuda=_use_cuda,
     )  # resume from the latest epoch, or specify the epoch to restore
 
     for epoch in range(start_epoch, _config.TRAIN.epochs + 1):
         train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch)
-        if utils.is_multiple(epoch, _config.GENERAL.save_freq) or utils.is_power2(epoch):
+        if utils.is_multiple(epoch, _config.GENERAL.save_freq) or utils.is_power2(
+            epoch
+        ):
             utils.checkpoint_save(
                 model,
                 _config.exp_path,
-                _config.config.split('/')[-1][:-5],
+                _config.config.split("/")[-1][:-5],
                 epoch,
                 optimizer=optimizer,
                 save_freq=_config.GENERAL.save_freq,
-                use_cuda=_use_cuda
+                use_cuda=_use_cuda,
             )
 
         #     eval_epoch(val_data_loader, model, criterion, epoch)
 
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     _logger.info("DONE!")

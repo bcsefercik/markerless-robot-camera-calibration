@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/ycb_fe_exp2.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/ycb_fe_exp2'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/ycb_fe_exp3.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/ycb_fe_exp3'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -8,17 +8,19 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/ycb_split'
+  folder: '/datasets/ycb_objects'
   suffix: .pcd
   prefix: ''
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/ycb_splits.json'
 
-  workers: 3
-  batch_size: 32
+  workers: 0  # 4
+  batch_size: 128
   max_pair: 256
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
+  min_npoints: 8
   mode: 4  # 4: mean
   input_channel: 3 # rgb or gray
 

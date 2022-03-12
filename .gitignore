@@ -6,6 +6,7 @@
 exp/
 log/
 jobs/
+scripts/download-scannet.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
