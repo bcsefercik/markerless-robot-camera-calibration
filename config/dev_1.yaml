@@ -11,8 +11,9 @@ DATA:
   folder: '/kuacc/users/bsefercik/dataset/alivev1'
   suffix: .pickle
   prefix: ''
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
 
-  workers: 8
+  workers: 4
   batch_size: 26  # v100->72, t4->24
 
   scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)

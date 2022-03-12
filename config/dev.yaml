@@ -11,6 +11,7 @@ DATA:
   folder: '/kuacc/users/bsefercik/dataset/ycb_split'
   suffix: .pcd
   prefix: ''
+  file_names: null
 
   workers: 3
   batch_size: 64  # v100->72, t4->24

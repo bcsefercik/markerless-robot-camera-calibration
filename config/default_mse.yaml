@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp4_mse_100.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp4_mse_100'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp5_mse.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp5_mse'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -8,13 +8,14 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/alivev1'
+  folder: '/kuacc/users/bsefercik/dataset/alivev2'
   suffix: .pickle
   prefix: ''
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
 
-  workers: 10
+  workers: 4
   # batch_size: # v100->72 mink34d, t4->24 mink34d
-  batch_size: 4  # v100->26, t4->8 mink18d
+  batch_size: 6  # v100->26, t4->8 mink18d
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -46,6 +47,7 @@ TRAIN:
   step_epoch: 120
 
   data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
+  loss_type: 'mse'
 
 TEST:
   batch_size: 2

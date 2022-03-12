@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp5_angle.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp5_angle'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/ycb_fe_exp2_50.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/ycb_fe_exp2_50'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -8,16 +8,15 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/alivev2'
-  suffix: .pickle
+  folder: '/kuacc/users/bsefercik/dataset/ycb_split'
+  suffix: .pcd
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
 
-  workers: 4
-  # batch_size: # v100->72 mink34d, t4->24 mink34d
-  batch_size: 6  # v100->26, t4->8 mink18d
+  workers: 3
+  batch_size: 32
+  max_pair: 256
 
-  scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean
@@ -34,25 +33,27 @@ STRUCTURE:
   block_reps: 2
   block_residual: True
   use_coords: True
+  embedding_size: 512
 
 TRAIN:
   fixed_modules: []
   optim: 'Adam' # Adam or SGD
 
   epochs: 1300
-  lr: 0.0001
+  lr: 0.00005
   momentum: 0.9
   weight_decay: 0.0001
   multiplier: 0.5
-  step_epoch: 120
+  step_epoch: 40
 
   data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
-  loss_type: 'angle'
 
 TEST:
   batch_size: 2
   split: test
-  workers: 16
+  workers: 8
   seed: 13
-  epoch: 320
+  checkpoint: "default_fe_50-000001296.pth"
+  print_precision: 4
+
 
