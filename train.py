@@ -4,6 +4,7 @@ import json
 import traceback
 import statistics
 import datetime
+import uuid
 from collections import defaultdict
 
 import torch
@@ -28,30 +29,8 @@ _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
-def normalize_color(
-    color: torch.Tensor, is_color_in_range_0_255: bool = False
-) -> torch.Tensor:
-    r"""
-    Convert color in range [0, 1] to [-0.5, 0.5]. If the color is in range [0,
-    255], use the argument `is_color_in_range_0_255=True`.
-
-    `color` (torch.Tensor): Nx3 color feature matrix
-    `is_color_in_range_0_255` (bool): If the color is in range [0, 255] not [0, 1], normalize the color to [0, 1].
-    """
-    if is_color_in_range_0_255:
-        color /= 255
-    color -= 0.5
-    return color.float()
-
-
-def load_file(file_name):
-    pcd = o3d.io.read_point_cloud(file_name)
-    coords = np.array(pcd.points)
-    colors = np.array(pcd.colors)
-    return coords, colors, pcd
-
-
 def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
+    torch.cuda.empty_cache()
     iter_time = utils.AverageMeter()
     data_time = utils.AverageMeter()
     am_dict = defaultdict(utils.AverageMeter)
@@ -141,6 +120,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
 
 
 def eval_epoch(val_data_loader, model, criterion, epoch):
+    torch.cuda.empty_cache()
     _logger.info(f"> Evaluation at epoch: {epoch}")
     am_dict = defaultdict(utils.AverageMeter)
 
@@ -189,7 +169,10 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
 
 
 if __name__ == "__main__":
+    job_id = uuid.uuid4()
     _logger.info("=================================================\n")
+    _logger.info(f"Job ID: {job_id}")
+    print(f"Job ID: {job_id}")
     _logger.info(f"UTC Time: {datetime.datetime.utcnow().isoformat()}")
     _logger.info(f"Device: {_device}")
     _logger.info("Starting new training.")
@@ -205,10 +188,14 @@ if __name__ == "__main__":
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    from model.robotnet import RobotNet, get_criterion
-    from data.alivev1 import AliveV1Dataset, collate
+    from model.robotnet import RobotNet, get_criterion, LossType
+    from data.alivev2 import AliveV2Dataset, collate
 
-    criterion = get_criterion(device=_device)
+    criterion = get_criterion(
+        device=_device,
+        loss_type=LossType(_config()['TRAIN'].get('loss_type', 'mse')),
+        reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
+    )
     model = RobotNet(in_channels=3, out_channels=7, D=3)
     _logger.info(f"Model: {str(model)}")
 
@@ -224,7 +211,13 @@ if __name__ == "__main__":
             weight_decay=_config.TRAIN.weight_decay,
         )
 
-    train_dataset = AliveV1Dataset(set_name="train")
+    file_names = defaultdict(list)
+    file_names_path = _config()['DATA'].get('file_names')
+    if file_names_path:
+        with open(file_names_path, 'r') as fp:
+            file_names = json.load(fp)
+
+    train_dataset = AliveV2Dataset(set_name="train", file_names=file_names["train"])
     train_data_loader = DataLoader(
         train_dataset,
         batch_size=_config.DATA.batch_size,
@@ -236,10 +229,10 @@ if __name__ == "__main__":
         worker_init_fn=utils.seed_worker,
         generator=utils.torch_generator,
     )
-    val_dataset = AliveV1Dataset(set_name="val")
+    val_dataset = AliveV2Dataset(set_name="val", file_names=file_names["val"])
     val_data_loader = DataLoader(
         val_dataset,
-        batch_size=_config.DATA.batch_size,
+        batch_size=_config.TEST.batch_size,
         collate_fn=collate,
         num_workers=max(2, int(_config.DATA.workers/4)),
         shuffle=False,
