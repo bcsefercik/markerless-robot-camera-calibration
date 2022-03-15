@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp7_mse_aliveunet_v2.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp7_mse_aliveunet_v2'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp7_cos2_aliveunet_v2.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp7_cos2_aliveunet_v2'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -12,6 +12,7 @@ DATA:
   suffix: .pickle
   prefix: ''
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  # file_names: null
 
   workers: 4
   batch_size: 26  # v100->26, t4->8 mink18d
@@ -46,7 +47,7 @@ TRAIN:
   step_epoch: 120
 
   data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
-  loss_type: "mse"
+  loss_type: "cos2"
   loss_reduction: "sum"
 
 TEST:
@@ -55,4 +56,3 @@ TEST:
   workers: 4
   seed: 13
   epoch: 320
-

@@ -8,14 +8,14 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/ycb_split'
-  suffix: .pcd
+  folder: '/kuacc/users/bsefercik/dataset/alivev2'
+  suffix: .pickle
   prefix: ''
-  file_names: null
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  # file_names: null
 
-  workers: 3
-  batch_size: 64  # v100->72, t4->24
-  max_pair: 256
+  workers: 4
+  batch_size: 32  # v100->26, t4->8 mink18d
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -30,7 +30,7 @@ DATA:
   test_split: 'test'
 
 STRUCTURE:
-  m: 32 # 16 or 32  TODO: what is it?
+  m: 32 # 16 or 32
   block_reps: 2
   block_residual: True
   use_coords: True
@@ -47,13 +47,14 @@ TRAIN:
   step_epoch: 120
 
   data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
+  loss_type: "cos2"
+  loss_reduction: "sum"
 
 TEST:
   batch_size: 2
   split: test
-  workers: 8
+  workers: 4
   seed: 13
-  checkpoint: "default-000000128.pth"
+  epoch: 320
+  checkpoint: null
   print_precision: 4
-
-
