@@ -5,7 +5,8 @@ import numpy as np
 import torch.nn as nn
 import MinkowskiEngine as ME
 
-from model.backbone.minkunet import MinkUNet18D as UNet
+# from model.backbone.minkunet import MinkUNet18D as UNet
+from model.backbone.aliveunet import AliveUnet as UNet
 from utils.quaternion import qeuler
 
 
@@ -30,16 +31,17 @@ class LossType(Enum):
     MSE = 'mse'
     COS = 'cos'
     ANGLE = 'angle'
+    COS2 = 'cos2'
 
 
-def get_criterion(device="cuda", loss_type=LossType.ANGLE):
-    regression_criterion = nn.MSELoss(reduction="mean").to(device)
+def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
+    regression_criterion = nn.MSELoss(reduction=reduction).to(device)
     cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
 
     gamma = 50
     gamma2 = 1
 
-    def compute_angle_loss(q_expected, q_pred, reduction="mean"):
+    def compute_angle_loss(q_expected, q_pred, reduction=reduction):
         expected_euler = qeuler(q_expected, order='zyx', epsilon=1e-6)
         predicted_euler = qeuler(q_pred, order='zyx', epsilon=1e-6)
         angle_distance = torch.remainder(predicted_euler - expected_euler + np.pi, 2*np.pi) - np.pi
@@ -48,15 +50,15 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE):
 
         return reduction_func(torch.abs(angle_distance))
 
-    def compute_cos_loss(y, y_pred, reduction="mean"):
+    def compute_cos_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1. - cos_regression_criterion(y, y_pred)
+        cos_dist = 1. - cos_regression_criterion(y[:, :3], y_pred[:, :3])
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
         return reduction_func(cos_dist) + loss_coor
 
-    def compute_loss(y, y_pred):
+    def compute_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
         loss_quaternion = compute_angle_loss(y[:, 3:], y_pred[:, 3:])
 
@@ -64,9 +66,20 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE):
 
         return loss
 
+    def compute_cos2_loss(y, y_pred, reduction=reduction):
+        loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
+        cos_dist = 1. - cos_regression_criterion(y, y_pred)
+
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
+        return reduction_func(cos_dist) + loss_coor
+
+
     if loss_type == LossType.COS:
         return compute_cos_loss
     elif loss_type == LossType.MSE:
         return regression_criterion
+    elif loss_type == LossType.COS2:
+        return compute_cos2_loss
     else:
         return compute_loss

@@ -21,28 +21,14 @@
 # Please cite "4D Spatio-Temporal ConvNets: Minkowski Convolutional Neural
 # Networks", CVPR'19 (https://arxiv.org/abs/1904.08755) if you use any part
 # of the code.
-import os
-from urllib.request import urlretrieve
-import numpy as np
 
 import torch
 import torch.nn as nn
-from torch.optim import SGD
-
-try:
-    import open3d as o3d
-except ImportError:
-    raise ImportError("Please install open3d with `pip install open3d`.")
 
 import MinkowskiEngine as ME
 from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
-
-def load_file(file_name):
-    pcd = o3d.io.read_point_cloud(file_name)
-    coords = np.array(pcd.points)
-    colors = np.array(pcd.colors)
-    return coords, colors, pcd
+import ipdb
 
 
 class ResNetBase(nn.Module):
