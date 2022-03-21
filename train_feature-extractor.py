@@ -114,14 +114,14 @@ def train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch):
                 )
             )
         # # For better debugging
-        except Exception as e:
-            print(str(batch))
-            print(str(e))
-            print(traceback.format_exc())
-            ipdb.set_trace()
-            raise e
-        # except Exception:
-        #     _logger.exception(str(batch))
+        # except Exception as e:
+        #     print(str(batch))
+        #     print(str(e))
+        #     print(traceback.format_exc())
+        #     ipdb.set_trace()
+        #     raise e
+        except Exception:
+            _logger.exception(str(batch))
 
     for k in am_dict:
         # if k in visual_dict.keys():
@@ -222,7 +222,6 @@ if __name__ == "__main__":
     if file_names_path:
         with open(file_names_path, 'r') as fp:
             file_names = json.load(fp)
-
 
     train_dataset = YCBDataset(set_name="train", file_names=file_names["train"])
     train_data_loader = DataLoader(

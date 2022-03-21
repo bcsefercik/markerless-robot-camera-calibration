@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp7_mse_aliveunet_v2.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp7_mse_aliveunet_v2'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp6_mse_aliveunet_v2.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp6_mse_aliveunet_v2'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:

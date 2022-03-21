@@ -1,6 +1,6 @@
 # Top Level Params
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp6_cos2_aliveunet_v1'
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp7_cos2_aliveunet_v2'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -8,11 +8,11 @@ GENERAL:
   seed: 13
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/alivev1'
+  folder: '/kuacc/users/bsefercik/dataset/alivev2'
   suffix: .pickle
   prefix: ''
-  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
-  file_names: null
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  # file_names: null
 
   workers: 4
   batch_size: 32  # v100->26, t4->8 mink18d
@@ -51,10 +51,10 @@ TRAIN:
   loss_reduction: "sum"
 
 TEST:
-  batch_size: 2
+  batch_size: 24
   split: test
   workers: 4
   seed: 13
   epoch: 320
-  checkpoint: default_cos2_v1_del-000000416.pth
+  checkpoint: default_cos2-000000208.pth
   print_precision: 4

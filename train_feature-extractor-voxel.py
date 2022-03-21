@@ -4,7 +4,6 @@ import json
 import traceback
 import statistics
 import datetime
-import uuid
 from collections import defaultdict
 
 import torch
@@ -29,8 +28,7 @@ _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
-def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
-    torch.cuda.empty_cache()
+def train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch):
     iter_time = utils.AverageMeter()
     data_time = utils.AverageMeter()
     am_dict = defaultdict(utils.AverageMeter)
@@ -42,7 +40,6 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
     end = time.time()
 
     for i, batch in enumerate(train_iter):
-
         try:
             data_time.update(time.time() - end)
 
@@ -54,27 +51,34 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 _config.TRAIN.multiplier,
             )
 
-            coords, feats, _, poses, _ = batch
-            poses = poses.to(device=_device)
-
-            model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+            coords, rgb, labels, _ = batch
+            labels = labels.to(device=_device)
+            model_input = ME.SparseTensor(rgb, coordinates=coords, device=_device)
             out = model(model_input)
 
-            optimizer.zero_grad()
-            loss = criterion(out.F, poses)
+            hard_pairs = miner(out.features, labels)
+            pos_perm_size = min(
+                len(hard_pairs[0]), _config.DATA.batch_size * _config.DATA.max_pair
+            )
+            neg_perm_size = min(
+                len(hard_pairs[2]), _config.DATA.batch_size * _config.DATA.max_pair
+            )
+            pos_idx = torch.randperm(pos_perm_size)
+            neg_idx = torch.randperm(neg_perm_size)
+
+            hard_pairs = (
+                hard_pairs[0][pos_idx],
+                hard_pairs[1][pos_idx],
+                hard_pairs[2][neg_idx],
+                hard_pairs[3][neg_idx],
+            )
+            loss = criterion(out.features, labels, hard_pairs)
+
             loss.backward()
             optimizer.step()
 
-            dists = metrics.compute_pose_dist(poses, out.features)
-            am_dict["loss"].update(loss.item(), len(poses))
-            am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
-            am_dict["dist_position"].update(
-                statistics.mean(dists[1].tolist()), len(poses)
-            )
-            am_dict["dist_orientation"].update(
-                statistics.mean(dists[2].tolist()), len(poses)
-            )
-            am_dict["angle_diff"].update(statistics.mean(dists[3].tolist()), len(poses))
+            curr_batch_count = coords[-1][0].item() + 1
+            am_dict["loss"].update(loss.item(), curr_batch_count)
 
             current_iter = (epoch - 1) * len(train_data_loader) + i + 1
             max_iter = _config.TRAIN.epochs * len(train_data_loader)
@@ -112,7 +116,6 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
         #     raise e
         except Exception:
             _logger.exception(str(batch))
-            raise e
 
     for k in am_dict:
         # if k in visual_dict.keys():
@@ -120,65 +123,61 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
     _tensorboard_writer.flush()
 
 
-def eval_epoch(val_data_loader, model, criterion, epoch):
-    torch.cuda.empty_cache()
-    _logger.info(f"> Evaluation at epoch: {epoch}")
-    am_dict = defaultdict(utils.AverageMeter)
+# def eval_epoch(val_data_loader, model, criterion, epoch):
+#     _logger.info(f"> Evaluation at epoch: {epoch}")
+#     am_dict = defaultdict(utils.AverageMeter)
 
-    with torch.no_grad():
-        val_iter = iter(val_data_loader)
-        model.eval()
-        start_epoch = time.time()
-        for i, batch in enumerate(val_iter):
-            try:
-                coords, feats, _, poses, _ = batch
-                poses = poses.to(device=_device)
+#     with torch.no_grad():
+#         val_iter = iter(val_data_loader)
+#         model.eval()
+#         start_epoch = time.time()
+#         for i, batch in enumerate(val_iter):
+#             try:
+#                 coords, feats, _, poses, _ = batch
+#                 poses = poses.to(device=_device)
 
-                model_input = ME.SparseTensor(
-                    feats, coordinates=coords, device=_device, requires_grad=False
-                )
-                out = model(model_input)
-                loss = criterion(out.F, poses)
+#                 model_input = ME.SparseTensor(
+#                     feats, coordinates=coords, device=_device, requires_grad=False
+#                 )
+#                 out = model(model_input)
+#                 loss = criterion(out.F, poses)
 
-                dists = metrics.compute_pose_dist(poses, out.features)
-                am_dict["loss"].update(loss.item(), len(poses))
-                am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
-                am_dict["dist_position"].update(
-                    statistics.mean(dists[1].tolist()), len(poses)
-                )
-                am_dict["dist_orientation"].update(
-                    statistics.mean(dists[2].tolist()), len(poses)
-                )
-                am_dict["angle_diff"].update(
-                    statistics.mean(dists[3].tolist()), len(poses)
-                )
+#                 dists = metrics.compute_pose_dist(poses, out.features)
+#                 am_dict["loss"].update(loss.item(), len(poses))
+#                 am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
+#                 am_dict["dist_position"].update(
+#                     statistics.mean(dists[1].tolist()), len(poses)
+#                 )
+#                 am_dict["dist_orientation"].update(
+#                     statistics.mean(dists[2].tolist()), len(poses)
+#                 )
+#                 am_dict["angle_diff"].update(
+#                     statistics.mean(dists[3].tolist()), len(poses)
+#                 )
 
-                _logger.info(
-                    f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
-                )
-            except Exception:
-                _logger.exception(str(batch))
+#                 _logger.info(
+#                     f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
+#                 )
+#             except Exception:
+#                 _logger.exception(str(batch))
 
-        _logger.info(
-            f'epoch: {epoch}/{_config.TRAIN.epochs}, val loss: {am_dict["loss"].avg:.4f}, time: {time.time() - start_epoch}s'
-        )
+#         _logger.info(
+#             f'epoch: {epoch}/{_config.TRAIN.epochs}, val loss: {am_dict["loss"].avg:.4f}, time: {time.time() - start_epoch}s'
+#         )
 
-        for k in am_dict:
-            # if k in visual_dict.keys():
-            _tensorboard_writer.add_scalar(k + "_val", am_dict[k].avg, epoch)
-        _tensorboard_writer.flush()
+#         for k in am_dict:
+#             # if k in visual_dict.keys():
+#             _tensorboard_writer.add_scalar(k + "_val", am_dict[k].avg, epoch)
+#         _tensorboard_writer.flush()
 
 
 if __name__ == "__main__":
-    job_id = uuid.uuid4()
     _logger.info("=================================================\n")
-    _logger.info(f"Job ID: {job_id}")
-    print(f"Job ID: {job_id}")
     _logger.info(f"UTC Time: {datetime.datetime.utcnow().isoformat()}")
     _logger.info(f"Device: {_device}")
     _logger.info("Starting new training.")
 
-    _logger.info(f"CONFIG: {_config()}")
+    _logger.info(f"CONFIG: {json.dumps(_config(), indent=4)}")
 
     _logger.info(f"Setting seed: {_config.GENERAL.seed}")
     random.seed(_config.GENERAL.seed)
@@ -189,16 +188,15 @@ if __name__ == "__main__":
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    from model.robotnet import RobotNet, get_criterion, LossType
-    from data.alivev2 import AliveV2Dataset, collate
+    from model.featurenet import FeatureNet, get_criterion
+    from data.ycb import YCBDataset, collate
 
-    criterion = get_criterion(
-        device=_device,
-        loss_type=LossType(_config()['TRAIN'].get('loss_type', 'mse')),
-        reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
+    criterion, miner = get_criterion(device=_device)
+    model = FeatureNet(
+        in_channels=3, out_channels=_config.STRUCTURE.embedding_size, D=3
     )
-    model = RobotNet(in_channels=3, out_channels=7, D=3)
-    ipdb.set_trace()
+    if _use_cuda:
+        model.cuda()
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":
@@ -213,13 +211,7 @@ if __name__ == "__main__":
             weight_decay=_config.TRAIN.weight_decay,
         )
 
-    file_names = defaultdict(list)
-    file_names_path = _config()['DATA'].get('file_names')
-    if file_names_path:
-        with open(file_names_path, 'r') as fp:
-            file_names = json.load(fp)
-
-    train_dataset = AliveV2Dataset(set_name="train", file_names=file_names["train"])
+    train_dataset = YCBDataset(set_name="train")
     train_data_loader = DataLoader(
         train_dataset,
         batch_size=_config.DATA.batch_size,
@@ -231,41 +223,42 @@ if __name__ == "__main__":
         worker_init_fn=utils.seed_worker,
         generator=utils.torch_generator,
     )
-    val_dataset = AliveV2Dataset(set_name="val", file_names=file_names["val"])
-    val_data_loader = DataLoader(
-        val_dataset,
-        batch_size=_config.TEST.batch_size,
-        collate_fn=collate,
-        num_workers=max(2, int(_config.DATA.workers/4)),
-        shuffle=False,
-        drop_last=False,
-        pin_memory=True,
-    )
+    # val_dataset = AliveV1Dataset(set_name="val")
+    # val_data_loader = DataLoader(
+    #     val_dataset,
+    #     batch_size=_config.DATA.batch_size,
+    #     collate_fn=collate,
+    #     num_workers=max(2, int(_config.DATA.workers/4)),
+    #     shuffle=False,
+    #     drop_last=False,
+    #     pin_memory=True,
+    # )
 
     start_epoch = utils.checkpoint_restore(
         model,
         _config.exp_path,
-        _config.config.split('/')[-1][:-5],
+        _config.config.split("/")[-1][:-5],
         optimizer=optimizer,
-        use_cuda=_use_cuda
+        use_cuda=_use_cuda,
     )  # resume from the latest epoch, or specify the epoch to restore
 
     for epoch in range(start_epoch, _config.TRAIN.epochs + 1):
-        train_epoch(train_data_loader, model, optimizer, criterion, epoch)
-
-        if utils.is_multiple(epoch, _config.GENERAL.save_freq) or utils.is_power2(epoch):
+        train_epoch(train_data_loader, model, optimizer, criterion, miner, epoch)
+        if utils.is_multiple(epoch, _config.GENERAL.save_freq) or utils.is_power2(
+            epoch
+        ):
             utils.checkpoint_save(
                 model,
                 _config.exp_path,
-                _config.config.split('/')[-1][:-5],
+                _config.config.split("/")[-1][:-5],
                 epoch,
                 optimizer=optimizer,
                 save_freq=_config.GENERAL.save_freq,
-                use_cuda=_use_cuda
+                use_cuda=_use_cuda,
             )
 
-            eval_epoch(val_data_loader, model, criterion, epoch)
+        #     eval_epoch(val_data_loader, model, criterion, epoch)
 
-    # ipdb.set_trace()
+    ipdb.set_trace()
 
     _logger.info("DONE!")

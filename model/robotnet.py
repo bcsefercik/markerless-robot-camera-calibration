@@ -6,7 +6,7 @@ import torch.nn as nn
 import MinkowskiEngine as ME
 
 # from model.backbone.minkunet import MinkUNet18D as UNet
-from model.backbone.aliveunet import AliveUnet as UNet
+from model.backbone.aliveunet import AliveUNet as UNet
 from utils.quaternion import qeuler
 
 

@@ -90,10 +90,11 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     )
 
                     with open(output_filename, "a") as fp:
-                        fp.write(f"{position}/{fname}: {json.dumps(result)}\n")
+                        fp.write(f"{position}/{fname}: {json.dumps(result, indent=4)}\n")
                     # ipdb.set_trace()
-            except Exception:
-                _logger.exception(f'Filenames: {", ".join(others)}')
+            except Exception as e:
+                print(e)
+                _logger.exception(f'Filenames: {json.dumps(others)}')
 
         for k in overall_results:
             overall_results[k] = round(statistics.mean(overall_results[k]), 4)
@@ -156,16 +157,16 @@ if __name__ == "__main__":
         drop_last=False,
         pin_memory=True,
     )
-    # test_dataset = AliveV2Dataset(set_name="test", file_names=file_names["test"])
-    # test_data_loader = DataLoader(
-    #     test_dataset,
-    #     batch_size=_config.TEST.batch_size,
-    #     collate_fn=collate,
-    #     num_workers=_config.TEST.workers,
-    #     shuffle=False,
-    #     drop_last=False,
-    #     pin_memory=True,
-    # )
+    test_dataset = AliveV2Dataset(set_name="test", file_names=file_names["test"])
+    test_data_loader = DataLoader(
+        test_dataset,
+        batch_size=_config.TEST.batch_size,
+        collate_fn=collate,
+        num_workers=_config.TEST.workers,
+        shuffle=False,
+        drop_last=False,
+        pin_memory=True,
+    )
 
     test(
         model,
@@ -184,6 +185,16 @@ if __name__ == "__main__":
         output_filename=os.path.join(
             _config.exp_path,
             f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_val.txt",
+        ),
+    )
+
+    test(
+        model,
+        criterion,
+        test_data_loader,
+        output_filename=os.path.join(
+            _config.exp_path,
+            f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_test.txt",
         ),
     )
 

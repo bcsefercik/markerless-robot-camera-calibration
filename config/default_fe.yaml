@@ -20,7 +20,7 @@ DATA:
   scale: 200  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
-  min_npoints: 8
+  min_npoints: 0 # 8
   mode: 4  # 4: mean
   input_channel: 3 # rgb or gray
 
@@ -51,11 +51,11 @@ TRAIN:
   data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
 
 TEST:
-  batch_size: 2
+  batch_size: 20
   split: test
-  workers: 8
+  workers: 2
   seed: 13
-  checkpoint: "default-000000128.pth"
+  checkpoint: default_fe-000000832.pth
   print_precision: 4
 
 

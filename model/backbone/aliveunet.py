@@ -29,14 +29,17 @@ import MinkowskiEngine as ME
 
 from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
-from model.backbone.resnet import ResNetBase
+# from model.backbone.resnet import ResNetBase
+from examples.resnet import ResNetBase
 
-from utils import config
+# from utils import config
 
 
-_config = config.Config()
+# _config = config.Config()
 
-M = _config.STRUCTURE.m
+# M = _config.STRUCTURE.m
+
+M = 32
 
 
 class AliveUNetBase(ResNetBase):
@@ -250,10 +253,11 @@ class AliveUNetBase(ResNetBase):
         return self.final(out)
 
 
-class AliveUnet(AliveUNetBase):
+class AliveUNet(AliveUNetBase):
     BLOCK = BasicBlock
     PLANES = tuple(i * M for i in (list(range(1, 8)) + list(range(7, 0, -1))))
-    LAYERS = tuple(_config.STRUCTURE.block_reps for _ in range(len(PLANES)))
+    # LAYERS = tuple(_config.STRUCTURE.block_reps for _ in range(len(PLANES)))
+    LAYERS = tuple(2 for _ in range(len(PLANES)))
 
 # class MinkUNet18(MinkUNetBase):
 #     BLOCK = BasicBlock
