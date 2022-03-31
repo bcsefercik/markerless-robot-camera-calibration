@@ -2,6 +2,8 @@ import sys
 import os
 import copy
 
+import ipdb
+
 import numpy as np
 import open3d as o3d
 
@@ -18,11 +20,23 @@ if __name__ == "__main__":
         pose,
     ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
-    # arm_idx = labels == 1
-    arm_idx = labels > -1
-    points = points[arm_idx]
-    rgb = rgb[arm_idx]
-    labels = [arm_idx]
+    arm_idx = labels == 1
+
+    min_point = points[arm_idx].min(axis=0)
+    max_point = points[arm_idx].max(axis=0)
+
+    # ipdb.set_trace()
+
+    bbox = o3d.geometry.AxisAlignedBoundingBox(
+        np.array(min_point).reshape((3, 1)),
+        np.array(max_point).reshape((3, 1)),
+    )
+    obbox = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox)
+    obbox.color = [1, 0, 0]
+
+    # points = points[arm_idx]
+    # rgb = rgb[arm_idx]
+    # labels = [arm_idx]
 
     pcd = o3d.geometry.PointCloud()
 
@@ -35,8 +49,10 @@ if __name__ == "__main__":
     kinect_frame = copy.deepcopy(frame).translate([0, 0, 0])
     kinect_frame.rotate(frame.get_rotation_matrix_from_quaternion([0] * 4))
 
-    arm_mask = points
+    # obbox.translate(ee_position).rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+
     arm_mask = points[:, 0] > -500
+    arm_mask = np.logical_and(points <= max_point, points >= min_point).sum(axis=1) == 3
     arm_mask = np.logical_and(points[:, 0] < 0.5, arm_mask)  # x
     arm_mask = np.logical_and(points[:, 0] > -0.5, arm_mask)
     arm_mask = np.logical_and(points[:, 1] < 0.27, arm_mask)  # y
@@ -56,4 +72,6 @@ if __name__ == "__main__":
     pcd.colors = o3d.utility.Vector3dVector(rgb)
 
     key_to_callback = {ord("K"): switch_to_normal}
-    o3d.visualization.draw_geometries_with_key_callbacks([pcd, ee_frame, kinect_frame], key_to_callback)
+    o3d.visualization.draw_geometries_with_key_callbacks(
+        [pcd, ee_frame, kinect_frame, obbox], key_to_callback
+    )
