@@ -52,14 +52,21 @@ class AliveV2Dataset(Dataset):
             semantic_pred,
             file_name,
         ) = self.load_data_file(i)
+
         xyz_origin = xyz_origin.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
+        arm_idx = labels == 1
         labels = np.reshape(labels, (-1, 1))
         pose = np.array(pose, dtype=np.float32)  # xyzw
         pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
         pose = np.reshape(pose, (1, -1))
         other = {"filename": file_name}
+
+        if _config.DATA.data_type == "gt_seg":
+            xyz_origin = xyz_origin[arm_idx]
+            rgb = rgb[arm_idx]
+            labels = labels[arm_idx]
 
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,

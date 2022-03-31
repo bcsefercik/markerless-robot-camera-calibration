@@ -103,15 +103,11 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                     remain_time=remain_time,
                 )
             )
-        # For better debugging
-        # except Exception as e:
-        #     print(str(batch))
-        #     print(str(e))
-        #     print(traceback.format_exc())
-        #     ipdb.set_trace()
-        #     raise e
-        except Exception:
+        except Exception as e:
             _logger.exception(str(batch))
+            print(str(batch))
+            print(str(e))
+            print(traceback.format_exc())
             raise e
 
     for k in am_dict:
@@ -178,7 +174,8 @@ if __name__ == "__main__":
     _logger.info(f"Device: {_device}")
     _logger.info("Starting new training.")
 
-    _logger.info(f"CONFIG: {_config()}")
+    _logger.info(f"CONFIG: {json.dumps(_config(), indent=4)}")
+    print(f"CONFIG: {_config()}")
 
     _logger.info(f"Setting seed: {_config.GENERAL.seed}")
     random.seed(_config.GENERAL.seed)
@@ -198,7 +195,6 @@ if __name__ == "__main__":
         reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
     )
     model = RobotNet(in_channels=3, out_channels=7, D=3)
-    ipdb.set_trace()
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":

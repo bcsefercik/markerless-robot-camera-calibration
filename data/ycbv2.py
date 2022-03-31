@@ -73,6 +73,9 @@ class YCBDataset(Dataset):
         if _config.DATA.suffix:
             result = result and filename.endswith(_config.DATA.suffix)
 
+        # coords, _, _, _ = self.load_data_file((-1, filepath))
+        # result = result and len(coords) > _config()["DATA"].get("min_npoints", 0)
+
         return result
 
     def load_file_names(self):
@@ -83,23 +86,23 @@ class YCBDataset(Dataset):
         # self.file_names.sort()
 
     def load_data_file(self, i):
-        class_id, curr_file_path = self.file_names[i]
+        class_id, curr_file_path = i if isinstance(i, tuple) else self.file_names[i]
         curr_file_name = curr_file_path.split("/")[-1]
         pcd = o3d.io.read_point_cloud(curr_file_path)
         coords = np.array(pcd.points)
         colors = np.array(pcd.colors)
-        labels = np.array([class_id] , dtype=np.int32)
+        labels = np.array([class_id], dtype=np.int32)
 
         return coords, colors, labels, curr_file_path
 
 
 def collate(data):
-    data = [d for d in data if len(d[0]) > _config()['DATA'].get('min_npoints', 0)]
+    data = [d for d in data if len(d[0]) > _config()["DATA"].get("min_npoints", 0)]
     coords, colors, labels, others = list(zip(*data))  # same size as getitem's return's
     coords_batch = ME.utils.batched_coordinates(coords)
     colors_batch = torch.from_numpy(np.concatenate(colors, 0)).to(dtype=torch.float32)
     colors_batch = normalize_color(colors_batch)
     labels_batch = torch.from_numpy(np.concatenate(labels, 0)).to(dtype=torch.int32)
-    others = {"filenames": [o["filename"].split("/")[-1] for o in others]}
+    others = [{"filename": o["filename"].split("/")[-1], "object_name": o["filename"].split("/")[-3]} for o in others]
 
     return coords_batch, colors_batch, labels_batch, others

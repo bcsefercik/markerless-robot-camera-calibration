@@ -1,6 +1,6 @@
 # Top Level Params
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/dev.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/dev'
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_dev'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -14,8 +14,8 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: null
 
-  workers: 4
-  batch_size: 32  # v100->26, t4->8 mink18d
+  workers: 0
+  batch_size: 2  # v100->26, t4->8 mink18d
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
