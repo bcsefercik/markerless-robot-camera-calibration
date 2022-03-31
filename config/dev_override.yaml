@@ -1,0 +1,9 @@
+exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/dev
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/dev.log
+
+DATA:
+  workers: 0
+  batch_size: 2
+
+GENERAL:
+  save_freq: 26
