@@ -90,11 +90,13 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     )
 
                     with open(output_filename, "a") as fp:
-                        fp.write(f"{position}/{fname}: {json.dumps(result, indent=4)}\n")
+                        fp.write(
+                            f"{position}/{fname}: {json.dumps(result, indent=4)}\n"
+                        )
                     # ipdb.set_trace()
             except Exception as e:
                 print(e)
-                _logger.exception(f'Filenames: {json.dumps(others)}')
+                _logger.exception(f"Filenames: {json.dumps(others)}")
 
         for k in overall_results:
             overall_results[k] = round(statistics.mean(overall_results[k]), 4)
@@ -137,66 +139,28 @@ if __name__ == "__main__":
         with open(file_names_path, "r") as fp:
             file_names = json.load(fp)
 
-    train_dataset = AliveV2Dataset(set_name="train", file_names=file_names["train"])
-    train_data_loader = DataLoader(
-        train_dataset,
-        batch_size=_config.TEST.batch_size,
-        collate_fn=collate,
-        num_workers=_config.TEST.workers,
-        shuffle=False,
-        drop_last=False,
-        pin_memory=True,
-    )
-    val_dataset = AliveV2Dataset(set_name="val", file_names=file_names["val"])
-    val_data_loader = DataLoader(
-        val_dataset,
-        batch_size=_config.TEST.batch_size,
-        collate_fn=collate,
-        num_workers=_config.TEST.workers,
-        shuffle=False,
-        drop_last=False,
-        pin_memory=True,
-    )
-    test_dataset = AliveV2Dataset(set_name="test", file_names=file_names["test"])
-    test_data_loader = DataLoader(
-        test_dataset,
-        batch_size=_config.TEST.batch_size,
-        collate_fn=collate,
-        num_workers=_config.TEST.workers,
-        shuffle=False,
-        drop_last=False,
-        pin_memory=True,
-    )
+    for dt in ("train", "val", "test"):
+        print("Dataset:", dt)
+        dataset = AliveV2Dataset(set_name=dt, file_names=file_names[dt])
+        data_loader = DataLoader(
+            dataset,
+            batch_size=_config.TEST.batch_size,
+            collate_fn=collate,
+            num_workers=_config.TEST.workers,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=True,
+        )
 
-    test(
-        model,
-        criterion,
-        train_data_loader,
-        output_filename=os.path.join(
-            _config.exp_path,
-            f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_train.txt",
-        ),
-    )
-
-    test(
-        model,
-        criterion,
-        val_data_loader,
-        output_filename=os.path.join(
-            _config.exp_path,
-            f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_val.txt",
-        ),
-    )
-
-    test(
-        model,
-        criterion,
-        test_data_loader,
-        output_filename=os.path.join(
-            _config.exp_path,
-            f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_test.txt",
-        ),
-    )
+        test(
+            model,
+            criterion,
+            data_loader,
+            output_filename=os.path.join(
+                _config.exp_path,
+                f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_{dt}.txt",
+            ),
+        )
 
     # ipdb.set_trace()
 
