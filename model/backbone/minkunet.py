@@ -53,7 +53,7 @@ class MinkUNetBase(ResNetBase):
         # Output of the first conv concated to conv6
         self.inplanes = self.INIT_DIM
         self.conv0p1s1 = ME.MinkowskiConvolution(
-            in_channels, self.inplanes, kernel_size=5, dimension=D)
+            in_channels, self.inplanes, kernel_size=3, dimension=D)
 
         self.bn0 = ME.MinkowskiBatchNorm(self.inplanes)
 
@@ -180,7 +180,8 @@ class MinkUNetBase(ResNetBase):
         out = ME.cat(out, out_p1)
         out = self.block8(out)
 
-        return self.final(out)
+        # return self.final(out)
+        return out
 
 
 class MinkUNet14(MinkUNetBase):

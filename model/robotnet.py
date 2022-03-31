@@ -1,13 +1,26 @@
 from enum import Enum
+import ipdb
 
 import torch
 import numpy as np
 import torch.nn as nn
 import MinkowskiEngine as ME
 
-# from model.backbone.minkunet import MinkUNet18D as UNet
-from model.backbone.aliveunet import AliveUNet as UNet
 from utils.quaternion import qeuler
+from utils import config
+
+
+_config = config.Config()
+
+_backbone = _config()['STRUCTURE'].get('backbone')
+if _backbone == 'minkunet':
+    from model.backbone.minkunet import MinkUNet18D as UNet
+elif _backbone == 'minkunet101':
+    from model.backbone.minkunet import MinkUNet101 as UNet
+else:
+    from model.backbone.aliveunet import AliveUNet as UNet
+
+M = _config.STRUCTURE.m
 
 
 class RobotNet(UNet):
@@ -15,23 +28,33 @@ class RobotNet(UNet):
 
     def __init__(self, in_channels, out_channels, D=3):
         UNet.__init__(self, in_channels, out_channels, D)
-
-        self.global_pool = ME.MinkowskiGlobalAvgPooling()
-        self.leaky_relu = ME.MinkowskiLeakyReLU(inplace=True)
+        # self.global_pool = ME.MinkowskiGlobalAvgPooling()
+        self.global_pool = ME.MinkowskiGlobalMaxPooling()
+        self.leaky_relu = ME.MinkowskiLeakyReLU(inplace=False)
         self.final_bn = ME.MinkowskiBatchNorm(out_channels)
 
+        self.output_layer = nn.Sequential(
+            ME.MinkowskiBatchNorm(self.PLANES[-1] * self.BLOCK.expansion),
+            self.relu
+        )
+
+        self.pose_regression = ME.MinkowskiOps.MinkowskiLinear(
+            self.PLANES[-1] * self.BLOCK.expansion,
+            out_channels
+        )
+
     def forward(self, x):  # WXYZ
-        unet_output = super().forward(x)
-        unet_output = self.final_bn(unet_output)
-        unet_output = self.leaky_relu(unet_output)
-        return self.global_pool(unet_output)
+        output = super().forward(x)
+        output = self.output_layer(output)
+        output = self.global_pool(output)
+        return self.pose_regression(output)
 
 
 class LossType(Enum):
-    MSE = 'mse'
-    COS = 'cos'
-    ANGLE = 'angle'
-    COS2 = 'cos2'
+    MSE = "mse"
+    COS = "cos"
+    ANGLE = "angle"
+    COS2 = "cos2"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
@@ -42,9 +65,11 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     gamma2 = 1
 
     def compute_angle_loss(q_expected, q_pred, reduction=reduction):
-        expected_euler = qeuler(q_expected, order='zyx', epsilon=1e-6)
-        predicted_euler = qeuler(q_pred, order='zyx', epsilon=1e-6)
-        angle_distance = torch.remainder(predicted_euler - expected_euler + np.pi, 2*np.pi) - np.pi
+        expected_euler = qeuler(q_expected, order="zyx", epsilon=1e-6)
+        predicted_euler = qeuler(q_pred, order="zyx", epsilon=1e-6)
+        angle_distance = (
+            torch.remainder(predicted_euler - expected_euler + np.pi, 2 * np.pi) - np.pi
+        )
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
@@ -52,7 +77,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
     def compute_cos_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1. - cos_regression_criterion(y[:, :3], y_pred[:, :3])
+        cos_dist = 1.0 - cos_regression_criterion(y[:, :3], y_pred[:, :3])
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
@@ -67,13 +92,14 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         return loss
 
     def compute_cos2_loss(y, y_pred, reduction=reduction):
+        gamma_cos = 2
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1. - cos_regression_criterion(y, y_pred)
+        cos_dist = 1.0 - cos_regression_criterion(y, y_pred)
+        cos_dist *= gamma_cos
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
         return reduction_func(cos_dist) + loss_coor
-
 
     if loss_type == LossType.COS:
         return compute_cos_loss
