@@ -67,6 +67,13 @@ class AliveV2Dataset(Dataset):
             xyz_origin = xyz_origin[arm_idx]
             rgb = rgb[arm_idx]
             labels = labels[arm_idx]
+        elif _config.DATA.data_type == "gt_bbox":
+            min_point = xyz_origin[arm_idx].min(axis=0)
+            max_point = xyz_origin[arm_idx].max(axis=0)
+            arm_bbox = np.logical_and(xyz_origin <= max_point, xyz_origin >= min_point).sum(axis=1) == 3
+            xyz_origin = xyz_origin[arm_bbox]
+            rgb = rgb[arm_bbox]
+            labels = labels[arm_bbox]
 
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,

@@ -1,9 +1,6 @@
-exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/dev
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/dev.log
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp8_cos2_aliveunet_v2_gt-seg_18d.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v2_gt-seg_18d'
 
 DATA:
-  workers: 0
-  batch_size: 2
-
-GENERAL:
-  save_freq: 26
+  batch_size: 5
+  data_type: gt_bbox
