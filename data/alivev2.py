@@ -8,7 +8,7 @@ import numpy as np
 from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
-from utils import logger, config
+from utils import file_utils, logger, config
 
 
 _config = config.Config()
@@ -102,17 +102,10 @@ class AliveV2Dataset(Dataset):
         self.file_names.sort()
 
     def load_data_file(self, i, semantic_enabled=False):
-        x, semantic_pred = None, None
-
         curr_file_name = self.file_names[i]
-        with open(curr_file_name, "rb") as filehandler:
-            x = pickle.load(filehandler, encoding="bytes")
-
-        if semantic_enabled:
-            with open(
-                curr_file_name.replace(".pickle", "_semantic.pickle"), "rb"
-            ) as fp:
-                semantic_pred = pickle.load(fp, encoding="bytes")
+        x, semantic_pred = file_utils.load_alive_file(
+            curr_file_name, semantic_enabled=semantic_enabled
+        )
 
         return x, semantic_pred, curr_file_name
 

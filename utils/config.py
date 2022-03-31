@@ -10,8 +10,6 @@ import utils.helpers as helpers
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-import ipdb
-
 class Config(metaclass=SingletonMeta):
     def __init__(self, path="config/default.yaml", overriding_config=dict()):
         self.config = {
