@@ -20,6 +20,15 @@ if __name__ == "__main__":
         pose,
     ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
+    pred = [
+        -0.2542,
+        -0.2751,
+        0.6893,
+        0.704,
+        -0.4234,
+        0.4265,
+        0.3886
+    ]
     arm_idx = labels == 1
 
     min_point = points[arm_idx].min(axis=0)
@@ -46,13 +55,18 @@ if __name__ == "__main__":
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
     ee_frame = copy.deepcopy(frame).translate(ee_position)
     ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+    ee_position_pred = pred[:3]
+    ee_orientation_pred = pred[3:]
+    # ee_orientation_pred = ee_orientation_pred[-1:] + ee_orientation_pred[:-1]
+    ee_frame_pred = copy.deepcopy(frame).translate(ee_position_pred)
+    ee_frame_pred.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation_pred))
     kinect_frame = copy.deepcopy(frame).translate([0, 0, 0])
     kinect_frame.rotate(frame.get_rotation_matrix_from_quaternion([0] * 4))
 
     # obbox.translate(ee_position).rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
 
     arm_mask = points[:, 0] > -500
-    arm_mask = np.logical_and(points <= max_point, points >= min_point).sum(axis=1) == 3
+    # arm_mask = np.logical_and(points <= max_point, points >= min_point).sum(axis=1) == 3
     arm_mask = np.logical_and(points[:, 0] < 0.5, arm_mask)  # x
     arm_mask = np.logical_and(points[:, 0] > -0.5, arm_mask)
     arm_mask = np.logical_and(points[:, 1] < 0.27, arm_mask)  # y
@@ -61,7 +75,7 @@ if __name__ == "__main__":
     # # # arm_mask = np.logical_and(points[:, 2] > 1.5, arm_mask)
 
     points = points[arm_mask]
-    rgb = rgb[arm_mask]
+    rgb = rgb[arm_mask] + 0.5
 
     def switch_to_normal(vis):
         pcd.colors = o3d.utility.Vector3dVector(rgb)
@@ -73,5 +87,5 @@ if __name__ == "__main__":
 
     key_to_callback = {ord("K"): switch_to_normal}
     o3d.visualization.draw_geometries_with_key_callbacks(
-        [pcd, ee_frame, kinect_frame, obbox], key_to_callback
+        [pcd, ee_frame, kinect_frame, ee_frame_pred, obbox], key_to_callback
     )
