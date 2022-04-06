@@ -1,0 +1,9 @@
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp9_cos2_v2_alive_seg.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp9_cos2_v2_alive_seg'
+
+GENERAL:
+  save_freq: 12
+
+DATA:
+  batch_size: 64
+  data_type: gt_seg

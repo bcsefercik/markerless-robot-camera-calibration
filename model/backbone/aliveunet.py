@@ -225,21 +225,14 @@ class AliveUNetBase(ResNetBase):
         out = self.bntr8(out)
         out = self.relu(out)
 
-        ipdb.set_trace()
         out = ME.cat(out, out_b5p32)
-        print('in9', out.size())
-        print('block9', self.block9)
-        ipdb.set_trace()
         out = self.block9(out)
-        ipdb.set_trace()
 
         out = self.convtr9(out)
         out = self.bntr9(out)
         out = self.relu(out)
 
         out = ME.cat(out, out_b4p16)
-        print('in10', out.size())
-        print('block10', self.block10)
         out = self.block10(out)
 
         out = self.convtr10(out)
@@ -247,8 +240,6 @@ class AliveUNetBase(ResNetBase):
         out = self.relu(out)
 
         out = ME.cat(out, out_b3p8)
-        print('in11', out.size())
-        print('block11', self.block11)
         out = self.block11(out)
 
         out = self.convtr11(out)
@@ -256,8 +247,6 @@ class AliveUNetBase(ResNetBase):
         out = self.relu(out)
 
         out = ME.cat(out, out_b2p4)
-        print('in12', out.size())
-        print('block12', self.block12)
         out = self.block12(out)
 
         out = self.convtr12(out)
@@ -265,8 +254,6 @@ class AliveUNetBase(ResNetBase):
         out = self.relu(out)
 
         out = ME.cat(out, out_b1p2)
-        print('in13', out.size())
-        print('block13', self.block13)
         out = self.block13(out)
 
         out = self.convtr13(out)
@@ -274,10 +261,7 @@ class AliveUNetBase(ResNetBase):
         out = self.relu(out)
 
         out = ME.cat(out, out_p1)
-        print('in14', out.size())
-        print('block14', self.block14)
         out = self.block14(out)
-        ipdb.set_trace()
         return out
 
 

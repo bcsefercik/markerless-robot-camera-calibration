@@ -116,6 +116,8 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
 
 
 if __name__ == "__main__":
+    print(f"CONFIG: {_config()}")
+
     if _use_cuda:
         torch.cuda.empty_cache()
 
@@ -133,9 +135,12 @@ if __name__ == "__main__":
 
     print("Loaded model.")
 
+    dataset_name = ""
     file_names = defaultdict(list)
     file_names_path = _config()["DATA"].get("file_names")
     if file_names_path:
+        dataset_name = utils.remove_suffix(file_names_path.split('/')[-1], '.json')
+
         with open(file_names_path, "r") as fp:
             file_names = json.load(fp)
 
@@ -158,7 +163,7 @@ if __name__ == "__main__":
             data_loader,
             output_filename=os.path.join(
                 _config.exp_path,
-                f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_{dt}.txt",
+                f"{utils.remove_suffix(_config.TEST.checkpoint, '.pth')}_results_{dataset_name}_{dt}.txt",
             ),
         )
 

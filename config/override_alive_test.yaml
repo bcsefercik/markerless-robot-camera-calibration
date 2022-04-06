@@ -1,0 +1,16 @@
+# Top Level Params
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v1_18d'
+
+DATA:
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_splits.json'
+  data_type: null
+
+STRUCTURE:
+  backbone: 'minkunet'
+
+TEST:
+  batch_size: 4
+  split: test
+  workers: 4
+  checkpoint: default_cos2_v1_18d-000000232.pth
