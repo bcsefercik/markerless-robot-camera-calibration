@@ -212,8 +212,17 @@ if __name__ == "__main__":
     file_names = defaultdict(list)
     file_names_path = _config()['DATA'].get('file_names')
     if file_names_path:
-        with open(file_names_path, 'r') as fp:
+        file_names_path = file_names_path.split(',')
+        with open(file_names_path[0], 'r') as fp:
             file_names = json.load(fp)
+
+        for fnp in file_names_path[1:]:
+            with open(fnp, 'r') as fp:
+                new_file_names = json.load(fp)
+
+                for k in new_file_names:
+                    if k in file_names:
+                        file_names[k].extend(new_file_names[k])
 
     train_dataset = AliveV2Dataset(set_name="train", file_names=file_names["train"])
     train_data_loader = DataLoader(

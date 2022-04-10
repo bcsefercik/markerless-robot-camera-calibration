@@ -1,16 +1,21 @@
 # Top Level Params
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v1_18d'
+# exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v2_18d'
+# exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v1_18d'
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v2_gt-bbox_18d'
 
 DATA:
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_splits.json'
-  data_type: null
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  # data_type: null
+  data_type: "gt_bbox"
 
 STRUCTURE:
   backbone: 'minkunet'
 
 TEST:
-  batch_size: 4
+  batch_size: 8
   split: test
-  workers: 4
-  checkpoint: default_cos2_v1_18d-000000232.pth
+  workers: 0
+  checkpoint: default_cos2_v2_18d-000000208.pth
