@@ -11,7 +11,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Split alivev2")
     parser.add_argument("--infolder", type=str, default="alivev2/")
     parser.add_argument("--out", type=str, default="splits.json")
-    parser.add_argument("--seed", type=int, default=13)
+    parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument('--temporal', action='store_true')
     parser.add_argument("--ratio", nargs="+", type=float, default=[0.9, 0.05, 0.05], help='train, val, test')
     args = parser.parse_args()
 
@@ -28,7 +29,11 @@ if __name__ == "__main__":
     for cf in class_folders:
         print('Processing:', cf)
         pickles = glob.glob(os.path.join(cf, 'labeled', '*.pickle'))
-        random.shuffle(pickles)
+
+        if args.temporal:
+            pickles.sort(key=lambda x: int(x.split('/')[-1].split('.')[0]))
+        else:
+            random.shuffle(pickles)
 
         findex = [int(r * len(pickles)) for r in args.ratio]
         findex.insert(0, 0)

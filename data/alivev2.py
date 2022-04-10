@@ -62,6 +62,8 @@ class AliveV2Dataset(Dataset):
         pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
         pose = np.reshape(pose, (1, -1))
         other = {"filename": file_name}
+        if isinstance(self.file_names[i], dict):
+            other.update(self.file_names[i])
 
         if _config.DATA.data_type == "gt_seg":
             xyz_origin = xyz_origin[arm_idx]
@@ -70,7 +72,12 @@ class AliveV2Dataset(Dataset):
         elif _config.DATA.data_type == "gt_bbox":
             min_point = xyz_origin[arm_idx].min(axis=0)
             max_point = xyz_origin[arm_idx].max(axis=0)
-            arm_bbox = np.logical_and(xyz_origin <= max_point, xyz_origin >= min_point).sum(axis=1) == 3
+            arm_bbox = (
+                np.logical_and(xyz_origin <= max_point, xyz_origin >= min_point).sum(
+                    axis=1
+                )
+                == 3
+            )
             xyz_origin = xyz_origin[arm_bbox]
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
@@ -82,6 +89,8 @@ class AliveV2Dataset(Dataset):
             quantization_size=self.quantization_size,
             ignore_label=-100,
         )
+
+        # ipdb.set_trace()
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 
@@ -105,11 +114,16 @@ class AliveV2Dataset(Dataset):
             self.file_names = glob.glob(
                 os.path.join(self.dataset, "*" + self.filename_suffix)
             )
-        self.file_names = [fn for fn in self.file_names if self.filter_filename(fn)]
-        self.file_names.sort()
+        self.file_names = [
+            fn
+            for fn in self.file_names
+            if self.filter_filename(fn["filepath"] if isinstance(fn, dict) else fn)
+        ]
+        self.file_names.sort(key=lambda fn: fn["filepath"] if isinstance(fn, dict) else fn )
 
     def load_data_file(self, i, semantic_enabled=False):
-        curr_file_name = self.file_names[i]
+        fn = self.file_names[i]
+        curr_file_name = fn["filepath"] if isinstance(fn, dict) else fn
         x, semantic_pred = file_utils.load_alive_file(
             curr_file_name, semantic_enabled=semantic_enabled
         )
@@ -126,12 +140,12 @@ def collate(data):
     feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
     labels_batch = torch.from_numpy(np.concatenate(labels, 0)).to(dtype=torch.int32)
     poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
-    others = [
-        {
-            "filename": o["filename"].split("/")[-1],
-            "position": o["filename"].split("/")[-3],
-        }
-        for o in others
-    ]
+
+    for i, o in enumerate(others):
+        if not o.get('position'):
+            others[i]["position"] = o["filename"].split("/")[-3]
+        others[i]["filename"] = o["filename"].split("/")[-1]
+
+    # ipdb.set_trace()
 
     return coords_batch, feats_batch, labels_batch, poses_batch, others
