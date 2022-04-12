@@ -5,6 +5,7 @@ import glob
 import ipdb
 import torch
 import numpy as np
+import sklearn.preprocessing as preprocessing
 from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
@@ -82,6 +83,12 @@ class AliveV2Dataset(Dataset):
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
 
+        if rgb.min() < 0:
+            # WRONG approach, tries to shit from data prep code.
+            rgb[:, 0] = preprocessing.minmax_scale(rgb[:, 0], feature_range=(0, 1), axis=0)
+            rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
+            rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
+
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,
             features=rgb,
@@ -97,7 +104,8 @@ class AliveV2Dataset(Dataset):
     def __len__(self):
         return len(self.file_names)
 
-    def filter_filename(self, filepath):
+    def filter_file(self, file):
+        filepath = file["filepath"] if isinstance(file, dict) else file
         filename = filepath.split("/")[-1]
         result = True
 
@@ -106,6 +114,9 @@ class AliveV2Dataset(Dataset):
 
         if _config.DATA.prefix:
             result = result and filename.startswith(_config.DATA.prefix)
+
+        if _config()["DATA"].get("arm_point_count_threshold"):
+            result = result and file['arm_point_count'] >= _config()["DATA"]["arm_point_count_threshold"]
 
         return result
 
@@ -117,7 +128,7 @@ class AliveV2Dataset(Dataset):
         self.file_names = [
             fn
             for fn in self.file_names
-            if self.filter_filename(fn["filepath"] if isinstance(fn, dict) else fn)
+            if self.filter_file(fn)
         ]
         self.file_names.sort(key=lambda fn: fn["filepath"] if isinstance(fn, dict) else fn )
 

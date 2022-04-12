@@ -18,7 +18,7 @@ def create_info(filepath):
 
     return {
         "filepath": filepath,
-        "position": "_".join(instance_parts[:-1]) if len(instance_parts) > 1 else instance_parts[0],
+        "position": "_".join(instance_parts) if len(instance_parts) > 1 else instance_parts[0],
         "light": instance_parts[-1],
         "arm_point_count": int((labels == 1).sum()),
     }

@@ -39,6 +39,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
 
         overall_results = defaultdict(list)
         individual_results = defaultdict(lambda: defaultdict(list))
+        results_json = {}
 
         for i, batch in enumerate(data_iter):
             try:
@@ -61,6 +62,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 for fi, other_info in enumerate(others):
                     fname = other_info["filename"]
                     position = other_info["position"]
+
                     print(f"{position}/{fname}")
 
                     result = {
@@ -88,6 +90,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     individual_results[position]["angle_diff"].append(
                         result["angle_diff"]
                     )
+                    results_json[f"{position}/{fname}"] = result
 
                     with open(output_filename, "a") as fp:
                         fp.write(
@@ -97,6 +100,9 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
             except Exception as e:
                 print(e)
                 _logger.exception(f"Filenames: {json.dumps(others)}")
+
+        with open(output_filename.replace('.txt', '.json'), "a") as fp:
+            json.dump(results_json, fp)
 
         for k in overall_results:
             overall_results[k] = round(statistics.mean(overall_results[k]), 4)
@@ -144,8 +150,13 @@ if __name__ == "__main__":
         with open(file_names_path, "r") as fp:
             file_names = json.load(fp)
 
-    for dt in ("train", "val", "test"):
+    for dt in ("val", "test", "train"):
         print("Dataset:", dt)
+
+        if not file_names[dt]:
+            print(f"Dataset {dt} split is empty.")
+            continue
+
         dataset = AliveV2Dataset(set_name=dt, file_names=file_names[dt])
         data_loader = DataLoader(
             dataset,
