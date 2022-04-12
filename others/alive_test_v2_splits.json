@@ -1,0 +1,864 @@
+{
+  "train": [],
+  "val": [],
+  "test": [
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/161.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36259
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/164.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36094
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/162.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36182
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/168.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36275
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/163.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36173
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/170.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36174
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/160.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36236
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/166.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36045
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/169.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36218
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/167.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36036
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i5/labeled/165.pickle",
+      "position": "c2_p2_1_full_i5",
+      "light": "i5",
+      "arm_point_count": 36140
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/194.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35926
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/196.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 36026
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/193.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35889
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/200.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35773
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/199.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35953
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/191.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 36051
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/197.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35765
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/190.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35991
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/195.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 36057
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/192.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35913
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i4/labeled/198.pickle",
+      "position": "c1_p1_i4",
+      "light": "i4",
+      "arm_point_count": 35937
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/330.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51344
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/331.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51459
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/334.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51179
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/340.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51257
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/335.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 50975
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/332.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 50977
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/338.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51116
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/339.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 50940
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/337.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51020
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/336.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 50980
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i6_easy/labeled/333.pickle",
+      "position": "c1_p1_i6_easy",
+      "light": "easy",
+      "arm_point_count": 51355
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/15.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33271
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/11.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33301
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/18.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33205
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/12.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33169
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/14.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33420
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/16.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33127
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/20.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33357
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/17.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33338
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/10.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33294
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/13.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33353
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i1/labeled/19.pickle",
+      "position": "c2_p2_1_full_i1",
+      "light": "i1",
+      "arm_point_count": 33390
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/135.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 24843
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/139.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25173
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/138.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25060
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/136.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25145
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/132.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 24835
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/134.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25067
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/137.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25264
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/133.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 24489
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/131.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 24918
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/140.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25167
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i3/labeled/130.pickle",
+      "position": "c1_p1_i3",
+      "light": "i3",
+      "arm_point_count": 25013
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/120.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20168
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/121.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20463
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/128.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 19898
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/125.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20336
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/123.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20421
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/130.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20406
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/124.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20323
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/122.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20352
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/126.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20180
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/127.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20270
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i4_hard/labeled/129.pickle",
+      "position": "c2_p2_1_full_i4_hard",
+      "light": "hard",
+      "arm_point_count": 20310
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/431.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41763
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/430.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41708
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/438.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41973
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/436.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41356
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/437.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 42326
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/435.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41476
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/439.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41537
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/433.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41307
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/440.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 42264
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/434.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41911
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i7_ee_side/labeled/432.pickle",
+      "position": "c1_p1_i7_ee_side",
+      "light": "side",
+      "arm_point_count": 41572
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/218.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15237
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/213.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15297
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/214.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15326
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/220.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15110
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/216.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15128
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/211.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15242
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/217.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15138
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/219.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15218
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/210.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15229
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/212.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15375
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i6_xhard/labeled/215.pickle",
+      "position": "c2_p2_1_full_i6_xhard",
+      "light": "xhard",
+      "arm_point_count": 15375
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/48.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21230
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/46.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21216
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/50.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21222
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/49.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21244
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/40.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21217
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/45.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21218
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/44.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21264
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/42.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21155
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/47.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21294
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/43.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21250
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i1/labeled/41.pickle",
+      "position": "c1_p1_i1",
+      "light": "i1",
+      "arm_point_count": 21109
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/58.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37500
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/50.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37515
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/56.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37513
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/55.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37710
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/60.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37588
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/59.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37580
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/54.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37719
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/53.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37563
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/52.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37656
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/57.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37638
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i2/labeled/51.pickle",
+      "position": "c2_p2_1_full_i2",
+      "light": "i2",
+      "arm_point_count": 37602
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/97.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19862
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/96.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19941
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/98.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19976
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/99.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19866
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/93.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19551
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/91.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19835
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/100.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19865
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/95.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19905
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/92.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19857
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/94.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19790
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i2_hard/labeled/90.pickle",
+      "position": "c1_p1_i2_hard",
+      "light": "hard",
+      "arm_point_count": 19748
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/254.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38155
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/250.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38154
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/253.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38058
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/252.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38192
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/260.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38320
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/255.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38146
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/251.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38299
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/256.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38076
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/258.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38082
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/257.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38115
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c1_p1_i5/labeled/259.pickle",
+      "position": "c1_p1_i5",
+      "light": "i5",
+      "arm_point_count": 38277
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/87.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36884
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/83.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 37512
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/81.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36913
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/90.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36798
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/88.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36846
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/85.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36917
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/86.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36803
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/84.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36667
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/82.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 37094
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/89.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 36826
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v2/c2_p2_1_full_i3/labeled/80.pickle",
+      "position": "c2_p2_1_full_i3",
+      "light": "i3",
+      "arm_point_count": 37085
+    }
+  ]
+}
