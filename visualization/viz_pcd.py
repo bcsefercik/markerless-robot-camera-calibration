@@ -28,32 +28,52 @@ if __name__ == "__main__":
     points = np.asarray(pcd.points)
     rgb = np.asarray(pcd.colors)
 
-    arm_mask = points[:, 0] > -500
-    arm_mask = np.logical_and(points[:, 0] < 0.6, arm_mask)  # x
-    arm_mask = np.logical_and(points[:, 0] > -0.3, arm_mask)
-    arm_mask = np.logical_and(points[:, 1] < 0.27, arm_mask)  # y
-    # # arm_mask = np.logical_and(points[:, 1] > -0.02, arm_mask)
-    arm_mask = np.logical_and(points[:, 2] < 1.27, arm_mask)  # z
-    arm_mask = np.logical_and(points[:, 2] > 0, arm_mask)
+    roi_mask = points[:, 0] > -500
+
+    # c1_p1
+    roi_mask = np.logical_and(points[:, 0] < 0.43, roi_mask)  # x
+    roi_mask = np.logical_and(points[:, 0] > -0.6, roi_mask)
+    roi_mask = np.logical_and(points[:, 1] < 0.3, roi_mask)  # y
+    # # # roi_mask = np.logical_and(points[:, 1] > -0.02, roi_mask)
+    roi_mask = np.logical_and(points[:, 2] < 1.2, roi_mask)  # z
+    roi_mask = np.logical_and(points[:, 2] > 0, roi_mask)
+
+    # p2_1
+    # roi_mask = np.logical_and(points[:, 0] < 0.39, roi_mask)  # x
+    # roi_mask = np.logical_and(points[:, 0] > -0.52, roi_mask)
+    # roi_mask = np.logical_and(points[:, 1] < 0.27, roi_mask)  # y
+    # # # # roi_mask = np.logical_and(points[:, 1] > -0.02, roi_mask)
+    # roi_mask = np.logical_and(points[:, 2] < 1.15, roi_mask)  # z
+    # roi_mask = np.logical_and(points[:, 2] > 0.3, roi_mask)
+
+    # p3_1
+    # roi_mask = np.logical_and(points[:, 0] < 0.22, roi_mask)  # x
+    # roi_mask = np.logical_and(points[:, 0] > -0.52, roi_mask)
+    # roi_mask = np.logical_and(points[:, 1] < 0.26, roi_mask)  # y
+    # # # roi_mask = np.logical_and(points[:, 1] > -0.02, roi_mask)
+    # roi_mask = np.logical_and(points[:, 2] < 1.2, roi_mask)  # z
+    # roi_mask = np.logical_and(points[:, 2] > 0, roi_mask)
 
     # p2h2l1
-    # arm_mask = np.logical_and(points[:, 0] < 0.5, arm_mask)  # x
-    # arm_mask = np.logical_and(points[:, 0] > -0.5, arm_mask)
-    # arm_mask = np.logical_and(points[:, 1] < 0.27, arm_mask)  # y
-    # # # arm_mask = np.logical_and(points[:, 1] > 0.2, arm_mask)
-    # arm_mask = np.logical_and(points[:, 2] < 1.3, arm_mask)  # z
-    # # # # arm_mask = np.logical_and(points[:, 2] > 1.5, arm_mask)
+    # roi_mask = np.logical_and(points[:, 0] < 0.5, roi_mask)  # x
+    # roi_mask = np.logical_and(points[:, 0] > -0.5, roi_mask)
+    # roi_mask = np.logical_and(points[:, 1] < 0.27, roi_mask)  # y
+    # # # roi_mask = np.logical_and(points[:, 1] > 0.2, roi_mask)
+    # roi_mask = np.logical_and(points[:, 2] < 1.3, roi_mask)  # z
+    # # # # roi_mask = np.logical_and(points[:, 2] > 1.5, roi_mask)
 
     # p2h3l1
-    # arm_mask = np.logical_and(points[:, 0] < 0.5, arm_mask)  # x
-    # arm_mask = np.logical_and(points[:, 0] > -0.5, arm_mask)
-    # arm_mask = np.logical_and(points[:, 1] < 0.27, arm_mask)  # y
-    # # arm_mask = np.logical_and(points[:, 1] > -0.02, arm_mask)
-    # arm_mask = np.logical_and(points[:, 2] < 1.27, arm_mask)  # z
-    # # arm_mask = np.logical_and(points[:, 2] > 1, arm_mask)
+    # roi_mask = np.logical_and(points[:, 0] < 0.5, roi_mask)  # x
+    # roi_mask = np.logical_and(points[:, 0] > -0.5, roi_mask)
+    # roi_mask = np.logical_and(points[:, 1] < 0.27, roi_mask)  # y
+    # # roi_mask = np.logical_and(points[:, 1] > -0.02, roi_mask)
+    # roi_mask = np.logical_and(points[:, 2] < 1.27, roi_mask)  # z
+    # # roi_mask = np.logical_and(points[:, 2] > 1, roi_mask)
 
-    points = points[arm_mask]
-    rgb = rgb[arm_mask]
+    points = points[roi_mask]
+    rgb = rgb[roi_mask]
+
+    print("# of points:", len(points))
 
     pcd_th = o3d.geometry.PointCloud()
     pcd_th.points = o3d.utility.Vector3dVector(points)
