@@ -115,7 +115,7 @@ class AliveV2Dataset(Dataset):
         if _config.DATA.prefix:
             result = result and filename.startswith(_config.DATA.prefix)
 
-        if _config()["DATA"].get("arm_point_count_threshold"):
+        if _config()["DATA"].get("arm_point_count_threshold", None):
             result = result and file['arm_point_count'] >= _config()["DATA"]["arm_point_count_threshold"]
 
         return result
