@@ -34,6 +34,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
     iter_time = utils.AverageMeter()
     data_time = utils.AverageMeter()
     am_dict = defaultdict(utils.AverageMeter)
+    conf_am_dict = defaultdict(utils.AverageMeter)
 
     train_iter = iter(train_data_loader)
     model.train()
@@ -61,11 +62,11 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             out = model(model_input)
 
             optimizer.zero_grad()
-            loss = criterion(out.F, poses)
+            loss = criterion(poses, out)
             loss.backward()
             optimizer.step()
 
-            dists = metrics.compute_pose_dist(poses, out.features)
+            dists = metrics.compute_pose_dist(poses, out)
             am_dict["loss"].update(loss.item(), len(poses))
             am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
             am_dict["dist_position"].update(
@@ -75,6 +76,11 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 statistics.mean(dists[2].tolist()), len(poses)
             )
             am_dict["angle_diff"].update(statistics.mean(dists[3].tolist()), len(poses))
+
+            if _config.STRUCTURE.compute_confidence:
+                conf_am_dict["position_confidence"].update(statistics.mean(out[:, 7].tolist()), len(out[:, 7]))
+                conf_am_dict["orientation_confidence"].update(statistics.mean(out[:, 8].tolist()), len(out[:, 8]))
+                conf_am_dict["confidence"].update(statistics.mean(out[:, 9].tolist()), len(out[:, 9]))
 
             current_iter = (epoch - 1) * len(train_data_loader) + i + 1
             max_iter = _config.TRAIN.epochs * len(train_data_loader)
@@ -113,6 +119,11 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
     for k in am_dict:
         # if k in visual_dict.keys():
         _tensorboard_writer.add_scalar(k + "_train", am_dict[k].avg, epoch)
+    if _config.STRUCTURE.compute_confidence:
+        _tensorboard_writer.add_scalars(
+            'confidence_train',
+            {k: v.avg for k, v in conf_am_dict.items()},
+            epoch)
     _tensorboard_writer.flush()
 
 
@@ -120,6 +131,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
     torch.cuda.empty_cache()
     _logger.info(f"> Evaluation at epoch: {epoch}")
     am_dict = defaultdict(utils.AverageMeter)
+    conf_am_dict = defaultdict(utils.AverageMeter)
 
     with torch.no_grad():
         val_iter = iter(val_data_loader)
@@ -134,9 +146,9 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     feats, coordinates=coords, device=_device, requires_grad=False
                 )
                 out = model(model_input)
-                loss = criterion(out.F, poses)
+                loss = criterion(poses, out)
 
-                dists = metrics.compute_pose_dist(poses, out.features)
+                dists = metrics.compute_pose_dist(poses, out)
                 am_dict["loss"].update(loss.item(), len(poses))
                 am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
                 am_dict["dist_position"].update(
@@ -148,12 +160,21 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                 am_dict["angle_diff"].update(
                     statistics.mean(dists[3].tolist()), len(poses)
                 )
+                if _config.STRUCTURE.compute_confidence:
+                    conf_am_dict["position_confidence"].update(statistics.mean(out[:, 7].tolist()), len(out[:, 7]))
+                    conf_am_dict["orientation_confidence"].update(statistics.mean(out[:, 8].tolist()), len(out[:, 8]))
+                    conf_am_dict["confidence"].update(statistics.mean(out[:, 9].tolist()), len(out[:, 9]))
+
 
                 _logger.info(
                     f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
                 )
             except Exception:
                 _logger.exception(str(batch))
+                print(str(batch))
+                print(str(e))
+                print(traceback.format_exc())
+                raise e
 
         _logger.info(
             f'epoch: {epoch}/{_config.TRAIN.epochs}, val loss: {am_dict["loss"].avg:.4f}, time: {time.time() - start_epoch}s'
@@ -162,6 +183,11 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         for k in am_dict:
             # if k in visual_dict.keys():
             _tensorboard_writer.add_scalar(k + "_val", am_dict[k].avg, epoch)
+        if _config.STRUCTURE.compute_confidence:
+            _tensorboard_writer.add_scalars(
+                'confidence_val',
+                {k: v.avg for k, v in conf_am_dict.items()},
+                epoch)
         _tensorboard_writer.flush()
 
 
@@ -186,7 +212,13 @@ if __name__ == "__main__":
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    from model.robotnet import RobotNet, get_criterion, LossType
+    from model.robotnet import get_criterion, LossType
+
+    if _config()["STRUCTURE"].get("encode_only", False):
+        from model.robotnet_encode import RobotNetEncode as RobotNet
+    else:
+        from model.robotnet import RobotNet
+
     from data.alivev2 import AliveV2Dataset, collate
 
     criterion = get_criterion(
@@ -194,7 +226,8 @@ if __name__ == "__main__":
         loss_type=LossType(_config()['TRAIN'].get('loss_type', 'mse')),
         reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
     )
-    model = RobotNet(in_channels=3, out_channels=7, D=3)
+    confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
+    model = RobotNet(in_channels=3, out_channels=10 if confidence_enabled else 7, D=3)
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":

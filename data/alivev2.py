@@ -89,6 +89,9 @@ class AliveV2Dataset(Dataset):
             rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
             rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
+        if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
+            rgb -= 0.5
+
         discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
             coordinates=xyz_origin,
             features=rgb,

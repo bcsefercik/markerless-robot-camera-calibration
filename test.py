@@ -49,9 +49,9 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
                 out = model(model_input)
 
-                loss = criterion(out.features, poses).item()
+                loss = criterion(out, poses).item()
 
-                metric_results = metrics.compute_pose_dist(poses, out.features)
+                metric_results = metrics.compute_pose_dist(poses, out)
                 (
                     dist,
                     dist_position,
@@ -64,14 +64,17 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     position = other_info["position"]
 
                     print(f"{position}/{fname}")
-
+                    preds_fi = [round(p, 4) for p in out[fi].tolist()]
                     result = {
                         "dist": round(float(dist[fi]), 4),
                         "dist_position": round(float(dist_position[fi]), 4),
                         "dist_orientation": round(float(dist_orientation[fi]), 4),
                         "angle_diff": round(float(angle_diff[fi]), 4),
-                        "preds": [round(p, 4) for p in out.features[fi].tolist()],
+                        "preds": preds_fi[:7],
                         "poses": [round(p, 4) for p in poses[fi].tolist()],
+                        "position_confidence": preds_fi[7],
+                        "orientation_confidence": preds_fi[8],
+                        "confidence": preds_fi[9]
                     }
                     overall_results["dist"].append(result["dist"])
                     overall_results["dist_position"].append(result["dist_position"])
@@ -89,6 +92,15 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     )
                     individual_results[position]["angle_diff"].append(
                         result["angle_diff"]
+                    )
+                    individual_results[position]["position_confidence"].append(
+                        result["position_confidence"]
+                    )
+                    individual_results[position]["orientation_confidence"].append(
+                        result["orientation_confidence"]
+                    )
+                    individual_results[position]["confidence"].append(
+                        result["confidence"]
                     )
                     results_json[f"{position}/{fname}"] = result
 
@@ -131,7 +143,12 @@ if __name__ == "__main__":
     from data.alivev2 import AliveV2Dataset, collate
 
     criterion = get_criterion(device=_device)
-    model = RobotNet(in_channels=3, out_channels=7, D=3)
+    compute_confidence = _config()['STRUCTURE'].get('compute_confidence', False)
+    model = RobotNet(
+        in_channels=3,
+        out_channels=10 if compute_confidence else 7,
+        D=3
+    )
 
     start_epoch = utils.checkpoint_restore(
         model,
@@ -142,13 +159,24 @@ if __name__ == "__main__":
     print("Loaded model.")
 
     dataset_name = ""
-    file_names = defaultdict(list)
-    file_names_path = _config()["DATA"].get("file_names")
-    if file_names_path:
-        dataset_name = utils.remove_suffix(file_names_path.split('/')[-1], '.json')
 
-        with open(file_names_path, "r") as fp:
+    file_names = defaultdict(list)
+    file_names_path = _config()['DATA'].get('file_names')
+    if file_names_path:
+        file_names_path = file_names_path.split(',')
+
+        dataset_name = utils.remove_suffix(file_names_path[0].split('/')[-1], '.json')
+
+        with open(file_names_path[0], 'r') as fp:
             file_names = json.load(fp)
+
+        for fnp in file_names_path[1:]:
+            with open(fnp, 'r') as fp:
+                new_file_names = json.load(fp)
+
+                for k in new_file_names:
+                    if k in file_names:
+                        file_names[k].extend(new_file_names[k])
 
     for dt in ("val", "test", "train"):
         print("Dataset:", dt)

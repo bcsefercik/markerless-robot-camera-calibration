@@ -1,11 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp10_alivev2+3_20000.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp10_alivev2+3_20000'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp12_alivev2+3.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp12_alivev2+3'
+
+# exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp10_alivev2+3_20000'
+# log_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp10_alivev2+3_20000.log'
 
 GENERAL:
-  save_freq: 4
+  save_freq: 16
 
 DATA:
-  batch_size: 6
+  batch_size: 12
   data_type: null
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
@@ -17,9 +20,12 @@ DATA:
 
 STRUCTURE:
   backbone: 'minkunet'
+  encode_only: true
+
+  # compute_confidence: false
 
 TEST:
-  batch_size: 3
+  batch_size: 2
   split: test
-  workers: 3
+  workers: 1
   checkpoint: default_cos2_v2_18d-000000052.pth

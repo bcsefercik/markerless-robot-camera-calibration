@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp8_cos2_aliveunet_v2_gt-seg_18d.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v2_gt-seg_18d'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp8_cos2_aliveunet_v1_gt-seg_18d.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v1_gt-seg_18d'
 result_path: 'results6_e2e_p2.txt'
 
 GENERAL:
@@ -8,14 +8,14 @@ GENERAL:
   seed: 1
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/alivev2'
+  folder: '/kuacc/users/bsefercik/dataset/alivev1'
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
-  # file_names: null
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  file_names: null
 
   workers: 4
-  batch_size: 5 # v100->26, t4->8 mink18d
+  batch_size: 6 # v100->26, t4->8 mink18d
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -28,7 +28,7 @@ DATA:
   pose_dim: 7
 
   test_split: 'test'
-  data_type: null  #'seg'  # ['seg', 'gt_seg', null, gt_bbox]
+  data_type: "gt_seg"  #'seg'  # ['seg', 'gt_seg', null]
 
 STRUCTURE:
   m: 32 # 16 or 32
@@ -38,12 +38,6 @@ STRUCTURE:
 
   bottleneck: True
   backbone: 'minkunet'
-
-  compute_confidence: true
-  position_threshold : 0.02  # m
-  position_ignore_threshold : 0.04  # m
-  angle_diff_threshold: 0.24  # rad
-  angle_diff_ignore_threshold: 0.4  # rad
 
 TRAIN:
   fixed_modules: []
@@ -56,6 +50,7 @@ TRAIN:
   multiplier: 0.8
   step_epoch: 16
 
+  data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
   loss_type: "cos2"
   loss_reduction: "sum"
 
@@ -64,7 +59,7 @@ TEST:
   split: test
   workers: 2
   seed: 13
-  epoch: 124
-  checkpoint: "default_cos2_v2_18d-000000124.pth"
+  epoch: 232
+  checkpoint: "default_cos2_v1_18d-000000232.pth"
   print_precision: 4
 
