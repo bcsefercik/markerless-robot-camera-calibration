@@ -7,6 +7,7 @@ import torch.nn as nn
 import MinkowskiEngine as ME
 
 from utils.quaternion import qeuler
+from utils.metrics import compute_pose_dist
 from utils import config
 
 
@@ -47,11 +48,15 @@ class RobotNet(UNet):
             out_channels
         )
 
+
     def forward(self, x):  # WXYZ
         output = super().forward(x)
         output = self.output_layer(output)
         output = self.global_pool(output)
-        return self.pose_regression(output)
+        output = self.pose_regression(output)
+        output = output.features
+        output[:, 7:] = torch.sigmoid(output[:, 7:])  # confidences
+        return output
 
 
 class LossType(Enum):
@@ -64,6 +69,9 @@ class LossType(Enum):
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     regression_criterion = nn.MSELoss(reduction=reduction).to(device)
     cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
+    confidence_criterion = nn.BCELoss(reduction=reduction)
+
+    confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
 
     gamma = 50
     gamma2 = 1
@@ -89,7 +97,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
     def compute_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        loss_quaternion = compute_angle_loss(y[:, 3:], y_pred[:, 3:])
+        loss_quaternion = compute_angle_loss(y[:, 3:7], y_pred[:, 3:7])
 
         loss = gamma * loss_coor + gamma2 * loss_quaternion
 
@@ -98,12 +106,37 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     def compute_cos2_loss(y, y_pred, reduction=reduction):
         gamma_cos = 2
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1.0 - cos_regression_criterion(y, y_pred)
+        cos_dist = 1.0 - cos_regression_criterion(y[:, :7], y_pred[:, :7])
         cos_dist *= gamma_cos
+
+        loss_confidence = 0
+
+        if confidence_enabled:
+            _, dist_position, _, angle_diff = compute_pose_dist(y, y_pred[:, :7])
+            position_confidence_idx = (dist_position < _config.STRUCTURE.position_threshold) + (dist_position > _config.STRUCTURE.position_ignore_threshold)
+            position_confidence = (dist_position < _config.STRUCTURE.position_threshold).float()
+            loss_confidence += confidence_criterion(
+                y_pred[:, 7][position_confidence_idx],
+                position_confidence[position_confidence_idx]
+            )
+
+            orientation_confidence_idx = (angle_diff < _config.STRUCTURE.angle_diff_threshold) + (angle_diff > _config.STRUCTURE.angle_diff_ignore_threshold)
+            orientation_confidence = (angle_diff < _config.STRUCTURE.angle_diff_threshold).float()
+            loss_confidence += confidence_criterion(
+                y_pred[:, 8][orientation_confidence_idx],
+                orientation_confidence[orientation_confidence_idx]
+            )
+
+            overall_confidence_idx = position_confidence_idx * orientation_confidence_idx
+            overall_confidence = position_confidence * orientation_confidence
+            loss_confidence += confidence_criterion(
+                y_pred[:, 9][overall_confidence_idx],
+                overall_confidence[overall_confidence_idx]
+            )
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
-        return reduction_func(cos_dist) + loss_coor
+        return reduction_func(cos_dist) + loss_coor + loss_confidence
 
     if loss_type == LossType.COS:
         return compute_cos_loss
