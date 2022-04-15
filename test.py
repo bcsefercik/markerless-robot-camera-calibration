@@ -139,7 +139,13 @@ if __name__ == "__main__":
     if _use_cuda:
         torch.cuda.empty_cache()
 
-    from model.robotnet import RobotNet, get_criterion
+    from model.robotnet import get_criterion
+
+    if _config()["STRUCTURE"].get("encode_only", False):
+        from model.robotnet_encode import RobotNetEncode as RobotNet
+    else:
+        from model.robotnet import RobotNet
+
     from data.alivev2 import AliveV2Dataset, collate
 
     criterion = get_criterion(device=_device)

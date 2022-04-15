@@ -122,7 +122,7 @@ class MinkUNetBase(ResNetBase):
 
         self.relu = ME.MinkowskiReLU(inplace=True)
 
-    def forward(self, x):
+    def forward_except_final(self, x):
         out = self.conv0p1s1(x)
         out = self.bn0(out)
         out_p1 = self.relu(out)
@@ -180,9 +180,11 @@ class MinkUNetBase(ResNetBase):
         out = ME.cat(out, out_p1)
         out = self.block8(out)
 
-        # return self.final(out)
         return out
 
+    def forward(self, x):
+        out = self.forward_except_final(x)
+        return self.final(out)
 
 class MinkUNet14(MinkUNetBase):
     BLOCK = BasicBlock

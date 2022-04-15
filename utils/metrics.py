@@ -1,5 +1,5 @@
 import torch
-
+import ipdb
 
 EPS = 1e-7
 
@@ -7,11 +7,11 @@ EPS = 1e-7
 def compute_pose_dist(gt, pred):
     with torch.no_grad():
         position = gt[:, :3]
-        orientation = gt[:, 3:]
+        orientation = gt[:, 3:7]
         position_pred = pred[:, :3]
-        orientation_pred = pred[:, 3:]
+        orientation_pred = pred[:, 3:7]
 
-        dist = torch.norm(gt - pred, dim=1)
+        dist = torch.norm(gt - pred[:, :7], dim=1)
         dist_position = torch.norm(position - position_pred, dim=1)
         dist_orientation = torch.norm(orientation - orientation_pred, dim=1)
 

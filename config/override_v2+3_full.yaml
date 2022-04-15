@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp14_alivev2+3.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp14_alivev2+3'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp14_alivev2+3_full.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp14_alivev2+3_full'
 
 # exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp10_alivev2+3_20000'
 # log_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp10_alivev2+3_20000.log'
@@ -8,7 +8,7 @@ GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 12
+  batch_size: 6
   data_type: null
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
@@ -20,7 +20,7 @@ DATA:
 
 STRUCTURE:
   backbone: 'minkunet'
-  encode_only: true
+  encode_only: false
 
   # compute_confidence: false
 

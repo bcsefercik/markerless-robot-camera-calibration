@@ -33,14 +33,21 @@ class RobotNetEncode(UNet):
 
     def __init__(self, in_channels, out_channels, D=3):
         UNet.__init__(self, in_channels, out_channels, D)
-        # self.global_pool = ME.MinkowskiGlobalAvgPooling()
-        self.global_pool = ME.MinkowskiGlobalMaxPooling()
+        self.global_pool = ME.MinkowskiGlobalAvgPooling()
+        # self.global_pool = ME.MinkowskiGlobalMaxPooling()
         self.leaky_relu = ME.MinkowskiLeakyReLU(inplace=False)
         self.final_bn = ME.MinkowskiBatchNorm(out_channels)
 
-        self.pose_regression = ME.MinkowskiOps.MinkowskiLinear(
-            self.PLANES[3] * self.BLOCK.expansion,
-            out_channels
+        self.pose_regression = nn.Sequential(
+            ME.MinkowskiOps.MinkowskiLinear(
+                self.PLANES[3] * self.BLOCK.expansion,
+                2048
+            ),
+            ME.MinkowskiReLU(),
+            ME.MinkowskiOps.MinkowskiLinear(
+                2048,
+                out_channels
+            )
         )
 
     def forward(self, x):  # WXYZ

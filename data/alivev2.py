@@ -18,7 +18,7 @@ _logger = logger.Logger().get()
 
 class AliveV2Dataset(Dataset):
     def __init__(self, set_name="train", augment=False, file_names=list()):
-        self.dataset = _config.DATA.folder
+        self.dataset = _config()["DATA"].get("folder", "")
         self.dataset = os.path.join(self.dataset, set_name)
 
         self.filename_suffix = _config.DATA.suffix
@@ -152,13 +152,18 @@ def collate(data):
 
     coords_batch = ME.utils.batched_coordinates(coords)
     feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
-    labels_batch = torch.from_numpy(np.concatenate(labels, 0)).to(dtype=torch.int32)
+    labels_batch = torch.from_numpy(np.concatenate(labels, 0)).long()
     poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
 
+    start_offset = 0
     for i, o in enumerate(others):
         if not o.get('position'):
             others[i]["position"] = o["filename"].split("/")[-3]
         others[i]["filename"] = o["filename"].split("/")[-1]
+
+        end_offset = start_offset + len(labels[i])
+        others[i]["offset"] = (start_offset, end_offset)
+        start_offset = end_offset
 
     # ipdb.set_trace()
 

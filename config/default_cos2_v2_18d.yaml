@@ -40,8 +40,8 @@ STRUCTURE:
   backbone: 'minkunet'
 
   compute_confidence: true
-  position_threshold : 0.02  # m
-  position_ignore_threshold : 0.04  # m
+  position_threshold : 0.03  # m
+  position_ignore_threshold : 0.05  # m
   angle_diff_threshold: 0.24  # rad
   angle_diff_ignore_threshold: 0.4  # rad
 

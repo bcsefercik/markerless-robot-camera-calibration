@@ -43,14 +43,25 @@ class RobotNet(UNet):
             self.relu
         )
 
-        self.pose_regression = ME.MinkowskiOps.MinkowskiLinear(
-            self.PLANES[-1] * self.BLOCK.expansion,
-            out_channels
+        # self.pose_regression = ME.MinkowskiOps.MinkowskiLinear(
+        #     self.PLANES[-1] * self.BLOCK.expansion,
+        #     out_channels
+        # )
+
+        self.pose_regression = nn.Sequential(
+            ME.MinkowskiOps.MinkowskiLinear(
+                self.PLANES[-1] * self.BLOCK.expansion,
+                2048
+            ),
+            ME.MinkowskiReLU(),
+            ME.MinkowskiOps.MinkowskiLinear(
+                2048,
+                out_channels
+            )
         )
 
-
     def forward(self, x):  # WXYZ
-        output = super().forward(x)
+        output = self.forward_except_final(x)
         output = self.output_layer(output)
         output = self.global_pool(output)
         output = self.pose_regression(output)
