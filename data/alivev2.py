@@ -1,3 +1,4 @@
+import json
 import os
 import pickle
 import glob
@@ -10,6 +11,7 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
+from utils.data import get_roi_mask
 
 
 _config = config.Config()
@@ -47,6 +49,15 @@ class AliveV2Dataset(Dataset):
         self.file_names = file_names
         self.load_file_names()
 
+        self.roi = None
+
+        if _config()['DATA'].get('roi') is not None:
+            self.roi = dict()
+            roi_files = _config()['DATA']['roi']
+            for rf in roi_files:
+                with open(rf, 'r') as fp:
+                    self.roi.update(json.load(fp))
+
     def __getitem__(self, i):
         # TODO: extract instance, semantic here
         (
@@ -58,14 +69,25 @@ class AliveV2Dataset(Dataset):
         xyz_origin = xyz_origin.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
+
+        other = {"filename": file_name}
+        if isinstance(self.file_names[i], dict):
+            other.update(self.file_names[i])
+
+        if self.roi is not None:
+            instance_roi = get_roi_mask(
+                xyz_origin,
+                **self.roi[other['position']]
+            )
+            xyz_origin = xyz_origin[instance_roi]
+            rgb = rgb[instance_roi]
+            labels = labels[instance_roi]
+
         arm_idx = labels == 1
         labels = np.reshape(labels, (-1, 1))
         pose = np.array(pose, dtype=np.float32)  # xyzw
         pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
         pose = np.reshape(pose, (1, -1))
-        other = {"filename": file_name}
-        if isinstance(self.file_names[i], dict):
-            other.update(self.file_names[i])
 
         if _config.DATA.data_type == "gt_seg":
             xyz_origin = xyz_origin[arm_idx]
