@@ -17,7 +17,7 @@ _logger = logger.Logger().get()
 
 
 class AliveV2Dataset(Dataset):
-    def __init__(self, set_name="train", augment=False, file_names=list()):
+    def __init__(self, set_name="train", augment=False, file_names=list(), quantization_enabled=True):
         self.dataset = _config()["DATA"].get("folder", "")
         self.dataset = os.path.join(self.dataset, set_name)
 
@@ -34,6 +34,7 @@ class AliveV2Dataset(Dataset):
         self.quantization_size = _config()["DATA"].get(
             "quantization_size", 1 / _config.DATA.scale
         )
+        self.quantization_enabled = quantization_enabled
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -92,13 +93,16 @@ class AliveV2Dataset(Dataset):
         if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
             rgb -= 0.5
 
-        discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
-            coordinates=xyz_origin,
-            features=rgb,
-            labels=labels,
-            quantization_size=self.quantization_size,
-            ignore_label=-100,
-        )
+        if self.quantization_enabled:
+            discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
+                coordinates=xyz_origin,
+                features=rgb,
+                labels=labels,
+                quantization_size=self.quantization_size,
+                ignore_label=-100,
+            )
+        else:
+            discrete_coords, unique_feats, unique_labels = xyz_origin, rgb, labels
 
         # ipdb.set_trace()
 
@@ -151,6 +155,31 @@ def collate(data):
     )  # same size as getitem's return's
 
     coords_batch = ME.utils.batched_coordinates(coords)
+    feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
+    labels_batch = torch.from_numpy(np.concatenate(labels, 0)).long()
+    poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
+
+    start_offset = 0
+    for i, o in enumerate(others):
+        if not o.get('position'):
+            others[i]["position"] = o["filename"].split("/")[-3]
+        others[i]["filename"] = o["filename"].split("/")[-1]
+
+        end_offset = start_offset + len(labels[i])
+        others[i]["offset"] = (start_offset, end_offset)
+        start_offset = end_offset
+
+    # ipdb.set_trace()
+
+    return coords_batch, feats_batch, labels_batch, poses_batch, others
+
+
+def collate_non_quantized(data):
+    coords, feats, labels, poses, others = list(
+        zip(*data)
+    )  # same size as getitem's return's
+
+    coords_batch = torch.from_numpy(np.concatenate(coords, 0)).to(dtype=torch.float32)
     feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
     labels_batch = torch.from_numpy(np.concatenate(labels, 0)).long()
     poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
