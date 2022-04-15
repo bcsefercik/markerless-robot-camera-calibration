@@ -38,7 +38,7 @@ def euler_from_quaternion(x, y, z, w):
 
 
 if __name__ == "__main__":
-    position = "p1h3l1"
+    position = "p2_1"
 
     (
         points,
