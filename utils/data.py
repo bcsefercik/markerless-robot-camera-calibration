@@ -1,4 +1,7 @@
 import torch
+import numpy as np
+
+import ipdb
 
 
 def normalize_color(
@@ -15,3 +18,16 @@ def normalize_color(
         color /= 255
     color -= 0.5
     return color.float()
+
+
+def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-500, max_z=500):
+    roi_mask = points[:, 0] > -500
+
+    roi_mask = np.logical_and(points[:, 0] < max_x, roi_mask)  # x
+    roi_mask = np.logical_and(points[:, 0] > min_x, roi_mask)
+    roi_mask = np.logical_and(points[:, 1] < max_y, roi_mask)  # y
+    roi_mask = np.logical_and(points[:, 1] > min_y, roi_mask)
+    roi_mask = np.logical_and(points[:, 2] < max_z, roi_mask)  # z
+    roi_mask = np.logical_and(points[:, 2] > min_z, roi_mask)
+
+    return roi_mask

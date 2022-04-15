@@ -2,14 +2,17 @@ import sys
 import os
 import copy
 import math
+import json
 
 import ipdb
+import sklearn.preprocessing as preprocessing
 
 import numpy as np
 import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
+from utils.data import get_roi_mask
 
 def euler_from_quaternion(x, y, z, w):
     """
@@ -33,7 +36,10 @@ def euler_from_quaternion(x, y, z, w):
 
     return roll_x, pitch_y, yaw_z # in radians
 
+
 if __name__ == "__main__":
+    position = "p1h3l1"
+
     (
         points,
         rgb,
@@ -42,17 +48,20 @@ if __name__ == "__main__":
         pose,
     ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
+    with open(sys.argv[2], 'r') as fp:
+        limits = json.load(fp)
+
     pred = [0] * 7
 
-    pred = [
-        -0.2567,
-        -0.0931,
-        0.779,
-        0.5247,
-        -0.3852,
-        0.3667,
-        0.3976
-    ]
+    # pred = [
+    #     -0.0879,
+    #     0.0035,
+    #     0.7611,
+    #     0.516,
+    #     -0.2902,
+    #     0.247,
+    #     0.4196
+    # ]
     arm_idx = labels == 1
 
     print('# of points:', len(rgb))
@@ -97,20 +106,15 @@ if __name__ == "__main__":
     kinect_frame.rotate(frame.get_rotation_matrix_from_quaternion([0] * 4))
 
     # obbox.translate(ee_position).rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
-
-    roi_mask = points[:, 0] > -500
-    # roi_mask = np.logical_and(points <= max_point, points >= min_point).sum(axis=1) == 3
-
-    # p2_1
-    roi_mask = np.logical_and(points[:, 0] < 0.39, roi_mask)  # x
-    roi_mask = np.logical_and(points[:, 0] > -0.52, roi_mask)
-    roi_mask = np.logical_and(points[:, 1] < 0.27, roi_mask)  # y
-    # # # roi_mask = np.logical_and(points[:, 1] > -0.02, roi_mask)
-    roi_mask = np.logical_and(points[:, 2] < 1.15, roi_mask)  # z
-    roi_mask = np.logical_and(points[:, 2] > 0.3, roi_mask)
+    roi_mask = get_roi_mask(points, **limits[position])
 
     points = points[roi_mask]
     rgb = rgb[roi_mask]
+    if rgb.min() < 0:
+        # WRONG approach, tries to shit from data prep code.
+        rgb[:, 0] = preprocessing.minmax_scale(rgb[:, 0], feature_range=(0, 1), axis=0)
+        rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
+        rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
     def switch_to_normal(vis):
         pcd.colors = o3d.utility.Vector3dVector(rgb)
@@ -119,6 +123,8 @@ if __name__ == "__main__":
 
     pcd.points = o3d.utility.Vector3dVector(points)
     pcd.colors = o3d.utility.Vector3dVector(rgb)
+
+    print('# of masked points:', len(rgb))
 
     key_to_callback = {ord("K"): switch_to_normal}
     o3d.visualization.draw_geometries_with_key_callbacks(
