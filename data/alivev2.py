@@ -58,6 +58,13 @@ class AliveV2Dataset(Dataset):
                 with open(rf, 'r') as fp:
                     self.roi.update(json.load(fp))
 
+            for k, v in self.roi.items():
+                for kk in v:
+                    if kk.startswith('max'):
+                        self.roi[k][kk] += _config()['DATA'].get('roi_offset', 0)
+                    else:
+                        self.roi[k][kk] -= _config()['DATA'].get('roi_offset', 0)
+
     def __getitem__(self, i):
         # TODO: extract instance, semantic here
         (
