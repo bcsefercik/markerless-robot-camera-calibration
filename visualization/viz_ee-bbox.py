@@ -91,6 +91,7 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     roi_mask = get_roi_mask(points, **limits[position])
+    # roi_mask = get_roi_mask(points)
 
     points = points[roi_mask]
     rgb = rgb[roi_mask]
@@ -100,16 +101,16 @@ if __name__ == "__main__":
         rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
         rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
-    obbox_points = np.asarray(obbox.get_box_points())
-    obbox_points_min = obbox_points.min(axis=0)
-    obbox_points_max = obbox_points.max(axis=0)
+    # obbox_points = np.asarray(obbox.get_box_points())
+    # obbox_points_min = obbox_points.min(axis=0)
+    # obbox_points_max = obbox_points.max(axis=0)
 
-    bbox2 = o3d.geometry.AxisAlignedBoundingBox(
-        obbox_points_min.reshape((3, 1)),
-        obbox_points_max.reshape((3, 1)),
-    )
-    obbox2 = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox2)
-    obbox2.color = [0, 0, 1]
+    # bbox2 = o3d.geometry.AxisAlignedBoundingBox(
+    #     obbox_points_min.reshape((3, 1)),
+    #     obbox_points_max.reshape((3, 1)),
+    # )
+    # obbox2 = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox2)
+    # obbox2.color = [0, 0, 1]
     # ipdb.set_trace()
 
     def switch_to_normal(vis):
@@ -123,8 +124,8 @@ if __name__ == "__main__":
     obbox_mask = obbox.get_point_indices_within_bounding_box(pcd.points)
     # ipdb.set_trace()
 
-    pcd.points = o3d.utility.Vector3dVector(points[obbox_mask])
-    pcd.colors = o3d.utility.Vector3dVector(rgb[obbox_mask])
+    # pcd.points = o3d.utility.Vector3dVector(points[obbox_mask])
+    # pcd.colors = o3d.utility.Vector3dVector(rgb[obbox_mask])
     # pcd = pcd.crop(obbox)
     # ipdb.set_trace()
 
@@ -133,5 +134,5 @@ if __name__ == "__main__":
 
     key_to_callback = {ord("K"): switch_to_normal}
     o3d.visualization.draw_geometries_with_key_callbacks(
-        [pcd, ee_frame, kinect_frame, obbox], key_to_callback
+        [pcd, kinect_frame, ee_frame, obbox], key_to_callback
     )
