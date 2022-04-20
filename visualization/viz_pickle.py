@@ -37,6 +37,22 @@ def euler_from_quaternion(x, y, z, w):
     return roll_x, pitch_y, yaw_z # in radians
 
 
+def get_frame_from_pose(base_frame, pose, switch_w=True):
+    frame = copy.deepcopy(base_frame)
+
+    if not isinstance(pose, list):
+        pose = pose.tolist()
+
+    ee_position = pose[:3]
+    ee_orientation = pose[3:]
+    if switch_w:
+        ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
+    ee_frame = frame.translate(ee_position)
+    ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+
+    return ee_frame
+
+
 if __name__ == "__main__":
     position = "p2_1"
 
@@ -53,15 +69,15 @@ if __name__ == "__main__":
 
     pred = [0] * 7
 
-    # pred = [
-    #     -0.0879,
-    #     0.0035,
-    #     0.7611,
-    #     0.516,
-    #     -0.2902,
-    #     0.247,
-    #     0.4196
-    # ]
+    pred = [
+        -0.0879,
+        0.0035,
+        0.7611,
+        0.516,
+        -0.2902,
+        0.247,
+        0.4196
+    ]
     arm_idx = labels == 1
 
     print('# of points:', len(rgb))
@@ -92,18 +108,10 @@ if __name__ == "__main__":
     pcd = o3d.geometry.PointCloud()
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
-    ee_position = pose[:3]
-    ee_orientation = pose[3:].tolist()
-    ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
-    ee_frame = copy.deepcopy(frame).translate(ee_position)
-    ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
-    ee_position_pred = pred[:3]
-    ee_orientation_pred = pred[3:]
-    # ee_orientation_pred = ee_orientation_pred[-1:] + ee_orientation_pred[:-1]
-    ee_frame_pred = copy.deepcopy(frame).translate(ee_position_pred)
-    ee_frame_pred.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation_pred))
-    kinect_frame = copy.deepcopy(frame).translate([0, 0, 0])
-    kinect_frame.rotate(frame.get_rotation_matrix_from_quaternion([0] * 4))
+
+    ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
+    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False)
+    kinect_frame = get_frame_from_pose(frame, [0] * 7)
 
     # obbox.translate(ee_position).rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
     roi_mask = get_roi_mask(points, **limits[position])
