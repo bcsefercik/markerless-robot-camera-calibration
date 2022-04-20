@@ -10,12 +10,23 @@ import utils.helpers as helpers
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config(metaclass=SingletonMeta):
-    def __init__(self, path="config/default.yaml", overriding_config=dict()):
+    def __init__(
+        self,
+        path=os.path.join(
+                os.path.dirname(BASE_PATH),
+                'config',
+                'default.yaml'
+            ),
+        overriding_config=dict()
+    ):
+
         self.config = {
             'config': path,
             'log_path': os.path.join(
                 os.path.dirname(BASE_PATH),
+                'log',
                 'log.log'
             )
         }

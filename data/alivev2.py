@@ -37,6 +37,7 @@ class AliveV2Dataset(Dataset):
             "quantization_size", 1 / _config.DATA.scale
         )
         self.quantization_enabled = quantization_enabled
+        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -81,6 +82,11 @@ class AliveV2Dataset(Dataset):
         if isinstance(self.file_names[i], dict):
             other.update(self.file_names[i])
 
+        if self.ee_segmentation_enabled:
+            with open(other['filepath'].replace('.pickle', '_eemask.pickle'), 'rb') as fp:
+                eemask = pickle.load(fp)
+            labels[eemask] = 2
+
         if self.roi is not None:
             instance_roi = get_roi_mask(
                 xyz_origin,
@@ -91,6 +97,9 @@ class AliveV2Dataset(Dataset):
             labels = labels[instance_roi]
 
         arm_idx = labels == 1
+        if self.ee_segmentation_enabled:
+            arm_idx += (labels == 2)
+
         labels = np.reshape(labels, (-1, 1))
         pose = np.array(pose, dtype=np.float32)  # xyzw
         pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
@@ -128,30 +137,30 @@ class AliveV2Dataset(Dataset):
                 features=rgb,
                 labels=labels,
                 quantization_size=self.quantization_size,
-                ignore_label=-100,
+                ignore_label=_config.DATA.ignore_label,
             )
         else:
             discrete_coords, unique_feats, unique_labels = xyz_origin, rgb, labels
-
-        # ipdb.set_trace()
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 
     def __len__(self):
         return len(self.file_names)
 
-    def filter_file(self, file):
+    def filter_file(file):
         filepath = file["filepath"] if isinstance(file, dict) else file
         filename = filepath.split("/")[-1]
+
         result = True
 
-        result = result and filename[-16::] != "_semantic.pickle"
+        result = result and (not filename.endswith("_semantic.pickle"))
+        result = result and (not filename.endswith("_eemask.pickle"))
         result = result and "dark" not in filename
 
         if _config.DATA.prefix:
             result = result and filename.startswith(_config.DATA.prefix)
 
-        if _config()["DATA"].get("arm_point_count_threshold", None):
+        if _config().get("DATA", dict()).get("arm_point_count_threshold"):
             result = result and file['arm_point_count'] >= _config()["DATA"]["arm_point_count_threshold"]
 
         return result
@@ -164,7 +173,7 @@ class AliveV2Dataset(Dataset):
         self.file_names = [
             fn
             for fn in self.file_names
-            if self.filter_file(fn)
+            if AliveV2Dataset.filter_file(fn)
         ]
         self.file_names.sort(key=lambda fn: fn["filepath"] if isinstance(fn, dict) else fn )
 

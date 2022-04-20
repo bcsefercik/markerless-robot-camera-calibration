@@ -38,6 +38,13 @@ class RobotNetEncode(UNet):
         self.leaky_relu = ME.MinkowskiLeakyReLU(inplace=False)
         self.final_bn = ME.MinkowskiBatchNorm(out_channels)
 
+        # self.pose_regression = nn.Sequential(
+        #     ME.MinkowskiOps.MinkowskiLinear(
+        #         self.PLANES[3] * self.BLOCK.expansion,
+        #         out_channels
+        #     )
+        # )
+
         self.pose_regression = nn.Sequential(
             ME.MinkowskiOps.MinkowskiLinear(
                 self.PLANES[3] * self.BLOCK.expansion,
@@ -49,6 +56,23 @@ class RobotNetEncode(UNet):
                 out_channels
             )
         )
+
+        # self.pose_regression = nn.Sequential(
+        #     ME.MinkowskiOps.MinkowskiLinear(
+        #         self.PLANES[3] * self.BLOCK.expansion,
+        #         2048
+        #     ),
+        #     ME.MinkowskiReLU(),
+        #     ME.MinkowskiOps.MinkowskiLinear(
+        #         2048,
+        #         2048
+        #     ),
+        #     ME.MinkowskiReLU(),
+        #     ME.MinkowskiOps.MinkowskiLinear(
+        #         2048,
+        #         out_channels
+        #     )
+        # )
 
     def forward(self, x):  # WXYZ
         out = self.conv0p1s1(x)

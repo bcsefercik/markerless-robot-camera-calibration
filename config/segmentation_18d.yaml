@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp13_segmentation_18d.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp13_segmentation_18d'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp18_segmentation_roi_wee_18d.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp18_segmentation_roi_wee_18d'
 
 GENERAL:
   save_freq: 4
@@ -13,7 +13,7 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 6 # v100->26, t4->8 mink18d
+  batch_size: 16
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -21,12 +21,19 @@ DATA:
   mode: 4  # 4: mean
   input_channel: 3 # rgb or gray
 
-  classes: 2
+  classes: 3  # 0: bg, 1: robot arm, 2: end-effector
   ignore_label: -100
   pose_dim: 7
 
   test_split: 'test'
   data_type: null  #'seg'  # ['seg', 'gt_seg', null]
+
+  ee_segmentation_enabled: true
+
+  roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
+          '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
+  # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  roi_offset: 0.13  # m
 
 STRUCTURE:
   m: 32 # 16 or 32
