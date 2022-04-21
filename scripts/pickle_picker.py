@@ -15,7 +15,8 @@ import ipdb
 
 
 def fix_filepath(filepath):
-    return filepath.replace('/kuacc/users/bsefercik/dataset/', '/Users/bugra.sefercik/workspace/datasets/')
+    # return filepath.replace('/kuacc/users/bsefercik/dataset/', '/Users/bugra.sefercik/workspace/datasets/')
+    return filepath.replace('/datasets/alive_ee/', '/Users/bugra.sefercik/workspace/datasets/')
 
 
 def save_file(filename, data):
@@ -43,6 +44,7 @@ if __name__ == "__main__":
     }
 
     new_fields = ('position_eligibility', 'orientation_eligibility')
+    bad_camera_positions = ('p2h1l1', 'p2h1l2', 'p2h2l1', 'p2h2l2', 'p1h3l1', 'p1h3l2', 'p1h2l1', 'p1h2l2', 'p2h3l1', 'p2h3l2')
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
     for s in splits:
@@ -50,8 +52,12 @@ if __name__ == "__main__":
             try:
                 print(ins['filepath'])
 
-                if all(ins.get(k, False) for k in new_fields):
+                if sum(1 for k in new_fields if k in ins) == len(new_fields):
                     print('Skipped')
+                    continue
+
+                if ins['position'] in bad_camera_positions:
+                    print('Bad position, Skipped')
                     continue
 
                 filepath = fix_filepath(ins['filepath'])
@@ -63,6 +69,8 @@ if __name__ == "__main__":
                     instance_label,
                     pose,
                 ), semantic_pred = file_utils.load_alive_file(filepath)
+
+                splits[s][i]['arm_point_count'] = int((labels == 1).sum())
 
                 if rgb.min() < 0:
                     # WRONG approach, tries to shit from data prep code.
@@ -94,6 +102,7 @@ if __name__ == "__main__":
 
                 if i % args.save_freq == 0:
                     save_file(args.splits, splits)
+                    print(f'{s}: %{round((i/len(splits[s])) * 100,1 )} done.')
             except KeyboardInterrupt:
                 save_file(args.splits, splits)
                 raise KeyboardInterrupt
