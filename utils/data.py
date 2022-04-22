@@ -20,7 +20,14 @@ def normalize_color(
     return color.float()
 
 
-def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-500, max_z=500):
+def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-500, max_z=500, offset=0.0):
+    max_x += offset
+    max_y += offset
+    max_z += offset
+    min_x -= offset
+    min_y -= offset
+    min_z -= offset
+
     roi_mask = points[:, 0] > -500
 
     roi_mask = np.logical_and(points[:, 0] < max_x, roi_mask)  # x
