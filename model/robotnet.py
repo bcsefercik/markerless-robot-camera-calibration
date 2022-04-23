@@ -132,13 +132,21 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         return loss
 
     def compute_cos2_loss(y, y_pred, reduction=reduction):
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
         gamma_cos = 2
-        loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1.0 - cos_regression_criterion(y[:, :7], y_pred[:, :7])
-        cos_dist *= gamma_cos
+
+        loss_coor = 0
+        if not _config()['STRUCTURE'].get('disable_position', False):
+            loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
+
+        cos_dist = 0
+        if not _config()['STRUCTURE'].get('disable_orientation', False):
+            cos_dist = 1.0 - cos_regression_criterion(y[:, :7], y_pred[:, :7])
+            cos_dist *= gamma_cos
+            cos_dist = reduction_func(cos_dist)
 
         loss_confidence = 0
-
         if confidence_enabled:
             _, dist_position, _, angle_diff = compute_pose_dist(y, y_pred[:, :7])
             position_confidence_idx = (dist_position < _config.STRUCTURE.position_threshold) + (dist_position > _config.STRUCTURE.position_ignore_threshold)
@@ -162,9 +170,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
                 overall_confidence[overall_confidence_idx]
             )
 
-        reduction_func = torch.sum if reduction == "sum" else torch.mean
-
-        return reduction_func(cos_dist) + loss_coor + loss_confidence
+        return cos_dist + loss_coor + loss_confidence
 
     if loss_type == LossType.COS:
         return compute_cos_loss

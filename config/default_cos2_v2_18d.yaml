@@ -30,6 +30,9 @@ DATA:
   test_split: 'test'
   data_type: null  #'seg'  # ['seg', 'gt_seg', null, gt_bbox]
 
+  position_eligibility_enabled: true
+  orientation_eligibility_enabled: true
+
 STRUCTURE:
   m: 32 # 16 or 32
   block_reps: 2

@@ -1,0 +1,35 @@
+# log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp16_alivev2+3_3layers_avgpool.log
+# exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp16_alivev2+3_3layers_avgpool'
+
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp16_alivev2+3_maxpooling.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp16_alivev2+3_maxpooling'
+
+GENERAL:
+  save_freq: 16
+
+DATA:
+  batch_size: 200
+  data_type: null
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
+
+  # arm_point_count_threshold: 20000
+
+  roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
+          '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
+  # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  roi_offset: 0.13  # m
+
+STRUCTURE:
+  backbone: 'minkunet'
+  encode_only: true
+
+  # compute_confidence: false
+
+TEST:
+  batch_size: 100
+  split: test
+  workers: 3
+  checkpoint: default_cos2_v2_18d-000000384.pth

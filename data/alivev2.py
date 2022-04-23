@@ -160,6 +160,12 @@ class AliveV2Dataset(Dataset):
         if _config.DATA.prefix:
             result = result and filename.startswith(_config.DATA.prefix)
 
+        if _config().get("DATA", dict()).get("position_eligibility_enabled"):
+            result = result and file.get('position_eligibility', False)
+
+        if _config().get("DATA", dict()).get("orientation_eligibility_enabled"):
+            result = result and file.get('orientation_eligibility', False)
+
         if _config().get("DATA", dict()).get("arm_point_count_threshold"):
             result = result and file['arm_point_count'] >= _config()["DATA"]["arm_point_count_threshold"]
 
