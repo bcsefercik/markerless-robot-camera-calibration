@@ -15,8 +15,8 @@ import ipdb
 
 
 def fix_filepath(filepath):
-    # return filepath.replace('/kuacc/users/bsefercik/dataset/', '/Users/bugra.sefercik/workspace/datasets/')
-    return filepath.replace('/datasets/alive_ee/', '/Users/bugra.sefercik/workspace/datasets/')
+    return filepath.replace('/kuacc/users/bsefercik/dataset/', '/Users/bugra.sefercik/workspace/datasets/')
+    # return filepath.replace('/datasets/alive_ee/', '/Users/bugra.sefercik/workspace/datasets/')
 
 
 def save_file(filename, data):
@@ -44,11 +44,15 @@ if __name__ == "__main__":
     }
 
     new_fields = ('position_eligibility', 'orientation_eligibility')
-    bad_camera_positions = ('p2h1l1', 'p2h1l2', 'p2h2l1', 'p2h2l2', 'p1h3l1', 'p1h3l2', 'p1h2l1', 'p1h2l2', 'p2h3l1', 'p2h3l2')
+    # bad_camera_positions = ('p2h1l1', 'p2h1l2', 'p2h2l1', 'p2h2l2', 'p1h3l1', 'p1h3l2', 'p1h2l1', 'p1h2l2', 'p2h3l1', 'p2h3l2')
+    bad_camera_positions = tuple()
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
     for s in splits:
         for i, ins in enumerate(splits[s]):
+            if i % 5 != 0:
+                continue
+
             try:
                 print(ins['filepath'])
 
