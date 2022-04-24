@@ -1,10 +1,12 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
 
-exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp19_alivev2+3_sifted_all_s200
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp22_geodesic_eemask_s200'
+
 
 DATA:
-  batch_size: 100
+  batch_size: 10
   data_type: null
+  data_type: 'ee_seg'
 
   scale: 200
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
@@ -16,8 +18,8 @@ DATA:
 
   # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
   #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
-  roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
-  roi_offset: 0.13  # m
+  # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  # roi_offset: 0.13  # m
 
   position_eligibility_enabled: false
   orientation_eligibility_enabled: false
@@ -26,10 +28,10 @@ STRUCTURE:
   backbone: 'minkunet'
   encode_only: true
 
-  # compute_confidence: false
+  compute_confidence: false
 
 TEST:
-  batch_size: 100
+  batch_size: 10
   split: test
   workers: 3
-  checkpoint: default_cos2_v2_18d-000000396.pth
+  checkpoint: default_cos2_v2_18d-000000072.pth

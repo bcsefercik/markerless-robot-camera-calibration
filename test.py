@@ -72,9 +72,9 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                         "angle_diff": round(float(angle_diff[fi]), 4),
                         "preds": preds_fi[:7],
                         "poses": [round(p, 4) for p in poses[fi].tolist()],
-                        "position_confidence": preds_fi[7],
-                        "orientation_confidence": preds_fi[8],
-                        "confidence": preds_fi[9]
+                        "position_confidence": preds_fi[7] if _config.STRUCTURE.compute_confidence else 0,
+                        "orientation_confidence": preds_fi[8] if _config.STRUCTURE.compute_confidence else 0,
+                        "confidence": preds_fi[9] if _config.STRUCTURE.compute_confidence else 0
                     }
                     overall_results["dist"].append(result["dist"])
                     overall_results["dist_position"].append(result["dist_position"])
@@ -112,6 +112,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
             except Exception as e:
                 print(e)
                 _logger.exception(f"Filenames: {json.dumps(others)}")
+                raise e
 
         with open(output_filename.replace('.txt', '.json'), "a") as fp:
             json.dump(results_json, fp)

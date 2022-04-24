@@ -38,6 +38,7 @@ class AliveV2Dataset(Dataset):
         )
         self.quantization_enabled = quantization_enabled
         self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
+        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -82,7 +83,7 @@ class AliveV2Dataset(Dataset):
         if isinstance(self.file_names[i], dict):
             other.update(self.file_names[i])
 
-        if self.ee_segmentation_enabled:
+        if self.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
             with open(other['filepath'].replace('.pickle', '_eemask.pickle'), 'rb') as fp:
                 eemask = pickle.load(fp)
             labels[eemask] = 2
@@ -121,15 +122,23 @@ class AliveV2Dataset(Dataset):
             xyz_origin = xyz_origin[arm_bbox]
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
+        elif _config.DATA.data_type == "ee_seg":
+            xyz_origin = xyz_origin[eemask]
+            rgb = rgb[eemask]
+            labels = labels[eemask]
 
-        if rgb.min() < 0:
-            # WRONG approach, tries to shit from data prep code.
-            rgb[:, 0] = preprocessing.minmax_scale(rgb[:, 0], feature_range=(0, 1), axis=0)
-            rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
-            rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
+            if len(eemask) < 1:
+                return None
 
-        if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
-            rgb -= 0.5
+        if len(rgb) > 0:
+            if rgb.min() < 0:
+                # WRONG approach, tries to shit from data prep code.
+                rgb[:, 0] = preprocessing.minmax_scale(rgb[:, 0], feature_range=(0, 1), axis=0)
+                rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
+                rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
+
+            if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
+                rgb -= 0.5
 
         if self.quantization_enabled:
             discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
@@ -194,6 +203,7 @@ class AliveV2Dataset(Dataset):
 
 
 def collate(data):
+    data = [d for d in data if d is not None]
     coords, feats, labels, poses, others = list(
         zip(*data)
     )  # same size as getitem's return's
@@ -219,6 +229,7 @@ def collate(data):
 
 
 def collate_non_quantized(data):
+    data = [d for d in data if d is not None]
     coords, feats, labels, poses, others = list(
         zip(*data)
     )  # same size as getitem's return's

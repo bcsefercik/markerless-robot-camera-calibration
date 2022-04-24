@@ -10,8 +10,9 @@ DATA:
 
   workers: 0
 
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
@@ -35,5 +36,5 @@ TEST:
   checkpoint: default_cos2_v2_18d-000000384.pth
 
 EEMASK:
-  splits: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json
+  splits: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json
   outfolder: null

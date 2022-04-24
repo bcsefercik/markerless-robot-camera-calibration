@@ -4,6 +4,7 @@ import ipdb
 import torch
 import numpy as np
 import torch.nn as nn
+import torch.nn.functional as F
 import MinkowskiEngine as ME
 
 from utils.quaternion import qeuler
@@ -26,6 +27,8 @@ else:
     from model.backbone.aliveunet import AliveUNet as UNet
 
 M = _config.STRUCTURE.m
+
+EPS = 1e-6
 
 
 class RobotNet(UNet):
@@ -92,6 +95,7 @@ class LossType(Enum):
     COS = "cos"
     ANGLE = "angle"
     COS2 = "cos2"
+    WGEODESIC = "wgeodesic"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
@@ -117,11 +121,11 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
     def compute_cos_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
-        cos_dist = 1.0 - cos_regression_criterion(y[:, :3], y_pred[:, :3])
+        loss_rot = 1.0 - cos_regression_criterion(y[:, :3], y_pred[:, :3])
 
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
-        return reduction_func(cos_dist) + loss_coor
+        return reduction_func(loss_rot) + loss_coor
 
     def compute_loss(y, y_pred, reduction=reduction):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
@@ -140,11 +144,14 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         if not _config()['STRUCTURE'].get('disable_position', False):
             loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
 
-        cos_dist = 0
+        loss_rot = 0
         if not _config()['STRUCTURE'].get('disable_orientation', False):
-            cos_dist = 1.0 - cos_regression_criterion(y[:, :7], y_pred[:, :7])
-            cos_dist *= gamma_cos
-            cos_dist = reduction_func(cos_dist)
+            if not _config()['STRUCTURE'].get('disable_position', False):
+                loss_rot = 1.0 - cos_regression_criterion(y[:, :7], y_pred[:, :7])
+                loss_rot = reduction_func(loss_rot)
+            else:
+                loss_rot = regression_criterion(y[:, 3:7], y_pred[:, 3:7])
+            loss_rot *= gamma_cos
 
         loss_confidence = 0
         if confidence_enabled:
@@ -170,7 +177,31 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
                 overall_confidence[overall_confidence_idx]
             )
 
-        return cos_dist + loss_coor + loss_confidence
+        return loss_rot + loss_coor + loss_confidence
+
+    def compute_with_geodesic_loss(y, y_pred, reduction=reduction):
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
+        gamma_cos = 1
+
+        loss_coor = 0
+        if not _config()['STRUCTURE'].get('disable_position', False):
+            loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
+
+        loss_rot = 0
+        if not _config()['STRUCTURE'].get('disable_orientation', False):
+            y_normalized = F.normalize(y[:, 3:7], p=2, dim=1)
+            y_pred_normalized = F.normalize(y_pred[:, 3:7], p=2, dim=1)
+
+            loss_rot = torch.acos(
+                            (torch.sum(y_normalized * y_pred_normalized, dim=1) - 1) * 0.5,
+                        )
+            loss_rot = reduction_func(loss_rot)
+            loss_rot *= gamma_cos
+
+        loss_confidence = 0
+
+        return loss_rot + loss_coor + loss_confidence
 
     if loss_type == LossType.COS:
         return compute_cos_loss
@@ -178,5 +209,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         return regression_criterion
     elif loss_type == LossType.COS2:
         return compute_cos2_loss
+    elif loss_type == LossType.WGEODESIC:
+        return compute_with_geodesic_loss
     else:
         return compute_loss

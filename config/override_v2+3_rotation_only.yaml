@@ -1,19 +1,19 @@
 # log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp16_alivev2+3_3layers_avgpool.log
 # exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp16_alivev2+3_3layers_avgpool'
 
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp20_rot_only_s400.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp20_rot_only_s400'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp20_rot_only_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp20_rot_only_s200'
 
 GENERAL:
   save_freq: 12
 
 DATA:
-  batch_size: 32
+  batch_size: 52
   # batch_size: 2
   workers: 4
   data_type: null
 
-  scale: 400
+  scale: 200
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
