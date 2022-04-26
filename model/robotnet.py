@@ -46,47 +46,37 @@ class RobotNet(UNet):
             self.relu
         )
 
-        # self.pose_regression = ME.MinkowskiOps.MinkowskiLinear(
-        #     self.PLANES[-1] * self.BLOCK.expansion,
-        #     out_channels
-        # )
+        self.pose_regression_input_size = self.PLANES[-1] * self.BLOCK.expansion
+        if _config.STRUCTURE.use_joint_angles:
+            self.pose_regression_input_size += 9
 
         self.pose_regression = nn.Sequential(
-            ME.MinkowskiOps.MinkowskiLinear(
-                self.PLANES[-1] * self.BLOCK.expansion,
-                2048
-            ),
-            ME.MinkowskiReLU(),
-            ME.MinkowskiOps.MinkowskiLinear(
-                2048,
-                out_channels
-            )
+            nn.Linear(self.pose_regression_input_size, 2048),
+            nn.LeakyReLU(),
+            nn.Linear(2048, out_channels)
         )
 
-        # self.pose_regression = nn.Sequential(
-        #     ME.MinkowskiOps.MinkowskiLinear(
-        #         self.PLANES[-1] * self.BLOCK.expansion,
-        #         2048
-        #     ),
-        #     ME.MinkowskiReLU(),
-        #     ME.MinkowskiOps.MinkowskiLinear(
-        #         2048,
-        #         2048
-        #     ),
-        #     ME.MinkowskiReLU(),
-        #     ME.MinkowskiOps.MinkowskiLinear(
-        #         2048,
-        #         out_channels
-        #     )
-        # )
-
     def forward(self, x):  # WXYZ
+        if isinstance(x, tuple):
+            x, joint_angles = x
+        else:
+            x = x
+
         output = self.forward_except_final(x)
         output = self.output_layer(output)
         output = self.global_pool(output)
-        output = self.pose_regression(output)
-        output = output.features
+
+        if _config.STRUCTURE.use_joint_angles:
+            regression_input = torch.cat((output.features, joint_angles), dim=1)
+        else:
+            regression_input = output.features
+
+        output = self.pose_regression(regression_input)
+
         output[:, 7:] = torch.sigmoid(output[:, 7:])  # confidences
+
+        if not self.training:
+            output[:, 3:7] = F.normalize(output[:, 3:7], p=2, dim=1)
         return output
 
 

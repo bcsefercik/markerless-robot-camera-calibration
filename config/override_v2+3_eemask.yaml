@@ -1,14 +1,14 @@
 # log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp16_alivev2+3_3layers_avgpool.log
 # exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp16_alivev2+3_3layers_avgpool'
 
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp22_geodesic_eemask_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp22_geodesic_eemask_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp23_geodesic_eemask_s200_noconf_nopos_unet.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp23_geodesic_eemask_s200_noconf_nopos_unet'
 
 GENERAL:
   save_freq: 24
 
 DATA:
-  batch_size: 52
+  batch_size: 12
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
@@ -36,17 +36,16 @@ DATA:
 
 STRUCTURE:
   backbone: 'minkunet'
-  encode_only: true
+  encode_only: false
 
-  compute_confidence: true
-  disable_position: false
+  disable_position: true
   disable_orientation: false
 
   compute_confidence: false
 
 TRAIN:
   loss_type: "wgeodesic"
-  loss_reduction: "sum"
+  loss_reduction: "mean"
 
 TEST:
   batch_size: 2

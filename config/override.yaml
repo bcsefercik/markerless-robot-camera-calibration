@@ -1,14 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp24_v4.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp24_v4'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp24_v4_gt_seg.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp24_v4_gt_seg'
 
 GENERAL:
-  save_freq: 24
+  save_freq: 16
 
 DATA:
-  batch_size: 12
+  batch_size: 20
   # batch_size: 2
   workers: 4
-  data_type: null
+  data_type: gt_seg
 
   scale: 200
 

@@ -55,10 +55,16 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 _config.TRAIN.multiplier,
             )
 
-            coords, feats, _, poses, _ = batch
+            coords, feats, _, poses, others = batch
             poses = poses.to(device=_device)
 
             model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+
+            if _config.STRUCTURE.use_joint_angles:
+                joint_angles = [o['joint_angles'] for o in others]
+                joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
+                model_input = (model_input, joint_angles)
+
             out = model(model_input)
 
             optimizer.zero_grad()
@@ -139,12 +145,16 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         start_epoch = time.time()
         for i, batch in enumerate(val_iter):
             try:
-                coords, feats, _, poses, _ = batch
+                coords, feats, _, poses, others = batch
                 poses = poses.to(device=_device)
 
                 model_input = ME.SparseTensor(
                     feats, coordinates=coords, device=_device, requires_grad=False
                 )
+                if _config.STRUCTURE.use_joint_angles:
+                    joint_angles = [o['joint_angles'] for o in others]
+                    joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
+                    model_input = (model_input, joint_angles)
                 out = model(model_input)
                 loss = criterion(poses, out)
 

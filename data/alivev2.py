@@ -69,17 +69,26 @@ class AliveV2Dataset(Dataset):
 
     def __getitem__(self, i):
         # TODO: extract instance, semantic here
-        (
-            (xyz_origin, rgb, labels, instance_label, pose),
-            semantic_pred,
-            file_name,
-        ) = self.load_data_file(i)
+        x, semantic_pred, file_name = self.load_data_file(i)
+        joint_angles = None
+        if isinstance(x, dict):
+            xyz_origin = x['points']
+            rgb = x['rgb']
+            labels = x['labels']
+            instance_labels = x['instance_labels']
+            pose = x['pose']
+            joint_angles = x['joint_angles']
+        else:
+            xyz_origin, rgb, labels, instance_labels, pose = x
 
         xyz_origin = xyz_origin.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
 
-        other = {"filename": file_name}
+        other = {
+            "filename": file_name,
+            "joint_angles": joint_angles
+        }
         if isinstance(self.file_names[i], dict):
             other.update(self.file_names[i])
 
@@ -223,7 +232,10 @@ def collate(data):
         others[i]["offset"] = (start_offset, end_offset)
         start_offset = end_offset
 
-    # ipdb.set_trace()
+        if _config.STRUCTURE.use_joint_angles:
+            others[i]['joint_angles'] = torch.from_numpy(
+                others[i]['joint_angles'].reshape((1, -1))
+            ).to(dtype=torch.float32)
 
     return coords_batch, feats_batch, labels_batch, poses_batch, others
 

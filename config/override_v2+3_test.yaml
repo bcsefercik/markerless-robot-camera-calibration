@@ -1,10 +1,8 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
-
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp22_geodesic_eemask_s200'
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp23_geodesic_eemask_s200_noconf_nopos_unet'
 
 
 DATA:
-  batch_size: 10
   data_type: null
   data_type: 'ee_seg'
 
@@ -26,12 +24,12 @@ DATA:
 
 STRUCTURE:
   backbone: 'minkunet'
-  encode_only: true
+  encode_only: false
 
   compute_confidence: false
 
 TEST:
-  batch_size: 10
+  batch_size: 8
   split: test
   workers: 3
-  checkpoint: default_cos2_v2_18d-000000072.pth
+  checkpoint: default-000000264.pth

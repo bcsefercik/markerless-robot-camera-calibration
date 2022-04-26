@@ -47,6 +47,12 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 poses = poses.to(device=_device)
 
                 model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+
+                if _config.STRUCTURE.use_joint_angles:
+                    joint_angles = [o['joint_angles'] for o in others]
+                    joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
+                    model_input = (model_input, joint_angles)
+
                 out = model(model_input)
 
                 loss = criterion(out, poses).item()
