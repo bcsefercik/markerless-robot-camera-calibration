@@ -54,30 +54,34 @@ def get_frame_from_pose(base_frame, pose, switch_w=True):
 
 
 if __name__ == "__main__":
-    position = "p2_1"
+    position = "c2_p2_1_full_i5"
 
-    (
-        points,
-        rgb,
-        labels,
-        instance_label,
-        pose,
-    ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
+    data, semantic_pred = file_utils.load_alive_file(sys.argv[1])
+
+    if isinstance(data, dict):
+        points = data['points']
+        rgb = data['rgb']
+        labels = data['labels']
+        pose = data['pose']
+    else:
+        points, rgb, labels, _, pose = data
+
 
     with open(sys.argv[2], 'r') as fp:
         limits = json.load(fp)
 
     pred = [0] * 7
 
-    pred = [
-        -0.0879,
-        0.0035,
-        0.7611,
-        0.516,
-        -0.2902,
-        0.247,
-        0.4196
-    ]
+    # pred = [
+    #     3.8387,
+    #     -1.1463,
+    #     -0.3983,
+    #     0.6027, -0.4181,  0.5901,  0.3373
+    # ]
+
+    # for checking only angle
+    # pred[:3] = pose[:3]
+
     arm_idx = labels == 1
 
     print('# of points:', len(rgb))
