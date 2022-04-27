@@ -9,7 +9,7 @@ import sklearn.preprocessing as preprocessing
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
-from visualization.viz_pickle import get_frame_from_pose
+from utils.visualisation import get_frame_from_pose
 
 import ipdb
 

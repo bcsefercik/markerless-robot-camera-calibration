@@ -19,7 +19,7 @@ def generate_colors(n):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Viz segmentation.")
     parser.add_argument("--pickle", type=str, required=True)
-    parser.add_argument("--results", type=str, required=True)
+    parser.add_argument("--results", type=str, required=False)
     parser.add_argument("--instance", type=str, required=True)
     parser.add_argument("--classes", type=int, default=3)
     parser.add_argument("--roi", type=str, default=None)
@@ -30,21 +30,26 @@ if __name__ == "__main__":
     np.random.seed(39)
     colors = generate_colors(args.classes)
 
-    with open(args.results, 'r') as fp:
-        results = json.load(fp)
+    results = None
+    if args.results:
+        with open(args.results, 'r') as fp:
+            results = json.load(fp)
 
     roi = dict()
     if args.roi is not None:
         with open(args.roi, 'r') as fp:
             roi = json.load(fp)
 
-    (
-        points,
-        rgb,
-        labels,
-        instance_label,
-        pose,
-    ), semantic_pred = file_utils.load_alive_file(args.pickle)
+    data, semantic_pred = file_utils.load_alive_file(args.pickle)
+
+    if isinstance(data, dict):
+        points = data['points']
+        rgb = data['rgb']
+        labels = data['labels']
+        instance_label = data['instance_labels']
+        pose = data['pose']
+    else:
+        points, rgb, labels, instance_label, pose = data
 
     roi_mask = get_roi_mask(points, offset=args.roi_offset, **roi.get(args.position, dict()))
 
@@ -53,7 +58,7 @@ if __name__ == "__main__":
     labels = labels[roi_mask]
     labels = labels.astype(int).tolist()
 
-    predicted_labels = results[args.instance]['labels']
+    predicted_labels = results[args.instance]['labels'] if results is not None  else labels
 
     pcd = o3d.geometry.PointCloud()
 

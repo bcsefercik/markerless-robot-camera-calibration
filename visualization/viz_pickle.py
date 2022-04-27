@@ -13,6 +13,7 @@ import open3d as o3d
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
+from utils.visualisation import get_frame_from_pose, get_ee_center_from_pose
 
 def euler_from_quaternion(x, y, z, w):
     """
@@ -37,22 +38,6 @@ def euler_from_quaternion(x, y, z, w):
     return roll_x, pitch_y, yaw_z # in radians
 
 
-def get_frame_from_pose(base_frame, pose, switch_w=True):
-    frame = copy.deepcopy(base_frame)
-
-    if not isinstance(pose, list):
-        pose = pose.tolist()
-
-    ee_position = pose[:3]
-    ee_orientation = pose[3:]
-    if switch_w:
-        ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
-    ee_frame = frame.translate(ee_position)
-    ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
-
-    return ee_frame
-
-
 if __name__ == "__main__":
     position = "c2_p2_1_full_i5"
 
@@ -66,18 +51,24 @@ if __name__ == "__main__":
     else:
         points, rgb, labels, _, pose = data
 
-
     with open(sys.argv[2], 'r') as fp:
         limits = json.load(fp)
 
     pred = [0] * 7
 
-    # pred = [
-    #     3.8387,
-    #     -1.1463,
-    #     -0.3983,
-    #     0.6027, -0.4181,  0.5901,  0.3373
-    # ]
+    pred = [
+        -0.5028,
+        0.1733,
+        0.5623,
+        0.7,
+        -0.2398,
+        0.6681,
+        0.0781
+    ]
+
+    print(get_ee_center_from_pose(pose))
+    # pose[2] += 0.5
+    # pose[:2] = 0
 
     # for checking only angle
     # pred[:3] = pose[:3]
@@ -95,8 +86,6 @@ if __name__ == "__main__":
 
     min_point = points[arm_idx].min(axis=0)
     max_point = points[arm_idx].max(axis=0)
-
-    # ipdb.set_trace()
 
     bbox = o3d.geometry.AxisAlignedBoundingBox(
         np.array(min_point).reshape((3, 1)),
@@ -116,6 +105,8 @@ if __name__ == "__main__":
     ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
     ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False)
     kinect_frame = get_frame_from_pose(frame, [0] * 7)
+
+    # ee_frame.translate([-0.02504799, -0.13376567,  0.8929464 ])
 
     # obbox.translate(ee_position).rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
     roi_mask = get_roi_mask(points, **limits[position])
