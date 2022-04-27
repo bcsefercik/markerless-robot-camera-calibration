@@ -51,6 +51,9 @@ STRUCTURE:
   angle_diff_threshold: 0.24  # rad
   angle_diff_ignore_threshold: 0.4  # rad
 
+  disable_position: false
+  disable_orientation: false
+
 TRAIN:
   fixed_modules: []
   optim: 'Adam' # Adam or SGD

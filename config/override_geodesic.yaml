@@ -1,14 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp28_gtseg.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp28_gtseg'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp28_eemask_rot-only.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp28_eemask_rot-only'
 
 GENERAL:
-  save_freq: 4
+  save_freq: 16
 
 DATA:
-  batch_size: 24
+  batch_size: 48
   # batch_size: 2
   workers: 4
-  data_type: 'gt_seg'
+  data_type: 'ee_seg'
 
   scale: 200
 
@@ -32,7 +32,7 @@ DATA:
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
   roi_offset: 0.13  # m
 
-  position_eligibility_enabled: true
+  position_eligibility_enabled: false
   orientation_eligibility_enabled: true
 
 STRUCTURE:
@@ -42,6 +42,7 @@ STRUCTURE:
   compute_confidence: false
 
   use_ee_center: true
+  disable_position: true
 
 TRAIN:
   loss_type: "wgeodesic"

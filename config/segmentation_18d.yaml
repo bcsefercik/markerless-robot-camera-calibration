@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp18_segmentation_s200_wee_18d.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp18_segmentation_s200_wee_18d'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp28_segmentation_s200_wee_18d.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp28_segmentation_s200_wee_18d'
 
 GENERAL:
   save_freq: 4
@@ -10,7 +10,7 @@ DATA:
   # folder: '/kuacc/users/bsefercik/dataset/alivev1'
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
   batch_size: 3
