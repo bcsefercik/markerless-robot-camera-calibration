@@ -8,7 +8,7 @@ import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.data import get_roi_mask
-from utils.visualisation import get_frame_from_pose
+from utils.visualization import get_frame_from_pose
 
 if __name__ == "__main__":
 

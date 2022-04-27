@@ -22,7 +22,14 @@ if __name__ == "__main__":
     for k, cf in splits.items():
         pickles = [ins for ins in cf if AliveV2Dataset.filter_file(ins['filepath'])]
         for p in pickles:
-            (points, rgb, labels, _, pose), _ = file_utils.load_alive_file(p['filepath'])
+            data, _ = file_utils.load_alive_file(p['filepath'])
+            if isinstance(data, dict):
+                pose = data['pose']
+                points = data['points']
+                labels = data['labels']
+                rgb = data['rgb']
+            else:
+                points, rgb, labels, _, pose = data
             pcd = o3d.geometry.PointCloud()
 
             pcd.points = o3d.utility.Vector3dVector(points)
