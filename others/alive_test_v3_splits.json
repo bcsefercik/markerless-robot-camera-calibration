@@ -1,0 +1,462 @@
+{
+  "train": [],
+  "val": [],
+  "test": [
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/219.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 134134
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/221.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 134051
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/223.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133977
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/220.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133942
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/218.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133961
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/216.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133996
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/213.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133824
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/217.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 134487
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/214.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133905
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/222.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133919
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i7_side_full/labeled/215.pickle",
+      "position": "p1_i7_side",
+      "light": "full",
+      "arm_point_count": 133930
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/21.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137426
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/24.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137482
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/30.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137457
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/27.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137485
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/29.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137330
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/20.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137392
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/26.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137500
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/22.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137423
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/28.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137545
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/23.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137194
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i1_full/labeled/25.pickle",
+      "position": "p1_i1",
+      "light": "full",
+      "arm_point_count": 137702
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/74.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119301
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/75.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119389
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/72.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119315
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/77.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119462
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/80.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119624
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/78.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119540
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/71.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119315
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/70.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119410
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/79.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119516
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/76.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119406
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i3_full/labeled/73.pickle",
+      "position": "p1_i3",
+      "light": "full",
+      "arm_point_count": 119296
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/134.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141524
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/129.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141434
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/125.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141384
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/132.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141459
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/130.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141506
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/128.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141352
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/135.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141358
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/133.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141465
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/131.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141322
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/126.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141322
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i5_full/labeled/127.pickle",
+      "position": "p1_i5",
+      "light": "full",
+      "arm_point_count": 141231
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/180.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134542
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/181.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134804
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/178.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134798
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/177.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134935
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/174.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134638
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/182.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134725
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/176.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134542
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/173.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134936
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/179.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134963
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i6_full/labeled/175.pickle",
+      "position": "p1_i6",
+      "light": "full",
+      "arm_point_count": 134543
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/101.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125237
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/105.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125331
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/110.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125471
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/109.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125338
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/103.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125280
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/108.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125383
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/100.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125566
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/106.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125247
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/104.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125286
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/102.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125225
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i4_full/labeled/107.pickle",
+      "position": "p1_i4",
+      "light": "full",
+      "arm_point_count": 125373
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/55.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104451
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/46.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104447
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/49.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104489
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/54.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104498
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/53.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104384
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/47.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104374
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/52.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104595
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/48.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104353
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/51.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104608
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/56.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104481
+    },
+    {
+      "filepath": "/kuacc/users/bsefercik/dataset/alive_test_v3/p1_i2_full/labeled/50.pickle",
+      "position": "p1_i2",
+      "light": "full",
+      "arm_point_count": 104504
+    }
+  ]
+}
