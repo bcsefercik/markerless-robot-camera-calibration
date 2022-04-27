@@ -96,16 +96,16 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             out = model(model_input)
 
             optimizer.zero_grad()
-            loss = criterion(out, labels)
+            loss = criterion(out.features, labels)
             loss.backward()
             optimizer.step()
 
             am_dict["loss"].update(loss.item(), len(others))
 
-            accuracies = compute_accuracies(out, labels, others)
+            accuracies = compute_accuracies(out.features, labels, others)
             am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
 
-            center_dists = compute_center_dists(out, labels, coords, others)
+            center_dists = compute_center_dists(out.features, labels, coords, others)
             am_dict["center_dist"].update(statistics.mean(center_dists), len(others))
 
             current_iter = (epoch - 1) * len(train_data_loader) + i + 1
@@ -168,13 +168,13 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     feats, coordinates=coords, device=_device, requires_grad=False
                 )
                 out = model(model_input)
-                loss = criterion(out, labels)
+                loss = criterion(out.features, labels)
 
                 am_dict["loss"].update(loss.item(), len(others))
-                accuracies = compute_accuracies(out, labels, others)
+                accuracies = compute_accuracies(out.features, labels, others)
                 am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
 
-                center_dists = compute_center_dists(out, labels, coords, others)
+                center_dists = compute_center_dists(out.features, labels, coords, others)
                 am_dict["center_dist"].update(statistics.mean(center_dists), len(others))
 
                 _logger.info(

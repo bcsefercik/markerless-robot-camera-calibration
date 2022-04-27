@@ -35,24 +35,33 @@ class RobotNetVote(UNet):
 
     def __init__(self, in_channels, out_channels=256, D=3):
         UNet.__init__(self, in_channels, out_channels, D)
-        self.global_pool = ME.MinkowskiGlobalAvgPooling()
-        # self.global_pool = ME.MinkowskiGlobalMaxPooling()
-        self.leaky_relu = nn.LeakyReLU()
+        # self.leaky_relu = nn.LeakyReLU()
+        self.leaky_relu = ME.MinkowskiLeakyReLU()
+
+        # self.regression = nn.Sequential(
+        #     nn.Linear(256, 1024),
+        #     nn.LeakyReLU(),
+        #     nn.Linear(1024, 1)
+        # )
 
         self.regression = nn.Sequential(
-            nn.Linear(256, 1024),
-            nn.LeakyReLU(),
-            nn.Linear(1024, 1)
+            ME.MinkowskiOps.MinkowskiLinear(256, 1024),
+            ME.MinkowskiLeakyReLU(),
+            ME.MinkowskiOps.MinkowskiLinear(
+                1024,
+                1
+            )
         )
 
-        self.sigm = nn.Sigmoid()
+        # self.sigm = nn.Sigmoid()
+        self.sigm = ME.MinkowskiSigmoid()
 
     def forward(self, x):
         if isinstance(x, tuple):
             x, joint_angles = x
 
         output = super().forward(x)
-        output = self.leaky_relu(output.features)
+        output = self.leaky_relu(output)
 
         output = self.regression(output)
         output = self.sigm(output)

@@ -2,7 +2,7 @@ log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp26_v1+
 exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp26_v1+3_vote'
 
 GENERAL:
-  save_freq: 16
+  save_freq: 4
 
 DATA:
   batch_size: 72
@@ -49,4 +49,4 @@ TEST:
   batch_size: 2
   split: test
   workers: 1
-  checkpoint: default-000000016.pth
+  checkpoint: default-000000032.pth
