@@ -12,8 +12,8 @@ DATA:
   prefix: ''
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
-  workers: 4
-  batch_size: 4 # v100->26, t4->8 mink18d
+  workers: 0
+  batch_size: 2 # v100->26, t4->8 mink18d
 
   scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -30,6 +30,8 @@ DATA:
 
   position_eligibility_enabled: false
   orientation_eligibility_enabled: false
+
+  voting_enabled: false
 
 STRUCTURE:
   m: 32 # 16 or 32

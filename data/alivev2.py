@@ -38,7 +38,6 @@ class AliveV2Dataset(Dataset):
         )
         self.quantization_enabled = quantization_enabled
         self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
-        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -139,6 +138,9 @@ class AliveV2Dataset(Dataset):
             if len(eemask) < 1:
                 return None
 
+        other['closest_id2ee_center'] = np.argmin(np.sum(np.square(xyz_origin - pose[:, :3]), 1))
+
+
         if len(rgb) > 0:
             if rgb.min() < 0:
                 # WRONG approach, tries to shit from data prep code.
@@ -159,6 +161,12 @@ class AliveV2Dataset(Dataset):
             )
         else:
             discrete_coords, unique_feats, unique_labels = xyz_origin, rgb, labels
+
+        if _config()["DATA"].get("voting_enabled", False):
+            pose_quantized = pose[:, :3] / self.quantization_size
+            closest_voxel_id2ee_center = np.argmin(np.sum(np.square(discrete_coords - pose_quantized), 1))
+            unique_labels[unique_labels != _config.DATA.ignore_label] *= 0
+            unique_labels[closest_voxel_id2ee_center] = 1
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 

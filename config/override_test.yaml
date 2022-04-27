@@ -1,30 +1,31 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/test.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp23_geodesic_eemask_s200_noconf_nopos_unet'
-
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp24_v4'
 
 DATA:
   data_type: null
-  data_type: 'ee_seg'
 
   scale: 200
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v3_splits.json'
 
   # arm_point_count_threshold: 20000
 
   # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
   #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
-  # roi_offset: 0.13  # m
+  roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v3_limits.json']
+  roi_offset: 0.13  # m
 
   position_eligibility_enabled: false
   orientation_eligibility_enabled: false
 
 STRUCTURE:
   backbone: 'minkunet'
-  encode_only: false
+  encode_only: true
+
+  use_joint_angles: true
 
   compute_confidence: false
 
@@ -32,4 +33,4 @@ TEST:
   batch_size: 8
   split: test
   workers: 3
-  checkpoint: default-000000264.pth
+  checkpoint: default-000000168.pth

@@ -29,20 +29,38 @@ _tensorboard_writer = SummaryWriter(_config.exp_path)
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+QUANTIZATION_SIZE = _config()["DATA"].get("quantization_size", 1 / _config.DATA.scale)
+
 
 def compute_accuracies(out, labels, others):
     return [
-            float(
-                (
-                    labels[oi["offset"][0] : oi["offset"][1]]
-                    == out.features.max(1).indices[
-                        oi["offset"][0] : oi["offset"][1]
-                    ]
-                ).sum()
-            )
-            / (oi["offset"][1] - oi["offset"][0])
-            for oi in others
-        ]
+        float(
+            (
+                (out[oi["offset"][0] : oi["offset"][1]] > 0.5)
+                == labels[oi["offset"][0] : oi["offset"][1]]
+            ).sum()
+        )
+        / (oi["offset"][1] - oi["offset"][0])
+        for oi in others
+    ]
+
+
+def compute_center_dists(out, labels, coords, others):
+    results = list()
+
+    for oi in others:
+        out_ins = out[oi["offset"][0] : oi["offset"][1]]
+        labels_ins = labels[oi["offset"][0] : oi["offset"][1]]
+        coords_ins = (
+            coords[oi["offset"][0] : oi["offset"][1]][:, 1:] * QUANTIZATION_SIZE
+        )
+
+        gt_center = coords_ins[(labels_ins == 1).view(-1)]
+        pred_center = coords_ins[out_ins.argmax()].view(1, -1)
+        dist = float(torch.cdist(gt_center, pred_center)[0][0])
+        results.append(dist)
+
+    return results
 
 
 def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
@@ -72,13 +90,13 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             )
 
             coords, feats, labels, _, others = batch
-            labels = labels.to(device=_device)
+            labels = labels.float().view(-1, 1).to(device=_device)
 
             model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
             out = model(model_input)
 
             optimizer.zero_grad()
-            loss = criterion(out.features, labels)
+            loss = criterion(out, labels)
             loss.backward()
             optimizer.step()
 
@@ -86,6 +104,9 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
 
             accuracies = compute_accuracies(out, labels, others)
             am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
+
+            center_dists = compute_center_dists(out, labels, coords, others)
+            am_dict["center_dist"].update(statistics.mean(center_dists), len(others))
 
             current_iter = (epoch - 1) * len(train_data_loader) + i + 1
             max_iter = _config.TRAIN.epochs * len(train_data_loader)
@@ -141,17 +162,20 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         for i, batch in enumerate(val_iter):
             try:
                 coords, feats, labels, _, others = batch
-                labels = labels.to(device=_device)
+                labels = labels.float().view(-1, 1).to(device=_device)
 
                 model_input = ME.SparseTensor(
                     feats, coordinates=coords, device=_device, requires_grad=False
                 )
                 out = model(model_input)
-                loss = criterion(out.features, labels)
+                loss = criterion(out, labels)
 
                 am_dict["loss"].update(loss.item(), len(others))
                 accuracies = compute_accuracies(out, labels, others)
                 am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
+
+                center_dists = compute_center_dists(out, labels, coords, others)
+                am_dict["center_dist"].update(statistics.mean(center_dists), len(others))
 
                 _logger.info(
                     f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
@@ -195,26 +219,15 @@ if __name__ == "__main__":
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    _backbone = _config()["STRUCTURE"].get("backbone")
-    if _backbone == "minkunet101":
-        from model.backbone.minkunet import MinkUNet101 as UNet
-    elif _backbone == "minkunet34C":
-        from model.backbone.minkunet import MinkUNet34C as UNet
-    elif _backbone == "minkunet14A":
-        from model.backbone.minkunet import MinkUNet14A as UNet
-    else:
-        from model.backbone.minkunet import MinkUNet18D as UNet
+    from model.robotnet_vote import RobotNetVote
 
     from data.alivev2 import AliveV2Dataset, collate
 
-    criterion = nn.CrossEntropyLoss(
-        ignore_index=_config.DATA.ignore_label,
-        reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
+    criterion = nn.BCELoss(
+        reduction=_config()["TRAIN"].get("loss_reduction", "mean")
     ).to(_device)
 
-    model = UNet(
-        in_channels=_config.DATA.input_channel, out_channels=_config.DATA.classes
-    )
+    model = RobotNetVote(in_channels=_config.DATA.input_channel)
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":
