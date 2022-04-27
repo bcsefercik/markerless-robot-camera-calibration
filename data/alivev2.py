@@ -96,15 +96,6 @@ class AliveV2Dataset(Dataset):
                 eemask = pickle.load(fp)
             labels[eemask] = 2
 
-        if self.roi is not None:
-            instance_roi = get_roi_mask(
-                xyz_origin,
-                **self.roi[other['position']]
-            )
-            xyz_origin = xyz_origin[instance_roi]
-            rgb = rgb[instance_roi]
-            labels = labels[instance_roi]
-
         arm_idx = labels == 1
         if self.ee_segmentation_enabled:
             arm_idx += (labels == 2)
@@ -131,15 +122,26 @@ class AliveV2Dataset(Dataset):
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
         elif _config.DATA.data_type == "ee_seg":
+            if len(eemask) < 1:
+                return None
+
             xyz_origin = xyz_origin[eemask]
             rgb = rgb[eemask]
             labels = labels[eemask]
 
-            if len(eemask) < 1:
-                return None
+        if self.roi is not None:
+            instance_roi = get_roi_mask(
+                xyz_origin,
+                **self.roi[other['position']]
+            )
+            xyz_origin = xyz_origin[instance_roi]
+            rgb = rgb[instance_roi]
+            labels = labels[instance_roi]
+
+        if _config()["STRUCTURE"].get("use_ee_center", False):
+            pose[0, :3] = np.array(other['ee_center'], dtype=np.float32)
 
         other['closest_id2ee_center'] = np.argmin(np.sum(np.square(xyz_origin - pose[:, :3]), 1))
-
 
         if len(rgb) > 0:
             if rgb.min() < 0:

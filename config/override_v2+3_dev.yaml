@@ -36,5 +36,5 @@ TEST:
   checkpoint: default_cos2_v2_18d-000000384.pth
 
 EEMASK:
-  splits: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json
+  splits: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json
   outfolder: null

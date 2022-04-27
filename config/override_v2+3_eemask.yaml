@@ -31,8 +31,8 @@ DATA:
   # # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
   # roi_offset: 0.13  # m
 
-  position_eligibility_enabled: true
-  orientation_eligibility_enabled: true
+  position_eligibility_enabled: false
+  orientation_eligibility_enabled: false
 
 STRUCTURE:
   backbone: 'minkunet'
@@ -52,3 +52,6 @@ TEST:
   split: test
   workers: 1
   checkpoint: default_cos2_v2_18d-000000384.pth
+
+EEMASK:
+  splits: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev4_splits.json'
