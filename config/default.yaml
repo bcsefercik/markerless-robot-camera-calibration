@@ -33,6 +33,8 @@ DATA:
 
   voting_enabled: false
 
+  voxelize_position: false
+
 STRUCTURE:
   m: 32 # 16 or 32
   block_reps: 2

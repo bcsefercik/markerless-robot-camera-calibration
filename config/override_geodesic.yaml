@@ -17,6 +17,7 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev4_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
   # arm_point_count_threshold: 20000
@@ -32,7 +33,7 @@ DATA:
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
   roi_offset: 0.13  # m
 
-  position_eligibility_enabled: false
+  position_eligibility_enabled: true
   orientation_eligibility_enabled: true
 
 STRUCTURE:
@@ -43,6 +44,7 @@ STRUCTURE:
 
   use_ee_center: true
   disable_position: true
+  disable_orientation: false
 
 TRAIN:
   loss_type: "wgeodesic"
@@ -52,4 +54,4 @@ TEST:
   batch_size: 2
   split: test
   workers: 1
-  checkpoint: default-000000060.pth
+  checkpoint: default-000000304.pth

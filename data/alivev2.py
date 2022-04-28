@@ -141,6 +141,9 @@ class AliveV2Dataset(Dataset):
         if _config()["STRUCTURE"].get("use_ee_center", False):
             pose[0, :3] = np.array(other['ee_center'], dtype=np.float32)
 
+        if _config()["DATA"].get("voxelize_position", False):
+            pose[0, :3] /= self.quantization_size
+
         other['closest_id2ee_center'] = np.argmin(np.sum(np.square(xyz_origin - pose[:, :3]), 1))
 
         if len(rgb) > 0:

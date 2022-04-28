@@ -55,6 +55,13 @@ class RobotNetEncode(UNet):
             nn.Linear(2048, out_channels)
         )
 
+        self.quantization_size = _config()["DATA"].get(
+            "quantization_size", 1 / _config.DATA.scale
+        )
+        self.voxelize_position = _config()["DATA"].get(
+            "voxelize_position", False
+        )
+
     def forward(self, x):  # WXYZ
         if isinstance(x, tuple):
             x, joint_angles = x
@@ -102,4 +109,8 @@ class RobotNetEncode(UNet):
 
         if not self.training:
             output[:, 3:7] = F.normalize(output[:, 3:7], p=2, dim=1)
+
+            if self.voxelize_position:
+                output[:, :3] *= self.quantization_size
+
         return output
