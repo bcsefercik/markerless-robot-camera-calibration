@@ -61,6 +61,9 @@ class Config(metaclass=SingletonMeta):
 
         self.__dict__.update(self.config)
 
+        if not os.path.isdir(self.exp_path):
+            os.mkdir(self.exp_path)
+
     def __call__(self):
         return self.config_dict
 
@@ -74,6 +77,13 @@ class Config(metaclass=SingletonMeta):
                     self.override(config[k], override_config[k])
                 else:
                     config[k] = override_config[k]
+
+    def save(self, path=None):
+        if path is None:
+            path = os.path.join(self.exp_path, 'config.yaml')
+
+        with open(path, 'w') as fp:
+            yaml.dump(self.config_dict, fp)
 
 
 Logger(filename=Config().log_path).get()

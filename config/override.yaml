@@ -1,14 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp29_voxpos_ee_seg.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp29_voxpos_ee_seg'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp29_voxpos.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp29_voxpos'
 
 GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 60
+  batch_size: 12
   # batch_size: 2
   workers: 4
-  data_type: ee_seg
+  data_type: null
 
   scale: 200
 
@@ -30,7 +30,7 @@ DATA:
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
   roi_offset: 0.13  # m
 
-  position_eligibility_enabled: false
+  position_eligibility_enabled: true
   orientation_eligibility_enabled: false
 
   voxelize_position: true
@@ -45,8 +45,10 @@ STRUCTURE:
 
   # compute_confidence: false
 
+  disable_position: true
+
 TEST:
   batch_size: 2
   split: test
   workers: 1
-  checkpoint: default-000000168.pth
+  checkpoint: default-000000008.pth
