@@ -5,11 +5,13 @@ import ipdb
 EPS = 1e-7
 
 
-def compute_pose_dist(gt, pred):
+def compute_pose_dist(gt, pred, position_voxelization=1):
     with torch.no_grad():
         position = gt[:, :3]
+        position *= position_voxelization
         orientation = gt[:, 3:7]
         position_pred = pred[:, :3]
+        position_pred *= position_voxelization
         orientation_pred = pred[:, 3:7]
 
         gt_orientation_normalized = F.normalize(orientation, p=2, dim=1)

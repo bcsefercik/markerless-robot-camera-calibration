@@ -28,6 +28,10 @@ _tensorboard_writer = SummaryWriter(_config.exp_path)
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+_voxelize_position = _config()["DATA"].get("voxelize_position", False)
+_quantization_size = _config()["DATA"].get("quantization_size", 1 / _config.DATA.scale)
+_position_quantization_size = _quantization_size if _voxelize_position else 1
+
 
 def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
     torch.cuda.empty_cache()
@@ -72,7 +76,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             loss.backward()
             optimizer.step()
 
-            dists = metrics.compute_pose_dist(poses, out)
+            dists = metrics.compute_pose_dist(poses, out, position_voxelization=_position_quantization_size)
             am_dict["loss"].update(loss.item(), len(poses))
             am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
             am_dict["dist_position"].update(
@@ -157,6 +161,8 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     model_input = (model_input, joint_angles)
                 out = model(model_input)
                 loss = criterion(poses, out)
+
+                poses[:, 3] *= _position_quantization_size
 
                 dists = metrics.compute_pose_dist(poses, out)
                 am_dict["loss"].update(loss.item(), len(poses))

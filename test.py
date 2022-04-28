@@ -28,6 +28,10 @@ _tensorboard_writer = SummaryWriter(_config.exp_path)
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+_voxelize_position = _config()["DATA"].get("voxelize_position", False)
+_quantization_size = _config()["DATA"].get("quantization_size", 1 / _config.DATA.scale)
+_position_quantization_size = _quantization_size if _voxelize_position else 1
+
 torch.set_printoptions(precision=_config.TEST.print_precision, sci_mode=False)
 
 
@@ -54,6 +58,8 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     model_input = (model_input, joint_angles)
 
                 out = model(model_input)
+
+                poses[:, 3] *= _position_quantization_size
 
                 loss = criterion(out, poses).item()
 
