@@ -3,7 +3,7 @@ import copy
 import open3d as o3d
 
 
-def get_frame_from_pose(base_frame, pose, switch_w=True):
+def get_frame_from_pose(base_frame, pose, switch_w=True, translate_later=False):
     frame = copy.deepcopy(base_frame)
 
     if not isinstance(pose, list):
@@ -14,8 +14,12 @@ def get_frame_from_pose(base_frame, pose, switch_w=True):
     if switch_w:
         ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
 
-    ee_frame = frame.translate(ee_position)
-    ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+    if translate_later:
+        ee_frame = frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+        ee_frame = ee_frame.translate(ee_position)
+    else:
+        ee_frame = frame.translate(ee_position)
+        ee_frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
 
     return ee_frame
 

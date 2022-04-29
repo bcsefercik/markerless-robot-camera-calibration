@@ -38,6 +38,23 @@ def euler_from_quaternion(x, y, z, w):
     return roll_x, pitch_y, yaw_z # in radians
 
 
+def get_frame_from_pose_rotate_first(base_frame, pose, switch_w=True):
+    frame = copy.deepcopy(base_frame)
+
+    if not isinstance(pose, list):
+        pose = pose.tolist()
+
+    ee_position = pose[:3]
+    ee_orientation = pose[3:]
+    if switch_w:
+        ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
+
+    ee_frame = frame.rotate(frame.get_rotation_matrix_from_quaternion(ee_orientation))
+    ee_frame = ee_frame.translate(ee_position)
+
+    return ee_frame
+
+
 if __name__ == "__main__":
     position = "c2_p2_1_full_i5"
 
@@ -59,11 +76,11 @@ if __name__ == "__main__":
     pred = [
         -0.5028,
         0.1733,
-        0.5623,
-        0.7,
-        -0.2398,
-        0.6681,
-        0.0781
+       -0.024,
+        0.6162,
+        -0.4154,
+        0.5333,
+        0.4042
     ]
 
     print(get_ee_center_from_pose(pose))
@@ -71,7 +88,7 @@ if __name__ == "__main__":
     # pose[:2] = 0
 
     # for checking only angle
-    # pred[:3] = pose[:3]
+    pred[:3] = [-0.03370360657572746, -0.020402435213327408, 0.6150000095367432]
 
     arm_idx = labels == 1
 
@@ -103,7 +120,8 @@ if __name__ == "__main__":
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
 
     ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
-    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False)
+    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False, translate_later=True)
+    # ee_frame_pred = get_frame_from_pose_rotate_first(frame, pred, switch_w=False)
     kinect_frame = get_frame_from_pose(frame, [0] * 7)
 
     # ee_frame.translate([-0.02504799, -0.13376567,  0.8929464 ])
