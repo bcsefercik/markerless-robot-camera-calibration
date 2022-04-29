@@ -45,7 +45,8 @@ STRUCTURE:
 
   # compute_confidence: false
 
-  disable_position: true
+  disable_position: false
+  disable_orientation: true
 
 TEST:
   batch_size: 2

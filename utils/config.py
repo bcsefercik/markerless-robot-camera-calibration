@@ -1,3 +1,4 @@
+from ipaddress import ip_address
 import os
 import yaml
 import argparse
@@ -80,7 +81,7 @@ class Config(metaclass=SingletonMeta):
 
     def save(self, path=None):
         if path is None:
-            path = os.path.join(self.exp_path, 'config.yaml')
+            path = os.path.join(self.exp_path, self.config.split('/')[-1])
 
         with open(path, 'w') as fp:
             yaml.dump(self.config_dict, fp)

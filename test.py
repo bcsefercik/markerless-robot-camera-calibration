@@ -58,8 +58,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     model_input = (model_input, joint_angles)
 
                 out = model(model_input)
-
-                poses[:, 3] *= _position_quantization_size
+                poses[:, :3] *= _position_quantization_size
 
                 loss = criterion(out, poses).item()
 

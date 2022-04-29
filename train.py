@@ -163,7 +163,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                 out = model(model_input)
                 loss = criterion(poses, out)
 
-                poses[:, 3] *= _position_quantization_size
+                poses[:, :3] *= _position_quantization_size
 
                 dists = metrics.compute_pose_dist(poses, out)
                 am_dict["loss"].update(loss.item(), len(poses))
