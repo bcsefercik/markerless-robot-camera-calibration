@@ -9,7 +9,6 @@ import json
 
 sys.path.append("..")  # noqa
 from utils import file_utils
-from utils.visualization import get_ee_center_from_pose
 
 
 def create_info(filepath):
@@ -28,7 +27,6 @@ def create_info(filepath):
         "position": "_".join(instance_parts[:-1]) if len(instance_parts) > 1 else instance_parts[0],
         "light": instance_parts[-1],
         "arm_point_count": int((labels == 1).sum()),
-        "ee_center": get_ee_center_from_pose(pose, switch_w=True).tolist(),
     }
 
 
@@ -72,6 +70,6 @@ if __name__ == "__main__":
             dt.extend([create_info(pf) for pf in pickles[findex[i] : findex[i + 1]]])
 
     with open(args.out, "w") as fp:
-        json.dump(data_types, fp, indent=2)
+        json.dump(data_types, fp, indent=4)
 
     # ipdb.set_trace()
