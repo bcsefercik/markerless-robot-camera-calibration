@@ -1,12 +1,11 @@
-import torch
 import numpy as np
 
 import ipdb
 
 
 def normalize_color(
-    color: torch.Tensor, is_color_in_range_0_255: bool = False
-) -> torch.Tensor:
+    color, is_color_in_range_0_255: bool = False
+):
     r"""
     Convert color in range [0, 1] to [-0.5, 0.5]. If the color is in range [0,
     255], use the argument `is_color_in_range_0_255=True`.
