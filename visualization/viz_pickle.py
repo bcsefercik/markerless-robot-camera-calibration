@@ -120,7 +120,7 @@ if __name__ == "__main__":
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
 
     ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
-    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False, translate_later=True)
+    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False)
     # ee_frame_pred = get_frame_from_pose_rotate_first(frame, pred, switch_w=False)
     kinect_frame = get_frame_from_pose(frame, [0] * 7)
 

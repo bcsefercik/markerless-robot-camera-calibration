@@ -1,3 +1,4 @@
+import ipdb
 import numpy as np
 
 
@@ -46,3 +47,32 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
                            [r20, r21, r22]])
 
     return rot_matrix
+
+
+def compute_vec_dist_to_line(p, lp1, lp2):
+    return compute_dist_to_line(p.reshape((-1, 1)), lp1, lp2)[0]
+
+
+def compute_dist_to_line(p, lp1, lp2):
+    # https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+    # https://math.stackexchange.com/questions/1905533/find-perpendicular-distance-from-point-to-line-in-3d
+    d = (lp1 - lp2) / np.linalg.norm(lp1 - lp2)
+    v = p - lp1
+    t = np.dot(v, d)
+    t = t.reshape((-1, 1))
+    P = lp1 + t * d
+    dists = np.linalg.norm(P - p, axis=1)
+    return dists
+
+
+def select_closest_points_to_line(points, lp1, lp2, count=0, cutoff=0.008):
+    count = min(count, len(points)) if count > 0 else len(points)
+
+    dists = compute_dist_to_line(points, lp2, lp1)
+    dists_args_sorted = np.argsort(dists)
+
+    cutoff_mask = dists[dists_args_sorted[:count]] < cutoff
+
+    final_idx = dists_args_sorted[:count][cutoff_mask]
+
+    return dists[final_idx], final_idx
