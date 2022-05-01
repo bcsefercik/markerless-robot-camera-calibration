@@ -13,7 +13,7 @@ import open3d as o3d
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
-from utils.visualization import get_frame_from_pose
+from utils.visualization import create_coordinate_frame, get_frame_from_pose
 
 def euler_from_quaternion(x, y, z, w):
     """
@@ -83,8 +83,11 @@ if __name__ == "__main__":
         0.4042
     ]
     # for checking only angle
-    pred[:3] = [-0.03370360657572746, -0.020402435213327408, 0.6150000095367432]
-
+    pred[:3] = [
+        -0.0558,
+        -0.0405,
+        0.582
+    ]
     arm_idx = labels == 1
 
     print('# of points:', len(rgb))
@@ -114,8 +117,8 @@ if __name__ == "__main__":
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
 
-    ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
-    ee_frame_pred = get_frame_from_pose(frame, pred, switch_w=False)
+    ee_frame = create_coordinate_frame(pose, switch_w=True)
+    ee_frame_pred = create_coordinate_frame(pred, switch_w=False)
     # ee_frame_pred = get_frame_from_pose_rotate_first(frame, pred, switch_w=False)
     kinect_frame = get_frame_from_pose(frame, [0] * 7)
 
