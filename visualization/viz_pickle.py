@@ -13,7 +13,7 @@ import open3d as o3d
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
-from utils.visualization import get_frame_from_pose, get_ee_center_from_pose
+from utils.visualization import get_frame_from_pose
 
 def euler_from_quaternion(x, y, z, w):
     """
@@ -82,11 +82,6 @@ if __name__ == "__main__":
         0.5333,
         0.4042
     ]
-
-    print(get_ee_center_from_pose(pose))
-    # pose[2] += 0.5
-    # pose[:2] = 0
-
     # for checking only angle
     pred[:3] = [-0.03370360657572746, -0.020402435213327408, 0.6150000095367432]
 

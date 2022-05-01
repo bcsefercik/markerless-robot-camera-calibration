@@ -12,6 +12,7 @@ import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
 from utils.data import get_roi_mask
+from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
 
 _config = config.Config()
@@ -38,6 +39,10 @@ class AliveV2Dataset(Dataset):
         )
         self.quantization_enabled = quantization_enabled
         self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
+
+        self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
+        if self.voting_enabled:
+            self.ee_points_idx = dict()
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -138,13 +143,8 @@ class AliveV2Dataset(Dataset):
             rgb = rgb[instance_roi]
             labels = labels[instance_roi]
 
-        if _config()["STRUCTURE"].get("use_ee_center", False):
-            pose[0, :3] = np.array(other['ee_center'], dtype=np.float32)
-
         if _config()["DATA"].get("voxelize_position", False):
             pose[0, :3] /= self.quantization_size
-
-        other['closest_id2ee_center'] = np.argmin(np.sum(np.square(xyz_origin - pose[:, :3]), 1))
 
         if len(rgb) > 0:
             if rgb.min() < 0:
@@ -156,6 +156,23 @@ class AliveV2Dataset(Dataset):
             if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
                 rgb -= 0.5
 
+        if self.voting_enabled:
+            if i not in self.ee_points_idx:
+                rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=True)
+                p2_diff = rot_mat @ np.array([0.08, 0, 0])
+                _, self.ee_points_idx[i] = select_closest_points_to_line(
+                    xyz_origin,
+                    pose[0, :3],
+                    pose[0, :3] + p2_diff,
+                    count=_config.VOTE.count,
+                    cutoff=_config.VOTE.cutoff
+                )
+
+            if _config.DATA.data_type == "ee_seg":
+                labels *= 0
+
+            labels[self.ee_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
+
         if self.quantization_enabled:
             discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
                 coordinates=xyz_origin,
@@ -166,12 +183,6 @@ class AliveV2Dataset(Dataset):
             )
         else:
             discrete_coords, unique_feats, unique_labels = xyz_origin, rgb, labels
-
-        if _config()["DATA"].get("voting_enabled", False):
-            pose_quantized = pose[:, :3] / self.quantization_size
-            closest_voxel_id2ee_center = np.argmin(np.sum(np.square(discrete_coords - pose_quantized), 1))
-            unique_labels[unique_labels != _config.DATA.ignore_label] *= 0
-            unique_labels[closest_voxel_id2ee_center] = 1
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 

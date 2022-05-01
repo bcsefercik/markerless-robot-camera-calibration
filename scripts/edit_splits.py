@@ -17,7 +17,8 @@ if __name__ == '__main__':
         for ss in splits:
             for i, _ in enumerate(splits[ss]):
                 if isinstance(splits[ss][i], dict):
-                    splits[ss][i].pop('ee_center', None)
+                    # do the thing here for each instance
+                    continue
 
         with open(sf, 'w') as fp:
             json.dump(splits, fp, indent=4)

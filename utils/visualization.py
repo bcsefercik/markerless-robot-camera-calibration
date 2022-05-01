@@ -25,14 +25,6 @@ def get_frame_from_pose(base_frame, pose, switch_w=True):
     return ee_frame
 
 
-def get_ee_center_from_pose(pose, switch_w=True):
-    frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
-
-    ee_frame = get_frame_from_pose(frame, pose, switch_w=switch_w)
-
-    return ee_frame.get_center()
-
-
 def create_coordinate_frame(pose, length=0.2, radius=0.0075,  switch_w=True):
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
 

@@ -1,16 +1,16 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp28_vote.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp28_vote'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp30_vote_s400.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp30_vote_s400'
 
 GENERAL:
-  save_freq: 4
+  save_freq: 16
 
 DATA:
-  batch_size: 72
+  batch_size: 16
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
 
-  scale: 200
+  scale: 400
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
@@ -30,8 +30,8 @@ DATA:
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
   roi_offset: 0.13  # m
 
-  position_eligibility_enabled: false
-  orientation_eligibility_enabled: false
+  position_eligibility_enabled: true
+  orientation_eligibility_enabled: true
 
   voting_enabled: true
 
@@ -42,9 +42,12 @@ STRUCTURE:
   backbone: 'minkunet'
   loss_type: "wgeodesic"
 
-  use_ee_center: true
-
   # compute_confidence: false
+
+VOTE:
+  count: 32
+  pred_count: 4  # TODO: implement it for train, test, pred
+  cutoff: 0.005
 
 TEST:
   batch_size: 2

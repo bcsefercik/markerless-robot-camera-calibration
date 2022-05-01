@@ -50,10 +50,10 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
 
 
 def compute_vec_dist_to_line(p, lp1, lp2):
-    return compute_dist_to_line(p.reshape((-1, 1)), lp1, lp2)[0]
+    return compute_dists_to_line(p.reshape((-1, 1)), lp1, lp2)[0]
 
 
-def compute_dist_to_line(p, lp1, lp2):
+def compute_dists_to_line(p, lp1, lp2):
     # https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
     # https://math.stackexchange.com/questions/1905533/find-perpendicular-distance-from-point-to-line-in-3d
     d = (lp1 - lp2) / np.linalg.norm(lp1 - lp2)
@@ -68,7 +68,7 @@ def compute_dist_to_line(p, lp1, lp2):
 def select_closest_points_to_line(points, lp1, lp2, count=0, cutoff=0.008):
     count = min(count, len(points)) if count > 0 else len(points)
 
-    dists = compute_dist_to_line(points, lp2, lp1)
+    dists = compute_dists_to_line(points, lp2, lp1)
     dists_args_sorted = np.argsort(dists)
 
     cutoff_mask = dists[dists_args_sorted[:count]] < cutoff

@@ -5,7 +5,7 @@ GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 48
+  batch_size: 72
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
@@ -42,7 +42,6 @@ STRUCTURE:
 
   compute_confidence: false
 
-  use_ee_center: true
   disable_position: true
   disable_orientation: false
 

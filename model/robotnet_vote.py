@@ -49,7 +49,7 @@ class RobotNetVote(UNet):
             ME.MinkowskiLeakyReLU(),
             ME.MinkowskiOps.MinkowskiLinear(
                 1024,
-                1
+                2 if _config.DATA.data_type == "ee_seg" else 4
             )
         )
 
@@ -64,5 +64,13 @@ class RobotNetVote(UNet):
         output = self.leaky_relu(output)
 
         output = self.regression(output)
-        output = self.sigm(output)
+        # output = self.sigm(output)
         return output
+
+
+def get_criterion():
+    # return nn.BCEWithLogitsLoss(reduction=_config()["TRAIN"].get("loss_reduction", "mean"))
+    return torch.nn.CrossEntropyLoss(
+        reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
+        ignore_index=_config.DATA.ignore_label
+    )

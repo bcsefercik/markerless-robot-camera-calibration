@@ -1,6 +1,0 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp8_cos2_aliveunet_v2_gt-seg_18d.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp8_cos2_aliveunet_v2_gt-seg_18d'
-
-DATA:
-  batch_size: 5
-  data_type: gt_bbox

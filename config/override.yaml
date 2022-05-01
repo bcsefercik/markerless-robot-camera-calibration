@@ -1,14 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp29_voxpos.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp29_voxpos'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp29_voxpos_ee_seg.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp29_voxpos_ee_seg'
 
 GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 12
+  batch_size: 96
   # batch_size: 2
   workers: 4
-  data_type: null
+  data_type: ee_seg
 
   scale: 200
 
@@ -33,7 +33,7 @@ DATA:
   position_eligibility_enabled: true
   orientation_eligibility_enabled: false
 
-  voxelize_position: true
+  voxelize_position: true  # if true: position = position * 1/scale
 
 STRUCTURE:
   backbone: 'minkunet'
