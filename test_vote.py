@@ -17,7 +17,7 @@ import open3d as o3d
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
-from train_vote import compute_accuracies, compute_center_dists
+from train_vote import compute_accuracies
 
 import ipdb
 
@@ -29,6 +29,13 @@ _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
 torch.set_printoptions(precision=_config.TEST.print_precision, sci_mode=False)
+
+
+def compute_center_dist(out, labels, coords):
+    gt_center = coords[(labels == 1).view(-1)].mean(dim=0, keepdim=True)  # mean since multiple points are labeled positive
+    pred_center = coords[out[:,1].argmax()].view(1, -1)
+    dist = float(torch.cdist(gt_center, pred_center)[0][0])
+    return dist, gt_center, pred_center
 
 
 def test(model, criterion, data_loader, output_filename="results.txt"):
@@ -46,15 +53,16 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
             coords, feats, labels, pose, others = batch
             labels = labels.to(device=_device)
 
-            # model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
-            # out = model(model_input)
-
-            # loss = criterion(out.features, labels)
-            # accuracies = compute_accuracies(out, labels, others)
-
             for fi, other_info in enumerate(others):
                 start = other_info["offset"][0]
                 end = other_info["offset"][1]
+                fname = other_info["filename"]
+                position = other_info["position"]
+
+                print(f"{position}/{fname}")
+                if (labels[start:end] == 1).sum() < 1:
+                    print('Skip, no ee points.')
+                    continue
 
                 in_field = ME.TensorField(
                     features=feats[start:end],
@@ -70,26 +78,13 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 out_field = soutput.slice(in_field)
                 logits = out_field.F
 
-                center_pred = coords[logits.argmax()].tolist()
+                center_dist, center_gt, center_pred = compute_center_dist(logits, labels[start:end], coords[start:end])
 
-                center_dist = np.linalg.norm(np.array(center_pred) - np.array(other_info['ee_center']))
-                center_dist = round(center_dist, 4)
-
-                _, preds = logits.max(1)
-                preds = preds.cpu().numpy()
-                labels_cpu = labels[start:end].cpu().numpy().reshape((-1))
-                accuracy = (preds == labels_cpu).sum() / len(labels_cpu)
-
-                fname = other_info["filename"]
-                position = other_info["position"]
-
-                print(f"{position}/{fname}")
-                # preds_fi = [round(p, 4) for p in out[fi].tolist()]
                 result = {
-                    "center_pred_conf": logits.max().item(),
-                    "center_dist": center_dist,
-                    "center_pred": center_pred,
-                    "center_gt": other_info['ee_center']
+                    # "center_pred_conf": logits.max().item(),
+                    "center_dist": round(center_dist, 4),
+                    "center_pred": [round(c, 4) for c in center_pred[0].tolist()],
+                    "center_gt": [round(c, 4) for c in center_gt[0].tolist()]
                 }
 
                 # individual_results[position]["accuracy"].append(
@@ -98,15 +93,15 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 individual_results[position]["center_dist"].append(
                     result["center_dist"]
                 )
-                individual_results[position]["pred_conf"].append(
-                    result["center_pred_conf"]
-                )
+                # individual_results[position]["pred_conf"].append(
+                #     result["center_pred_conf"]
+                # )
                 overall_results["center_dist"].append(
                     result["center_dist"]
                 )
-                overall_results["pred_conf"].append(
-                    result["center_pred_conf"]
-                )
+                # overall_results["pred_conf"].append(
+                #     result["center_pred_conf"]
+                # )
                 results_json[f"{position}/{fname}"] = result
 
                 with open(output_filename, "a") as fp:
