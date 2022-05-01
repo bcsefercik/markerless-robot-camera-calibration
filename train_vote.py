@@ -21,6 +21,7 @@ import ipdb
 
 
 _config = config.Config()
+_config.save()
 _logger = logger.Logger().get()
 _tensorboard_writer = SummaryWriter(_config.exp_path)
 

@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_segmentation_s200_wee_18d_minkunet101.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d_minkunet101'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_segmentation_s200_wee_18d_minkunet14A.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d_minkunet14A'
 
 GENERAL:
   save_freq: 4
@@ -43,7 +43,7 @@ STRUCTURE:
   use_joint_angles: False
 
   bottleneck: True
-  backbone: 'minkunet101'
+  backbone: 'minkunet14A'
 
 TRAIN:
   fixed_modules: []

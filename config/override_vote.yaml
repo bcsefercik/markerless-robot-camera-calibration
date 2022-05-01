@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp30_vote.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp30_vote'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_vote_minkunet14A.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_vote_minkunet14A'
 
 GENERAL:
   save_freq: 16
@@ -39,7 +39,7 @@ TRAIN:
   loss_reduction: "sum"
 
 STRUCTURE:
-  backbone: 'minkunet'
+  backbone: 'minkunet14A'
   loss_type: "wgeodesic"
 
   # compute_confidence: false
