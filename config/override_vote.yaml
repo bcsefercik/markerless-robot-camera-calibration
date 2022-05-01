@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp30_vote_s400.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp30_vote_s400'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp30_vote.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp30_vote'
 
 GENERAL:
   save_freq: 16
@@ -10,7 +10,7 @@ DATA:
   workers: 4
   data_type: 'ee_seg'
 
-  scale: 400
+  scale: 200
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
@@ -53,4 +53,4 @@ TEST:
   batch_size: 2
   split: test
   workers: 1
-  checkpoint: default-000000036.pth
+  checkpoint: default-000000008.pth

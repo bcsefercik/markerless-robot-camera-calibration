@@ -1,19 +1,18 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp28_segmentation_s200_wee_18d.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp28_segmentation_s200_wee_18d'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_segmentation_s200_wee_18d_minkunet101.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d_minkunet101'
 
 GENERAL:
   save_freq: 4
   seed: 1
 
 DATA:
-  # folder: '/kuacc/users/bsefercik/dataset/alivev1'
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 3
+  batch_size: 6
 
   scale: 200  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -41,8 +40,10 @@ STRUCTURE:
   block_residual: True
   use_coords: True
 
+  use_joint_angles: False
+
   bottleneck: True
-  backbone: 'minkunet'
+  backbone: 'minkunet101'
 
 TRAIN:
   fixed_modules: []
@@ -55,8 +56,6 @@ TRAIN:
   multiplier: 0.8
   step_epoch: 16
 
-  data_type: "none"  #'seg'  # ['seg', 'gt_seg', null]
-  loss_type: "cos2"
   loss_reduction: "sum"
 
 TEST:

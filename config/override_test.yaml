@@ -1,4 +1,9 @@
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/test.log
+exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp30_vote
+
 DATA:
+  batch_size: 2
+  scale: 200
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
   roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
@@ -7,7 +12,7 @@ DATA:
   orientation_eligibility_enabled: false
 
 TEST:
-  batch_size: 8
+  batch_size: 20
   split: test
   workers: 3
-  checkpoint: default-000000304.pth
+  checkpoint: default-000000064.pth

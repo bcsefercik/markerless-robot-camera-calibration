@@ -12,11 +12,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import numpy as np
 import MinkowskiEngine as ME
-import open3d as o3d
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
-
 
 import ipdb
 
