@@ -19,10 +19,20 @@ def compute_pose_dist(gt, pred, position_voxelization=1):
 
         dist = torch.norm(gt - pred[:, :7], dim=1)
         dist_position = torch.norm(position - position_pred, dim=1)
-        dist_orientation = torch.norm(orientation - orientation_pred, dim=1)
+        dist_orientation = torch.min(
+            torch.norm(orientation - orientation_pred, dim=1),
+            torch.norm(orientation + orientation_pred, dim=1),
+        )  # we need have both here since negative of a quaternion represents the same rotation
 
         angle_diff = torch.acos(
-            2 * (torch.sum(gt_orientation_normalized * orientation_pred_normalized, dim=1) ** 2) - 1,
+            2
+            * (
+                torch.sum(
+                    gt_orientation_normalized * orientation_pred_normalized, dim=1
+                )
+                ** 2
+            )
+            - 1,
         )
 
         return dist, dist_position, dist_orientation, angle_diff
