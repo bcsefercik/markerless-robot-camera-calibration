@@ -86,12 +86,14 @@ class LossType(Enum):
     ANGLE = "angle"
     COS2 = "cos2"
     WGEODESIC = "wgeodesic"
+    SMOOTHL1 = "smoothl1"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     regression_criterion = nn.MSELoss(reduction=reduction).to(device)
     cos_regression_criterion = nn.CosineSimilarity(dim=1, eps=1e-6).cuda()
     confidence_criterion = nn.BCELoss(reduction=reduction)
+    smooth_l1_criterion = nn.SmoothL1Loss(reduction=reduction).to(device)
 
     confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
 
@@ -193,6 +195,30 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_rot + loss_coor + loss_confidence
 
+    def compute_smooth_l1_loss(y, y_pred, reduction=reduction):
+        reduction_func = torch.sum if reduction == "sum" else torch.mean
+
+        gamma_cos = 1
+
+        loss_coor = 0
+        if not _config()['STRUCTURE'].get('disable_position', False):
+            loss_coor = smooth_l1_criterion(y[:, :3], y_pred[:, :3])
+
+        loss_rot = 0
+        if not _config()['STRUCTURE'].get('disable_orientation', False):
+            y_normalized = F.normalize(y[:, 3:7], p=2, dim=1)
+            y_pred_normalized = F.normalize(y_pred[:, 3:7], p=2, dim=1)
+
+            loss_rot = torch.acos(
+                            (torch.sum(y_normalized * y_pred_normalized, dim=1) - 1) * 0.5,
+                        )
+            loss_rot = reduction_func(loss_rot)
+            loss_rot *= gamma_cos
+
+        loss_confidence = 0
+
+        return loss_rot + loss_coor + loss_confidence
+
     if loss_type == LossType.COS:
         return compute_cos_loss
     elif loss_type == LossType.MSE:
@@ -201,5 +227,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         return compute_cos2_loss
     elif loss_type == LossType.WGEODESIC:
         return compute_with_geodesic_loss
+    elif loss_type == LossType.SMOOTHL1:
+        return compute_smooth_l1_loss
     else:
         return compute_loss
