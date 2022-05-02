@@ -15,6 +15,7 @@ import MinkowskiEngine as ME
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
+from utils.loss import get_criterion, LossType
 
 import ipdb
 
@@ -226,8 +227,6 @@ if __name__ == "__main__":
     if _use_cuda:
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
-
-    from model.robotnet import get_criterion, LossType
 
     if _config()["STRUCTURE"].get("encode_only", False):
         from model.robotnet_encode import RobotNetEncode as RobotNet
