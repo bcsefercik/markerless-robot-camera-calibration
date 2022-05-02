@@ -184,11 +184,12 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         for i, coords in enumerate(x.decomposed_coordinates):
             loss_rot_instance = 0.0
+            loss_rot_instance_2 = 0.0
             y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
             y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
 
             for j in range(len(coords)):
-                y_pred_translated_j_diff = y_pred_translated[:, j:j+1] - y_translated
+                y_pred_translated_j_diff = y_pred_translated - y_translated[:, j:j+1]
                 norms = torch.linalg.norm(y_pred_translated_j_diff, dim=0)
                 loss_rot_instance += torch.pow(norms, 2).min()
 
