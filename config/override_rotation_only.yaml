@@ -1,17 +1,14 @@
-# log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp16_alivev2+3_3layers_avgpool.log
-# exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp16_alivev2+3_3layers_avgpool'
-
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp20_rot_only_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp20_rot_only_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp33_rot_only_ee_seg_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_s200'
 
 GENERAL:
-  save_freq: 12
+  save_freq: 24
 
 DATA:
-  batch_size: 52
+  batch_size: 128
   # batch_size: 2
   workers: 4
-  data_type: null
+  data_type: 'ee_seg'
 
   scale: 200
 
@@ -41,6 +38,9 @@ STRUCTURE:
   compute_confidence: false
   disable_position: true
   disable_orientation: false
+
+TRAIN:
+  loss_type: "ploss"
 
 TEST:
   batch_size: 2

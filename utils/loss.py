@@ -4,6 +4,7 @@ from ipaddress import ip_address
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.linalg
 import numpy as np
 
 from utils.quaternion import qeuler
@@ -167,29 +168,10 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         for i, coords in enumerate(x.decomposed_coordinates):
             y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
             y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
+            norms = torch.linalg.norm(y_pred_translated - y_translated, dim=0)
+            loss_rot_total += (torch.pow(norms, 2).sum() / (2 * norms.size()[0]))
 
-            ipdb.set_trace()
-
-        gamma_cos = 1
-
-        loss_coor = 0
-        if not _config()['STRUCTURE'].get('disable_position', False):
-            loss_coor = smooth_l1_criterion(y[:, :3], y_pred[:, :3])
-
-        loss_rot = 0
-        if not _config()['STRUCTURE'].get('disable_orientation', False):
-            y_normalized = F.normalize(y[:, 3:7], p=2, dim=1)
-            y_pred_normalized = F.normalize(y_pred[:, 3:7], p=2, dim=1)
-
-            loss_rot = torch.acos(
-                            (torch.sum(y_normalized * y_pred_normalized, dim=1) - 1) * 0.5,
-                        )
-            loss_rot = reduction_func(loss_rot)
-            loss_rot *= gamma_cos
-
-        loss_confidence = 0
-
-        return loss_rot + loss_coor + loss_confidence
+        return loss_rot_total
 
     loss_func = compute_loss
 
@@ -205,7 +187,5 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         loss_func = compute_smooth_l1_loss
     elif loss_type == LossType.PLOSS:
         loss_func = compute_ploss
-    else:
-        loss_func = compute_loss
 
     return loss_func
