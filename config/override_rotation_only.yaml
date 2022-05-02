@@ -1,11 +1,11 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp33_rot_only_ee_seg_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp33_rot_only_ee_seg_shapematch.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch'
 
 GENERAL:
-  save_freq: 24
+  save_freq: 16
 
 DATA:
-  batch_size: 128
+  batch_size: 96
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
@@ -40,7 +40,7 @@ STRUCTURE:
   disable_orientation: false
 
 TRAIN:
-  loss_type: "ploss"
+  loss_type: "shape_match"
 
 TEST:
   batch_size: 2

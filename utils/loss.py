@@ -25,7 +25,8 @@ class LossType(Enum):
     COS2 = "cos2"
     WGEODESIC = "wgeodesic"
     SMOOTHL1 = "smoothl1"
-    PLOSS = "ploss"
+    POSE = "pose"
+    SHAPE_MATCH = "shape_match"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
@@ -160,7 +161,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_rot + loss_coor + loss_confidence
 
-    def compute_ploss(y, y_pred, reduction=reduction, x=None):
+    def compute_pose_loss(y, y_pred, reduction=reduction, x=None):
         loss_rot_total = 0.0
         rot_mat = get_quaternion_rotation_matrix_torch(y[:, 3:])
         rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
@@ -170,6 +171,31 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
             y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
             norms = torch.linalg.norm(y_pred_translated - y_translated, dim=0)
             loss_rot_total += (torch.pow(norms, 2).sum() / (2 * norms.size()[0]))
+
+        if reduction == "mean":
+            loss_rot_total /= len(x.decomposed_coordinates)
+
+        return loss_rot_total
+
+    def compute_shape_match_loss(y, y_pred, reduction=reduction, x=None):
+        loss_rot_total = 0.0
+        rot_mat = get_quaternion_rotation_matrix_torch(y[:, 3:])
+        rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
+
+        for i, coords in enumerate(x.decomposed_coordinates):
+            loss_rot_instance = 0.0
+            y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
+            y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
+
+            for j in range(len(coords)):
+                y_pred_translated_j_diff = y_pred_translated[:, j:j+1] - y_translated
+                norms = torch.linalg.norm(y_pred_translated_j_diff, dim=0)
+                loss_rot_instance += torch.pow(norms, 2).min()
+
+            loss_rot_total += (loss_rot_instance / (2 * len(coords)))
+
+        if reduction == "mean":
+            loss_rot_total /= len(x.decomposed_coordinates)
 
         return loss_rot_total
 
@@ -185,7 +211,9 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         loss_func = compute_with_geodesic_loss
     elif loss_type == LossType.SMOOTHL1:
         loss_func = compute_smooth_l1_loss
-    elif loss_type == LossType.PLOSS:
-        loss_func = compute_ploss
+    elif loss_type == LossType.POSE:
+        loss_func = compute_pose_loss
+    elif loss_type == LossType.SHAPE_MATCH:
+        loss_func = compute_shape_match_loss
 
     return loss_func
