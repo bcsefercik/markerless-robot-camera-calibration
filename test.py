@@ -16,6 +16,7 @@ import open3d as o3d
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
+from utils.loss import get_criterion, LossType
 
 
 import ipdb
@@ -60,7 +61,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 out = model(model_input)
                 poses[:, :3] *= _position_quantization_size
 
-                loss = criterion(out, poses).item()
+                loss = criterion(out, poses, x=model_input).item()
 
                 metric_results = metrics.compute_pose_dist(poses, out)
                 (
@@ -150,8 +151,6 @@ if __name__ == "__main__":
 
     if _use_cuda:
         torch.cuda.empty_cache()
-
-    from model.robotnet import get_criterion
 
     if _config()["STRUCTURE"].get("encode_only", False):
         from model.robotnet_encode import RobotNetEncode as RobotNet

@@ -1,5 +1,7 @@
-import ipdb
+import torch
 import numpy as np
+
+import ipdb
 
 
 def get_quaternion_rotation_matrix(Q_init, switch_w=True):
@@ -19,7 +21,7 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
     if switch_w:
         Q = np.insert(Q_init[:3], 0, Q_init[-1])  # put w to first place
     else:
-        Q = Q_init  # w at the last place
+        Q = Q_init  # w already at the first place
 
     q0 = Q[0]
     q1 = Q[1]
@@ -47,6 +49,36 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
                            [r20, r21, r22]])
 
     return rot_matrix
+
+
+def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:
+    """
+    Taken from: https://github.com/facebookresearch/pytorch3d/blob/main/pytorch3d/transforms/rotation_conversions.py
+    Convert rotations given as quaternions to rotation matrices.
+    Args:
+        quaternions: quaternions with real part first,
+            as tensor of shape (..., 4).
+    Returns:
+        Rotation matrices as tensor of shape (..., 3, 3).
+    """
+    r, i, j, k = torch.unbind(quaternions, -1)
+    two_s = 2.0 / (quaternions * quaternions).sum(-1)
+
+    o = torch.stack(
+        (
+            1 - two_s * (j * j + k * k),
+            two_s * (i * j - k * r),
+            two_s * (i * k + j * r),
+            two_s * (i * j + k * r),
+            1 - two_s * (i * i + k * k),
+            two_s * (j * k - i * r),
+            two_s * (i * k - j * r),
+            two_s * (j * k + i * r),
+            1 - two_s * (i * i + j * j),
+        ),
+        -1,
+    )
+    return o.reshape(quaternions.shape[:-1] + (3, 3))
 
 
 def compute_vec_dist_to_line(p, lp1, lp2):

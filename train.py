@@ -72,7 +72,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             out = model(model_input)
 
             optimizer.zero_grad()
-            loss = criterion(poses, out)
+            loss = criterion(poses, out, x=model_input)
             loss.backward()
             optimizer.step()
 
@@ -160,7 +160,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
                     model_input = (model_input, joint_angles)
                 out = model(model_input)
-                loss = criterion(poses, out)
+                loss = criterion(poses, out, x=model_input)
 
                 poses[:, :3] *= _position_quantization_size
 
@@ -240,6 +240,7 @@ if __name__ == "__main__":
         loss_type=LossType(_config()['TRAIN'].get('loss_type', 'mse')),
         reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
     )
+
     confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
     model = RobotNet(in_channels=3, out_channels=10 if confidence_enabled else 7, D=3)
     _logger.info(f"Model: {str(model)}")

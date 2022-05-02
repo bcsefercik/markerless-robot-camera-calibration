@@ -1,12 +1,17 @@
 from enum import Enum
+from ipaddress import ip_address
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import numpy as np
 
 from utils.quaternion import qeuler
 from utils.metrics import compute_pose_dist
 from utils import config
+from utils.transformation import get_quaternion_rotation_matrix_torch
+
+import ipdb
 
 
 _config = config.Config()
@@ -19,6 +24,7 @@ class LossType(Enum):
     COS2 = "cos2"
     WGEODESIC = "wgeodesic"
     SMOOTHL1 = "smoothl1"
+    PLOSS = "ploss"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
@@ -29,10 +35,12 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
     confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
 
+    reduction_func = torch.sum if reduction == "sum" else torch.mean
+
     gamma = 50
     gamma2 = 1
 
-    def compute_angle_loss(q_expected, q_pred, reduction=reduction):
+    def compute_angle_loss(q_expected, q_pred, reduction=reduction, x=None):
         expected_euler = qeuler(q_expected, order="zyx", epsilon=1e-6)
         predicted_euler = qeuler(q_pred, order="zyx", epsilon=1e-6)
         angle_distance = (
@@ -43,7 +51,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return reduction_func(torch.abs(angle_distance))
 
-    def compute_cos_loss(y, y_pred, reduction=reduction):
+    def compute_cos_loss(y, y_pred, reduction=reduction, x=None):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
         loss_rot = 1.0 - cos_regression_criterion(y[:, :3], y_pred[:, :3])
 
@@ -51,7 +59,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return reduction_func(loss_rot) + loss_coor
 
-    def compute_loss(y, y_pred, reduction=reduction):
+    def compute_loss(y, y_pred, reduction=reduction, x=None):
         loss_coor = regression_criterion(y[:, :3], y_pred[:, :3])
         loss_quaternion = compute_angle_loss(y[:, 3:7], y_pred[:, 3:7])
 
@@ -59,7 +67,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss
 
-    def compute_cos2_loss(y, y_pred, reduction=reduction):
+    def compute_cos2_loss(y, y_pred, reduction=reduction, x=None):
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
         gamma_cos = 2
@@ -103,7 +111,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_rot + loss_coor + loss_confidence
 
-    def compute_with_geodesic_loss(y, y_pred, reduction=reduction):
+    def compute_with_geodesic_loss(y, y_pred, reduction=reduction, x=None):
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
         gamma_cos = 1
@@ -127,7 +135,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_rot + loss_coor + loss_confidence
 
-    def compute_smooth_l1_loss(y, y_pred, reduction=reduction):
+    def compute_smooth_l1_loss(y, y_pred, reduction=reduction, x=None):
         reduction_func = torch.sum if reduction == "sum" else torch.mean
 
         gamma_cos = 1
@@ -151,15 +159,53 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_rot + loss_coor + loss_confidence
 
+    def compute_ploss(y, y_pred, reduction=reduction, x=None):
+        loss_rot_total = 0.0
+        rot_mat = get_quaternion_rotation_matrix_torch(y[:, 3:])
+        rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
+
+        for i, coords in enumerate(x.decomposed_coordinates):
+            y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
+            y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
+
+            ipdb.set_trace()
+
+        gamma_cos = 1
+
+        loss_coor = 0
+        if not _config()['STRUCTURE'].get('disable_position', False):
+            loss_coor = smooth_l1_criterion(y[:, :3], y_pred[:, :3])
+
+        loss_rot = 0
+        if not _config()['STRUCTURE'].get('disable_orientation', False):
+            y_normalized = F.normalize(y[:, 3:7], p=2, dim=1)
+            y_pred_normalized = F.normalize(y_pred[:, 3:7], p=2, dim=1)
+
+            loss_rot = torch.acos(
+                            (torch.sum(y_normalized * y_pred_normalized, dim=1) - 1) * 0.5,
+                        )
+            loss_rot = reduction_func(loss_rot)
+            loss_rot *= gamma_cos
+
+        loss_confidence = 0
+
+        return loss_rot + loss_coor + loss_confidence
+
+    loss_func = compute_loss
+
     if loss_type == LossType.COS:
-        return compute_cos_loss
+        loss_func = compute_cos_loss
     elif loss_type == LossType.MSE:
-        return regression_criterion
+        loss_func = regression_criterion
     elif loss_type == LossType.COS2:
-        return compute_cos2_loss
+        loss_func = compute_cos2_loss
     elif loss_type == LossType.WGEODESIC:
-        return compute_with_geodesic_loss
+        loss_func = compute_with_geodesic_loss
     elif loss_type == LossType.SMOOTHL1:
-        return compute_smooth_l1_loss
+        loss_func = compute_smooth_l1_loss
+    elif loss_type == LossType.PLOSS:
+        loss_func = compute_ploss
     else:
-        return compute_loss
+        loss_func = compute_loss
+
+    return loss_func

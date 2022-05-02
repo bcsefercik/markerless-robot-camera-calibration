@@ -5,9 +5,9 @@ GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 96
+  batch_size: 2
   # batch_size: 2
-  workers: 4
+  workers: 0
   data_type: ee_seg
 
   scale: 200
@@ -38,7 +38,6 @@ DATA:
 STRUCTURE:
   backbone: 'minkunet'
   encode_only: true
-  loss_type: "wgeodesic"
 
   use_joint_angles: false
   encode_only: true
@@ -47,6 +46,9 @@ STRUCTURE:
 
   disable_position: false
   disable_orientation: true
+
+TRAIN:
+  loss_type: "ploss"
 
 TEST:
   batch_size: 2
