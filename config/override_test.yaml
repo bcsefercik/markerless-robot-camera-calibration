@@ -12,4 +12,4 @@ TEST:
   batch_size: 48
   split: test
   workers: 3
-  checkpoint: default-000000384.pth
+  checkpoint: default-000000272.pth

@@ -76,16 +76,16 @@ class AliveV2Dataset(Dataset):
         x, semantic_pred, file_name = self.load_data_file(i)
         joint_angles = None
         if isinstance(x, dict):
-            xyz_origin = x['points']
+            points = x['points']
             rgb = x['rgb']
             labels = x['labels']
             instance_labels = x['instance_labels']
             pose = x['pose']
             joint_angles = x['joint_angles']
         else:
-            xyz_origin, rgb, labels, instance_labels, pose = x
+            points, rgb, labels, instance_labels, pose = x
 
-        xyz_origin = xyz_origin.astype(np.float32)
+        points = points.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
 
@@ -111,35 +111,35 @@ class AliveV2Dataset(Dataset):
         pose = np.reshape(pose, (1, -1))
 
         if _config.DATA.data_type == "gt_seg":
-            xyz_origin = xyz_origin[arm_idx]
+            points = points[arm_idx]
             rgb = rgb[arm_idx]
             labels = labels[arm_idx]
         elif _config.DATA.data_type == "gt_bbox":
-            min_point = xyz_origin[arm_idx].min(axis=0)
-            max_point = xyz_origin[arm_idx].max(axis=0)
+            min_point = points[arm_idx].min(axis=0)
+            max_point = points[arm_idx].max(axis=0)
             arm_bbox = (
-                np.logical_and(xyz_origin <= max_point, xyz_origin >= min_point).sum(
+                np.logical_and(points <= max_point, points >= min_point).sum(
                     axis=1
                 )
                 == 3
             )
-            xyz_origin = xyz_origin[arm_bbox]
+            points = points[arm_bbox]
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
         elif _config.DATA.data_type == "ee_seg":
             if len(eemask) < 1:
                 return None
 
-            xyz_origin = xyz_origin[eemask]
+            points = points[eemask]
             rgb = rgb[eemask]
             labels = labels[eemask]
 
         if self.roi is not None:
             instance_roi = get_roi_mask(
-                xyz_origin,
+                points,
                 **self.roi[other['position']]
             )
-            xyz_origin = xyz_origin[instance_roi]
+            points = points[instance_roi]
             rgb = rgb[instance_roi]
             labels = labels[instance_roi]
 
@@ -161,7 +161,7 @@ class AliveV2Dataset(Dataset):
                 rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=True)
                 p2_diff = rot_mat @ np.array([0.08, 0, 0])
                 _, self.ee_points_idx[i] = select_closest_points_to_line(
-                    xyz_origin,
+                    points,
                     pose[0, :3],
                     pose[0, :3] + p2_diff,
                     count=_config.VOTE.count,
@@ -173,16 +173,22 @@ class AliveV2Dataset(Dataset):
 
             labels[self.ee_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
 
+        if _config.DATA.center_at_origin:
+            origin_offset = (points.max(axis=0) + points.min(axis=0)) / 2
+            points -= origin_offset
+            pose[:, :3] -= origin_offset
+            other['origin_offset'] = origin_offset
+
         if self.quantization_enabled:
             discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
-                coordinates=xyz_origin,
+                coordinates=points,
                 features=rgb,
                 labels=labels,
                 quantization_size=self.quantization_size,
                 ignore_label=_config.DATA.ignore_label,
             )
         else:
-            discrete_coords, unique_feats, unique_labels = xyz_origin, rgb, labels
+            discrete_coords, unique_feats, unique_labels = points, rgb, labels
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 

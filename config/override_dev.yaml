@@ -4,3 +4,5 @@ exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/dev'
 DATA:
   batch_size: 2
   workers: 0
+
+  center_at_origin: true
