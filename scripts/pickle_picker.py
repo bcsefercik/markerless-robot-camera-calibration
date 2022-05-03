@@ -9,7 +9,7 @@ import sklearn.preprocessing as preprocessing
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
-from utils.visualization import get_frame_from_pose
+from utils.visualization import create_coordinate_frame, get_frame_from_pose
 
 import ipdb
 
@@ -21,7 +21,7 @@ def fix_filepath(filepath):
 
 def save_file(filename, data):
     with open(filename, 'w') as fp:
-        json.dump(data, fp)
+        json.dump(data, fp, indent=4)
     print('Saved')
 
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
     for s in splits:
         for i, ins in enumerate(splits[s]):
-            if i % 5 != 0:
+            if i % 3 != 0:
                 continue
 
             try:
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                     rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
                     rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
-                ee_frame = get_frame_from_pose(frame, pose, switch_w=True)
+                ee_frame = create_coordinate_frame(pose, switch_w=True)
                 kinect_frame = get_frame_from_pose(frame, [0] * 7)
 
                 pcd = o3d.geometry.PointCloud()
@@ -101,8 +101,8 @@ if __name__ == "__main__":
                 position_ok = input("Is position OK? [Y/n]: ")
                 orientation_ok = input("Is orientation OK? [Y/n]: ")
 
-                splits[s][i]['position_eligibility'] = position_ok.lower() in ('', 'yes', 'y')
-                splits[s][i]['orientation_eligibility'] = orientation_ok.lower() in ('', 'yes', 'y')
+                splits[s][i]['position_eligibility'] = position_ok.strip().lower() in ('', 'yes', 'y')
+                splits[s][i]['orientation_eligibility'] = orientation_ok.strip().lower() in ('', 'yes', 'y')
 
                 if i % args.save_freq == 0:
                     save_file(args.splits, splits)
