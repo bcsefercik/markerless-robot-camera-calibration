@@ -102,13 +102,15 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
         with open(output_filename.replace('.txt', '.json'), "a") as fp:
             json.dump(results_json, fp)
 
-        for k in overall_results:
-            overall_results[k] = round(statistics.mean(overall_results[k]), 4)
         for pos in individual_results:
             for k in individual_results[pos]:
                 individual_results[pos][k] = round(
                     statistics.mean(individual_results[pos][k]), 4
                 )
+                overall_results[k].append(individual_results[pos][k])
+
+        for k in overall_results:
+            overall_results[k] = round(statistics.mean(overall_results[k]), 4)
 
         with open(output_filename, "a") as fp:
             fp.write("\n---------- SUMMARY ----------\n")

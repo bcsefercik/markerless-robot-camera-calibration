@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_segmentation_s200_wee_18d_minkunet14A.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d_minkunet14A'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp35_segmentation_origin_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s200'
 
 GENERAL:
   save_freq: 4
@@ -12,7 +12,7 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 6
+  batch_size: 4
 
   scale: 200  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
@@ -29,6 +29,8 @@ DATA:
 
   ee_segmentation_enabled: true
 
+  center_at_origin: true
+
   # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
   #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
   # # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
@@ -43,7 +45,7 @@ STRUCTURE:
   use_joint_angles: False
 
   bottleneck: True
-  backbone: 'minkunet14A'
+  backbone: 'minkunet'
 
 TRAIN:
   fixed_modules: []

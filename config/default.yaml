@@ -36,6 +36,7 @@ DATA:
   voxelize_position: false
 
   center_at_origin: false
+  base_at_origin: false
 
 STRUCTURE:
   m: 32 # 16 or 32

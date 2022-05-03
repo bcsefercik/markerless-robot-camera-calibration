@@ -1,11 +1,11 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp31_vote_minkunet14A.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_vote_minkunet14A'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp34_vote_origin.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin'
 
 GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 16
+  batch_size: 48
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
@@ -35,11 +35,13 @@ DATA:
 
   voting_enabled: true
 
+  center_at_origin: true
+
 TRAIN:
   loss_reduction: "sum"
 
 STRUCTURE:
-  backbone: 'minkunet14A'
+  backbone: 'minkunet'
   loss_type: "wgeodesic"
 
   # compute_confidence: false

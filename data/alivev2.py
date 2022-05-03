@@ -178,6 +178,11 @@ class AliveV2Dataset(Dataset):
             points -= origin_offset
             pose[:, :3] -= origin_offset
             other['origin_offset'] = origin_offset
+        elif _config.DATA.base_at_origin:
+            origin_base_offset = points.min(axis=0)
+            points -= origin_base_offset
+            pose[:, :3] -= origin_base_offset
+            other['origin_base_offset'] = origin_base_offset
 
         if self.quantization_enabled:
             discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(

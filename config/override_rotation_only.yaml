@@ -1,15 +1,15 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp33_rot_only_ee_seg_shapematch_origin_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_origin_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp33_rot_only_ee_seg_shapematch_baseorigin_s400.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_baseorigin_s400'
 
 GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 72
+  batch_size: 32
   workers: 4
   data_type: 'ee_seg'
 
-  scale: 200
+  scale: 400
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
@@ -30,7 +30,7 @@ DATA:
   position_eligibility_enabled: false
   orientation_eligibility_enabled: true
 
-  center_at_origin: true
+  base_at_origin: true
 
 STRUCTURE:
   backbone: 'minkunet'
