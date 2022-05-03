@@ -183,15 +183,14 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
 
         for i, coords in enumerate(x.decomposed_coordinates):
-            loss_rot_instance = 0.0
-            loss_rot_instance_2 = 0.0
             y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
             y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
 
-            for j in range(len(coords)):
-                y_pred_translated_j_diff = y_pred_translated - y_translated[:, j:j+1]
-                norms = torch.linalg.norm(y_pred_translated_j_diff, dim=0)
-                loss_rot_instance += torch.pow(norms, 2).min()
+            y_pred_translated_reshaped = y_pred_translated.view(3, 1, -1)
+            y_pred_translated_permuted = y_pred_translated_reshaped.permute((2, 0, 1))
+            y_pred_translated_diff = y_pred_translated_permuted - y_translated
+            norms = torch.linalg.norm(y_pred_translated_diff, dim=1)
+            loss_rot_instance = torch.pow(norms, 2).min(dim=1).values.sum()
 
             loss_rot_total += (loss_rot_instance / (2 * len(coords)))
 
