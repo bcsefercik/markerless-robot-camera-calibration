@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp35_segmentation_origin_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp35_segmentation_origin_s100.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s100'
 
 GENERAL:
   save_freq: 4
@@ -12,9 +12,9 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 4
+  batch_size: 6
 
-  scale: 200  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 100  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean

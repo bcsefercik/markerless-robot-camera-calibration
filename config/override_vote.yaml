@@ -1,16 +1,16 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp34_vote_origin.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp34_vote_origin_s400.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin_s400'
 
 GENERAL:
   save_freq: 16
 
 DATA:
-  batch_size: 48
+  batch_size: 20
   # batch_size: 2
   workers: 4
   data_type: 'ee_seg'
 
-  scale: 200
+  scale: 400
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
