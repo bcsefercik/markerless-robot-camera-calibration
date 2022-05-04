@@ -2,6 +2,9 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp24.log
 exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp24
 
+PARAM:
+  ee_r: 0.02  # m
+
 GENERAL:
   save_freq: 4
   seed: 1
@@ -82,3 +85,5 @@ TEST:
   checkpoint: default_cos2_v2_18d-000000456.pth
   print_precision: 4
 
+  rotation_results: null
+  translation_results: null

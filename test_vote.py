@@ -17,6 +17,7 @@ import open3d as o3d
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
+from utils.transformation import get_quaternion_rotation_matrix_torch
 from train_vote import compute_accuracies
 
 import ipdb
@@ -28,6 +29,11 @@ _logger = logger.Logger().get()
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+_rotation_preds = dict()
+if _config.TEST.rotation_results is not None:
+    with open(_config.TEST.rotation_results, 'r') as fp:
+        _rotation_preds = json.load(fp)
+
 torch.set_printoptions(precision=_config.TEST.print_precision, sci_mode=False)
 
 
@@ -36,6 +42,18 @@ def compute_center_dist(out, labels, coords):
     pred_center = coords[out[:,1].argmax()].view(1, -1)
     dist = float(torch.cdist(gt_center, pred_center)[0][0])
     return dist, gt_center, pred_center
+
+
+def get_pred_center(out, coords, q=None):
+    pred_center = coords[out[:, 1].argmax()]
+
+    if q is not None:
+        q = torch.tensor(q, dtype=torch.float32).view(1, -1)
+        rot_mat = get_quaternion_rotation_matrix_torch(q)[0]
+        offset = torch.tensor([-_config.PARAM.ee_r, 0, 0])
+        pred_center += torch.matmul(rot_mat, offset)
+
+    return pred_center
 
 
 def test(model, criterion, data_loader, output_filename="results.txt"):
@@ -58,8 +76,10 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 end = other_info["offset"][1]
                 fname = other_info["filename"]
                 position = other_info["position"]
+                pose_ins = pose[fi]
+                ins_key = f"{position}/{fname}"
 
-                print(f"{position}/{fname}")
+                print(ins_key)
                 if (labels[start:end] == 1).sum() < 1:
                     print('Skip, no ee points.')
                     continue
@@ -78,13 +98,20 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 out_field = soutput.slice(in_field)
                 logits = out_field.F
 
-                center_dist, center_gt, center_pred = compute_center_dist(logits, labels[start:end], coords[start:end])
+                # center_dist, center_gt, center_pred = compute_center_dist(logits, labels[start:end], coords[start:end])
+                rot_pred = _rotation_preds.get(ins_key, dict()).get('preds', None)
+                if rot_pred is not None:
+                    rot_pred = rot_pred[3:]
+
+                center_pred = get_pred_center(logits, coords[start:end], q=rot_pred)
+                center_dist = round(torch.linalg.norm(center_pred -  pose_ins[:3], ord=2).item(), 4)
+                # ipdb.set_trace()
 
                 result = {
                     # "center_pred_conf": logits.max().item(),
                     "center_dist": round(center_dist, 4),
-                    "center_pred": [round(c, 4) for c in center_pred[0].tolist()],
-                    "center_gt": [round(c, 4) for c in center_gt[0].tolist()]
+                    "center_pred": [round(c, 4) for c in center_pred.tolist()],
+                    "center_gt": [round(c, 4) for c in pose_ins[:3].tolist()]
                 }
 
                 # individual_results[position]["accuracy"].append(
@@ -102,18 +129,18 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 # overall_results["pred_conf"].append(
                 #     result["center_pred_conf"]
                 # )
-                results_json[f"{position}/{fname}"] = result
+                results_json[ins_key] = result
 
                 with open(output_filename, "a") as fp:
                     fp.write(
-                        f"{position}/{fname}: {json.dumps(result, sort_keys=True, indent=4)}\n"
+                        f"{ins_key}: {json.dumps(result, sort_keys=True, indent=4)}\n"
                     )
                 # ipdb.set_trace()
             # except Exception as e:
             #     print(e)
                 # _logger.exception(f"Filenames: {json.dumps(others)}")
 
-        with open(output_filename.replace('.txt', '.json'), "a") as fp:
+        with open(output_filename.replace('.txt', '.json'), "w") as fp:
             json.dump(results_json, fp)
 
         for k in overall_results:
