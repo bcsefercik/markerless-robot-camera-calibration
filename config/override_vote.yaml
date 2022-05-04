@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp34_vote_origin_s400.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin_s400'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp34_vote_baseorigin_s400.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_baseorigin_s400'
 
 GENERAL:
   save_freq: 16
@@ -35,7 +35,8 @@ DATA:
 
   voting_enabled: true
 
-  center_at_origin: true
+  center_at_origin: false
+  base_at_origin: true
 
 TRAIN:
   loss_reduction: "sum"

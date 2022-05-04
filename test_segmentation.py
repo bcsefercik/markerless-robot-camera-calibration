@@ -19,6 +19,7 @@ from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
 from train_segmentation import compute_accuracies
+from utils.output import ClusterUtil
 
 import ipdb
 
@@ -28,6 +29,8 @@ _logger = logger.Logger().get()
 
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
+
+_ee_cluster = ClusterUtil()
 
 torch.set_printoptions(precision=_config.TEST.print_precision, sci_mode=False)
 
@@ -73,6 +76,10 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     _, preds = logits.max(1)
                     preds = preds.cpu().numpy()
                     labels_cpu = labels[start:end].cpu().numpy().reshape((-1))
+
+                    # if you need to cluster/filter ee output use following line
+                    # biggest_ee_idx = _ee_cluster.get_biggest_cluster(coords[start:end][labels_cpu == 2])
+
                     accuracy = (preds == labels_cpu).sum() / len(labels_cpu)
 
                     fname = other_info["filename"]

@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_pose_match.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_pose_match'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_pose_match_custom.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_pose_match_custom'
 
 GENERAL:
   save_freq: 16

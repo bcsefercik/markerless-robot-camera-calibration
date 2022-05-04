@@ -1,13 +1,17 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/test.log
 
 DATA:
+  batch_size: 20
+
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
-  roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
 
   position_eligibility_enabled: false
   orientation_eligibility_enabled: false
 
+  voxelize_position: false
+
 TEST:
   workers: 3
-  checkpoint: default-000000192.pth
+  checkpoint: default-000000008.pth

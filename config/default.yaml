@@ -35,7 +35,7 @@ DATA:
 
   voxelize_position: false
 
-  center_at_origin: false
+  center_at_origin: true
   base_at_origin: false
 
 STRUCTURE:
