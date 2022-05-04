@@ -1,3 +1,4 @@
+import pickle
 import sys
 import os
 import argparse
@@ -32,8 +33,8 @@ if __name__ == "__main__":
 
     results = None
     if args.results:
-        with open(args.results, 'r') as fp:
-            results = json.load(fp)
+        with open(args.results, 'rb') as fp:
+            results = pickle.load(fp)
 
     roi = dict()
     if args.roi is not None:
