@@ -1,3 +1,4 @@
+import pickle
 import random
 import time
 import os
@@ -92,15 +93,15 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
 
                     with open(output_filename, "a") as fp:
                         fp.write(
-                            f"{position}/{fname}: {json.dumps(result, sort_keys=True)}\n"
+                            f"{position}/{fname}: {result['accuracy']}\n"
                         )
                     # ipdb.set_trace()
             except Exception as e:
                 print(e)
                 _logger.exception(f"Filenames: {json.dumps(others)}")
 
-        with open(output_filename.replace('.txt', '.json'), "a") as fp:
-            json.dump(results_json, fp)
+        with open(output_filename.replace('.txt', '.pickle'), "wb") as fp:
+            pickle.dump(results_json, fp)
 
         for pos in individual_results:
             for k in individual_results[pos]:
