@@ -15,6 +15,7 @@ import MinkowskiEngine as ME
 from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
+from utils.output import get_pred_center
 
 
 import ipdb
@@ -44,10 +45,10 @@ def compute_accuracies(out, labels, others):
     ]
 
 
-def compute_center_dists(out, labels, coords, others):
+def compute_center_dists(out, labels, coords, poses, others):
     results = list()
 
-    for oi in others:
+    for i, oi in enumerate(others):
         out_ins = out[oi["offset"][0] : oi["offset"][1]]
         labels_ins = labels[oi["offset"][0] : oi["offset"][1]]
         if (labels_ins == 1).sum().item() < 1:
@@ -56,10 +57,9 @@ def compute_center_dists(out, labels, coords, others):
         coords_ins = (
             coords[oi["offset"][0] : oi["offset"][1]][:, 1:] * QUANTIZATION_SIZE
         )
-
-        gt_center = coords_ins[(labels_ins == 1).view(-1)].mean(dim=0, keepdim=True)  # mean since multiple points are labeled positive
-        pred_center = coords_ins[out_ins[:,1].argmax()].view(1, -1)
-        dist = float(torch.cdist(gt_center, pred_center)[0][0])
+        pose_ins = poses[i]
+        pred_center = get_pred_center(out_ins.clone().detach(), coords_ins, ee_r=_config.PARAM.ee_r, q=pose_ins[3:])
+        dist = torch.linalg.norm(pred_center - pose_ins[:3], ord=2).item()
         results.append(dist)
 
     return results
@@ -91,7 +91,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 _config.TRAIN.multiplier,
             )
 
-            coords, feats, labels, _, others = batch
+            coords, feats, labels, poses, others = batch
             labels = labels.to(device=_device)
 
             model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
@@ -109,7 +109,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             accuracies = compute_accuracies(out.features, labels, others)
             am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
 
-            center_dists = compute_center_dists(out.features, labels, coords, others)
+            center_dists = compute_center_dists(out.features, labels, coords, poses, others)
             if len(center_dists) > 0:
                 am_dict["center_dist"].update(statistics.mean(center_dists), len(center_dists))
 
