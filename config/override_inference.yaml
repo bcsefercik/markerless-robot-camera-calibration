@@ -1,0 +1,6 @@
+MODE: 'inference'
+
+DATA:
+  batch_size: 2
+
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'

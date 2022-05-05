@@ -16,6 +16,9 @@ from utils import config
 _config = config.Config()
 
 _backbone = _config()['STRUCTURE'].get('backbone')
+if _config.MODE == "inference":
+    _backbone = _config.INFERENCE.ROTATION.backbone
+
 if _backbone == 'minkunet':
     from model.backbone.minkunet import MinkUNet18D as UNet
 elif _backbone == 'minkunet101':
@@ -33,7 +36,7 @@ M = _config.STRUCTURE.m
 class RobotNetVote(UNet):
     name = "robotnet"
 
-    def __init__(self, in_channels, out_channels=256, D=3):
+    def __init__(self, in_channels, out_channels=256, D=3, num_classes=(2 if _config.DATA.data_type == "ee_seg" else 4)):
         UNet.__init__(self, in_channels, out_channels, D)
         # self.leaky_relu = nn.LeakyReLU()
         self.leaky_relu = ME.MinkowskiLeakyReLU()
@@ -49,7 +52,7 @@ class RobotNetVote(UNet):
             ME.MinkowskiLeakyReLU(),
             ME.MinkowskiOps.MinkowskiLinear(
                 1024,
-                2 if _config.DATA.data_type == "ee_seg" else 4
+                num_classes
             )
         )
 

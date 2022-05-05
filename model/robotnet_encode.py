@@ -16,6 +16,9 @@ from utils import config
 _config = config.Config()
 
 _backbone = _config()['STRUCTURE'].get('backbone')
+if _config.MODE == "inference":
+    _backbone = _config.INFERENCE.TRANSLATION.backbone
+
 if _backbone == 'minkunet':
     from model.backbone.minkunet import MinkUNet18D as UNet
 elif _backbone == 'minkunet101':

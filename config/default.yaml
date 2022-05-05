@@ -2,6 +2,8 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp24.log
 exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp24
 
+MODE: 'train'  # or inference
+
 PARAM:
   ee_r: 0.02  # m
 
@@ -87,3 +89,26 @@ TEST:
 
   rotation_results: null
   translation_results: null
+
+INFERENCE:
+  INPUT:
+    roi: {}
+
+  SEGMENTATION:
+    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s50/default-000000012.pth'
+    backbone: 'minkunet'
+    scale: 50
+    classes: 3
+
+  TRANSLATION:
+    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin/default-000000096.pth'
+    backbone: 'minkunet'
+    classes: ['background', 'ee']
+    scale: 200
+
+  ROTATION:
+    backbone: 'minkunet'
+    encode_only: true
+    scale: 200
+    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_origin_s200/default-000000208.pth'
+
