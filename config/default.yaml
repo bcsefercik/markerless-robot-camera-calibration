@@ -91,6 +91,7 @@ TEST:
   translation_results: null
 
 INFERENCE:
+  data_source: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json
   INPUT:
     roi: {}
 

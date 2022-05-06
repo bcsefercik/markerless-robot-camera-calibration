@@ -22,7 +22,6 @@ import MinkowskiEngine as ME
 
 
 _config = config.Config()
-_config.save()
 _logger = logger.Logger().get()
 
 _use_cuda = torch.cuda.is_available()
