@@ -29,7 +29,6 @@ _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
-
 class MainApp:
     def __init__(self, data_source) -> None:
         if os.path.isfile(str(data_source)):
@@ -60,7 +59,7 @@ class MainApp:
         self.window.add_child(self.widget3d)
 
         self.lit = rendering.MaterialRecord()
-        self.lit.shader = "defaultLit"
+        self.lit.shader = "defaultLitTransparency"
 
         frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
         kinect_frame = get_frame_from_pose(frame, [0] * 7)
@@ -106,7 +105,6 @@ class MainApp:
 
         self.window.add_child(self.panel)
 
-        self.is_done = False
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
         threading.Thread(target=self._inference_thread).start()
@@ -135,7 +133,6 @@ class MainApp:
             out_field = soutput.slice(in_field)
 
             print('inference', soutput2.F[0], data.timestamp)
-
 
     def _calibrate(self):
         self._calibrate_button.enabled = False
@@ -182,7 +179,7 @@ class MainApp:
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
         self._inference_queue.put(dict())  # needs to clear inference loop
-        time.sleep(0.1)
+        time.sleep(5)
 
         _logger.info("Closing.")
 

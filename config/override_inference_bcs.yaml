@@ -10,13 +10,13 @@ INFERENCE:
   data_source: /Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/dataset/alive_test_v2_splits.json
 
   SEGMENTATION:
-    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation.pth'
+    checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/segmentation.pth'
 
   TRANSLATION:
-    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/translation.pth'
+    checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/translation.pth'
 
   ROTATION:
-    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation.pth'
+    checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/rotation.pth'
 
 exp_path: /Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference
 log_path: /Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/log/inference.log

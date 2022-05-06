@@ -9,6 +9,8 @@ from utils import config, logger
 _config = config.Config()
 _logger = logger.Logger().get()
 
+_use_cuda = torch.cuda.is_available()
+_device = torch.device("cuda" if _use_cuda else "cpu")
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -98,7 +100,7 @@ def checkpoint_restore(
 
     if len(f) > 0:
         _logger.info("Restore from " + f)
-        checkpoint = torch.load(f)
+        checkpoint = torch.load(f, map_location=torch.device(_device))
         model.load_state_dict(checkpoint["model_state_dict"])
 
         if optimizer is not None:
