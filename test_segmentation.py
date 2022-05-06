@@ -15,10 +15,9 @@ from torch.utils.data import DataLoader
 import numpy as np
 import MinkowskiEngine as ME
 import open3d as o3d
-from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
-from train_segmentation import compute_accuracies
+# from train_segmentation import compute_accuracies
 from utils.output import ClusterUtil
 
 import ipdb

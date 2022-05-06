@@ -1,0 +1,15 @@
+log_path: /home/ercan/bcs_workspace/unknown_object_segmentation/test.log
+exp_path: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference
+
+DATA:
+  batch_size: 2
+
+  file_names: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json'
+
+  # roi: ['/home/ercan/bcs_workspace/unknown_object_segmentation/others/alive_test_v2_limits.json']
+
+
+TEST:
+  workers: 3
+  checkpoint: segmentation.pth
+  rotation_results: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_2_s400/default-000000320_results_alive_test_v2_splits_test.json

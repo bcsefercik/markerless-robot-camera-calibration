@@ -1,0 +1,23 @@
+MODE: 'inference'
+
+DATA:
+  batch_size: 2
+
+  folder: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2'
+  file_names: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json'
+
+INFERENCE:
+  INPUT:
+    roi: {}
+
+  SEGMENTATION:
+    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation.pth'
+
+  TRANSLATION:
+    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/translation.pth'
+
+  ROTATION:
+    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation.pth'
+
+exp_path: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference
+log_path: /home/ercan/bcs_workspace/unknown_object_segmentation/log/inference.log

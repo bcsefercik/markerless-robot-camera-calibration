@@ -13,7 +13,6 @@ from torch.utils.data import DataLoader
 import numpy as np
 import MinkowskiEngine as ME
 import open3d as o3d
-from tensorboardX import SummaryWriter
 
 from utils import config, logger, utils, metrics
 from utils.loss import get_criterion, LossType
@@ -24,7 +23,6 @@ import ipdb
 
 _config = config.Config()
 _logger = logger.Logger().get()
-_tensorboard_writer = SummaryWriter(_config.exp_path)
 
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
