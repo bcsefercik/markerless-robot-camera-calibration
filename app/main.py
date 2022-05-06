@@ -1,25 +1,33 @@
-from audioop import mul
-import multiprocessing
-import ipdb
-
 import os
 import sys
+import multiprocessing
+import ipdb
+import time
+import threading
+import queue
+import copy
+
 import numpy as np
 import open3d as o3d
 import open3d.visualization.gui as gui
 import open3d.visualization.rendering as rendering
-import time
-import threading
-
-import data_engine
-
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.visualization import get_frame_from_pose
 from utils import config, logger, utils
 
+import data_engine
+from inference_engine import InferenceEngine
+
+import torch
+import MinkowskiEngine as ME
+
 _config = config.Config()
 _logger = logger.Logger().get()
+
+_use_cuda = torch.cuda.is_available()
+_device = torch.device("cuda" if _use_cuda else "cpu")
+
 
 
 class MainApp:
@@ -28,12 +36,14 @@ class MainApp:
             self._data_source = data_engine.PickleDataEngine(data_source)
         else:
             self._data_source = data_engine.FreenectDataEngine()
+        self.dummy = self._data_source.get_frame()
+        self._inference_engine = InferenceEngine()
 
         self.stop_event = multiprocessing.Event()
         self._seg_event = multiprocessing.Event()
         self._calibration_event = multiprocessing.Event()
+        self._inference_queue = queue.Queue(1)
 
-        self._data_source = data_engine.PickleDataEngine('/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/dataset/alive_test_v2_splits.json')
         self.rot_mat = np.array([
                 [1, 0, 0],
                 [0, -1, 0],
@@ -99,6 +109,33 @@ class MainApp:
         self.is_done = False
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
+        threading.Thread(target=self._inference_thread).start()
+
+    def _inference_thread(self):
+        while True:
+            data = self._inference_queue.get()
+
+            if self.stop_event.is_set():
+                return
+
+            rgb = torch.from_numpy(data.rgb).to(dtype=torch.float32)
+            points = torch.from_numpy(data.points).to(dtype=torch.float32)
+
+            in_field = ME.TensorField(
+                features=rgb,
+                coordinates=ME.utils.batched_coordinates([points / 0.02], dtype=torch.float32),
+                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+                device=_device,
+            )
+            sinput = in_field.sparse()
+            soutput = self._inference_engine.segmentation_model(sinput)
+            soutput1 = self._inference_engine.rotation_model(sinput)
+            soutput2 = self._inference_engine.translation_model(sinput)
+            out_field = soutput.slice(in_field)
+
+            print('inference', soutput2.F[0], data.timestamp)
+
 
     def _calibrate(self):
         self._calibrate_button.enabled = False
@@ -110,10 +147,9 @@ class MainApp:
             if self.stop_event.is_set():
                 return
 
-            print('Calibration yo!')
             self._results_label.text = "calibration yo!"
-            time.sleep(5)
 
+            time.sleep(5)
 
             self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
             self._calibrate_button.enabled = True
@@ -145,8 +181,11 @@ class MainApp:
         self.stop_event.set()  # set before all
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
+        self._inference_queue.put(dict())  # needs to clear inference loop
+        time.sleep(0.1)
 
-        print("Closing.")
+        _logger.info("Closing.")
+
         return True  # False would cancel the close
 
     def _update_thread(self):
@@ -154,13 +193,20 @@ class MainApp:
         # the scene or any part of the UI.
         def update():
             data = self._data_source.get_frame()
+
+            try:
+                self._inference_queue.put_nowait(copy.deepcopy(data))
+            except queue.Full:
+                pass
+
             self.pcd.points = o3d.utility.Vector3dVector(data.points)
 
             if self._seg_event.is_set():
                 data.rgb *= 0
-
             self.pcd.colors = o3d.utility.Vector3dVector(data.rgb)
             # self.pcd.rotate(self.rot_mat)
+
+            print('update gui', data.timestamp)
 
             self.widget3d.scene.remove_geometry("pcd")
             self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)

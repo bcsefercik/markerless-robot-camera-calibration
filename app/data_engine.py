@@ -17,7 +17,7 @@ from utils import file_utils
 class PointCloutDTO:
     points: np.array
     rgb: np.array
-    timestamp: datetime = datetime.utcnow()
+    timestamp: datetime
     joint_angles: np.array = None
 
 
@@ -56,7 +56,7 @@ class PickleDataEngine(DataEngineInterface):
         else:
             points, rgb, _, _, _ = data
 
-        return PointCloutDTO(points=points, rgb=rgb)
+        return PointCloutDTO(points=points, rgb=rgb, timestamp=datetime.utcnow())
 
     def __len__(self):
         return len(self.data_pool)
