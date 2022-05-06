@@ -30,6 +30,8 @@ class MainApp:
             self._data_source = data_engine.FreenectDataEngine()
 
         self.stop_event = multiprocessing.Event()
+        self._seg_event = multiprocessing.Event()
+        self._calibration_event = multiprocessing.Event()
 
         self._data_source = data_engine.PickleDataEngine('/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/dataset/alive_test_v2_splits.json')
         self.rot_mat = np.array([
@@ -39,7 +41,7 @@ class MainApp:
             ])
 
         self.window = gui.Application.instance.create_window(
-            "Open3D - Video Example", 1000, 500)
+            "Alive Robot Calibration Tool", 1000, 500)
         self.window.set_on_layout(self._on_layout)
         self.window.set_on_close(self._on_close)
 
@@ -73,19 +75,61 @@ class MainApp:
 
         em = self.window.theme.font_size
         margin = 0.5 * em
-        self.panel = gui.Vert(0.5 * em, gui.Margins(margin))
+        self.panel = gui.Vert(0.5 * em, gui.Margins(left=margin, top=margin, right=margin))
 
         # ipdb.set_trace()
-        # self.panel.add_child(gui.Label("Color image"))
-        # # self.rgb_widget = gui.ImageWidget(self.rgb_images[0])
-        # self.panel.add_child(self.rgb_widget)
-        # self.panel.add_child(gui.Label("Depth image (normalized)"))
-        # # self.depth_widget = gui.ImageWidget(self.depth_images[0])
-        # # self.panel.add_child(self.depth_widget)
-        # self.window.add_child(self.panel)
+
+        self._seg_button = gui.Button("Show Segmentation")
+        self._seg_button.horizontal_padding_em = 0.5
+        self._seg_button.vertical_padding_em = 0.5
+        self._seg_button.set_on_clicked(self._toggle_segmentation)
+        self.panel.add_child(self._seg_button)
+
+        self._calibrate_button = gui.Button("Calibrate")
+        self._calibrate_button.horizontal_padding_em = 0.5
+        self._calibrate_button.vertical_padding_em = 0.5
+        self._calibrate_button.set_on_clicked(self._calibrate)
+        self.panel.add_child(self._calibrate_button)
+
+        self._results_label = gui.Label("Calibration Results")
+        self.panel.add_child(self._results_label)
+
+        self.window.add_child(self.panel)
 
         self.is_done = False
         threading.Thread(target=self._update_thread).start()
+        threading.Thread(target=self._calibration_thread).start()
+
+    def _calibrate(self):
+        self._calibrate_button.enabled = False
+        self._calibration_event.set()
+
+    def _calibration_thread(self):
+        while True:
+            self._calibration_event.wait()
+            if self.stop_event.is_set():
+                return
+
+            print('Calibration yo!')
+            self._results_label.text = "calibration yo!"
+            time.sleep(5)
+
+
+            self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
+            self._calibrate_button.enabled = True
+            self._calibration_event.clear()
+
+    def _toggle_segmentation(self):
+        # self._segmentation_enabled = not self._segmentation_enabled
+
+        if self._seg_event.is_set():
+            self._seg_event.clear()
+            self._seg_button.text = "Show Segmentation"
+        else:
+            self._seg_event.set()
+            self._seg_button.text = "Hide Segmentation"
+
+        return True
 
     def _on_layout(self, layout_context):
         contentRect = self.window.content_rect
@@ -98,7 +142,10 @@ class MainApp:
                                     contentRect.height)
 
     def _on_close(self):
-        self.stop_event.set()
+        self.stop_event.set()  # set before all
+        time.sleep(0.1)
+        self._calibration_event.set()  # need to clear loop
+
         print("Closing.")
         return True  # False would cancel the close
 
@@ -108,6 +155,10 @@ class MainApp:
         def update():
             data = self._data_source.get_frame()
             self.pcd.points = o3d.utility.Vector3dVector(data.points)
+
+            if self._seg_event.is_set():
+                data.rgb *= 0
+
             self.pcd.colors = o3d.utility.Vector3dVector(data.rgb)
             # self.pcd.rotate(self.rot_mat)
 
