@@ -19,13 +19,26 @@ class ClusterUtil():
             linkage=linkage
         )
 
-    def get_biggest_cluster(self, points):
+    def get_largest_cluster(self, points):
         labels = self.cluster.fit(points).labels_
         unique, counts = np.unique(labels, return_counts=True)
         cluster_id = unique[counts.argmax()]
         cluster_idx = np.where(labels == cluster_id)[0]
 
         return cluster_idx
+
+    def get_most_confident_cluster(self, points, confidences):
+        # TODO: implement if necessary
+        mean_conf = 1.0
+
+        labels = self.cluster.fit(points).labels_
+        unique, counts = np.unique(labels, return_counts=True)
+        # if len(unique) > 1:
+        #     ipdb.set_trace()
+        cluster_id = unique[counts.argmax()]
+        cluster_idx = np.where(labels == cluster_id)[0]
+
+        return cluster_idx, mean_conf
 
 
 def get_pred_center(out, coords, ee_r=0.075, q=None):

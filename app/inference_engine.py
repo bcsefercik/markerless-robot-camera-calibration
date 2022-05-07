@@ -32,6 +32,8 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 class InferenceEngine:
     def __init__(self) -> None:
+        self.cluster_util = output.ClusterUtil()
+
         self.models = defaultdict(lambda: minkunet.MinkUNet18D)
         self.models["minkunet101"] = minkunet.MinkUNet101
         self.models["minkunet34C"] = minkunet.MinkUNet34C
@@ -103,14 +105,19 @@ class InferenceEngine:
             seg_output = self._segmentation_model(seg_input)
             seg_out_field = seg_output.slice(seg_in_field)
 
-            seg_results = output.get_segmentations_from_tensor_field(seg_out_field)
+            seg_results, seg_conf = output.get_segmentations_from_tensor_field(seg_out_field)
+            ee_mask = seg_results == 2
+            ee_idx = np.where(seg_results == 2)[0]
+            seg_results[ee_idx] = 1  # initially, set all ee pred to arm
 
+            ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
+            seg_results[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
             # soutput1 = self._inference_engine.rotation_model(sinput)
             # soutput2 = self._inference_engine.translation_model(sinput)
 
             # print("inference", soutput2.F[0], data.timestamp)
 
-            return ResultDTO(ee_pose=None, segmentation=seg_results[0])
+            return ResultDTO(ee_pose=None, segmentation=seg_results)
 
 
 if __name__ == "__main__":

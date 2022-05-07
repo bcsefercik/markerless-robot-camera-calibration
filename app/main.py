@@ -93,10 +93,10 @@ class MainApp:
         self._kinect_frame_check.set_on_checked(self._toggle_kinect_frame)
         self.panel.add_child(self._kinect_frame_check)
 
-        self._seg_button = gui.Button("Show Segmentation")
-        self._seg_button.vertical_padding_em = 0.5
-        self._seg_button.set_on_clicked(self._toggle_segmentation)
-        self.panel.add_child(self._seg_button)
+        self._seg_check = gui.Checkbox("Show Segmentation")
+        self._seg_check.checked = False
+        self._seg_check.set_on_checked(self._toggle_segmentation)
+        self.panel.add_child(self._seg_check)
 
         self._calibrate_button = gui.Button("Calibrate")
         self._calibrate_button.vertical_padding_em = 0.5
@@ -124,6 +124,12 @@ class MainApp:
     def _toggle_kinect_frame(self, state):
         self.widget3d.scene.show_geometry("kinect_frame", state)
 
+    def _toggle_segmentation(self, state):
+        if state:
+            self._seg_event.set()
+        else:
+            self._seg_event.clear()
+
     def _calibrate(self):
         self._calibrate_button.enabled = False
         self._calibration_event.set()
@@ -141,17 +147,6 @@ class MainApp:
             self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
             self._calibrate_button.enabled = True
             self._calibration_event.clear()
-
-    def _toggle_segmentation(self):
-        # self._segmentation_enabled = not self._segmentation_enabled
-
-        if self._seg_event.is_set():
-            self._seg_event.clear()
-            self._seg_button.text = "Show Segmentation"
-        else:
-            self._seg_event.set()
-            self._seg_button.text = "Hide Segmentation"
-
         return True
 
     def _on_layout(self, layout_context):

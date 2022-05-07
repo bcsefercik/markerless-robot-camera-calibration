@@ -77,7 +77,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     labels_cpu = labels[start:end].cpu().numpy().reshape((-1))
 
                     # if you need to cluster/filter ee output use following line
-                    # biggest_ee_idx = _ee_cluster.get_biggest_cluster(coords[start:end][labels_cpu == 2])
+                    # biggest_ee_idx = _ee_cluster.get_largest_cluster(coords[start:end][labels_cpu == 2])
 
                     accuracy = (preds == labels_cpu).sum() / len(labels_cpu)
 
