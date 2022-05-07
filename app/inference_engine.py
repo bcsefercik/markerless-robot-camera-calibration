@@ -1,4 +1,5 @@
 from collections import defaultdict
+import concurrent.futures
 import json
 import time
 import ipdb
@@ -54,34 +55,34 @@ class InferenceEngine:
         )
         self._segmentation_model.eval()
 
-        self.translation_model = self.models["translation"](
+        self._translation_model = self.models["translation"](
             in_channels=_config.DATA.input_channel,
             num_classes=2,  # binary; ee point or not
         )
         utils.checkpoint_restore(
-            self.translation_model,
+            self._translation_model,
             f=_config.INFERENCE.TRANSLATION.checkpoint,
             use_cuda=_use_cuda,
         )
-        self._segmentation_model.eval()
+        self._translation_model.eval()
 
         compute_confidence = _config()["STRUCTURE"].get("compute_confidence", False)
-        self.rotation_model = self.models[
+        self._rotation_model = self.models[
             f'robotnet{"_encode" if _config.INFERENCE.ROTATION.encode_only else ""}'
         ](
             in_channels=_config.DATA.input_channel,
             out_channels=(10 if compute_confidence else 7),
         )
         utils.checkpoint_restore(
-            self.rotation_model,
+            self._rotation_model,
             f=_config.INFERENCE.ROTATION.checkpoint,
             use_cuda=_use_cuda,
         )
-        self.rotation_model.eval()
+        self._rotation_model.eval()
 
     def predict(self, data: PointCloudDTO):
         with torch.no_grad():
-            rgb = preprocess.normalize_colors(data.rgb)
+            rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
 
             if _config.INFERENCE.SEGMENTATION.center_at_origin:
                 seg_points, seg_origin_offset = preprocess.center_at_origin(data.points)
@@ -112,12 +113,69 @@ class InferenceEngine:
 
             ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
             seg_results[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
-            # soutput1 = self._inference_engine.rotation_model(sinput)
-            # soutput2 = self._inference_engine.translation_model(sinput)
+            result_dto = ResultDTO(segmentation=seg_results)
 
-            # print("inference", soutput2.F[0], data.timestamp)
+            ee_raw_points = data.points[ee_idx[ee_idx_inside]]  # no origin offset
+            ee_raw_rgb = rgb[ee_idx[ee_idx_inside]]
+            ee_rgb = torch.from_numpy(ee_raw_rgb).to(dtype=torch.float32)
 
-            return ResultDTO(ee_pose=None, segmentation=seg_results)
+            # Rotation estimation
+            rot_result = self.predict_rotation(ee_raw_points, ee_rgb)
+            result_dto.ee_pose[3:] = rot_result
+
+            # Translation estimation
+            pos_model_out, _ = self.predict_translation(ee_raw_points, ee_rgb)
+            pos_result = output.get_pred_center(pos_model_out, ee_raw_points, q=rot_result)
+            result_dto.ee_pose[:3] = pos_result
+
+            return result_dto
+
+    def predict_rotation(self, ee_raw_points, ee_rgb):
+        with torch.no_grad():
+            if _config.INFERENCE.ROTATION.center_at_origin:
+                ee_rot_points, _ = preprocess.center_at_origin(ee_raw_points)
+            else:
+                ee_rot_points = ee_raw_points
+
+            rot_points = torch.from_numpy(ee_rot_points).to(dtype=torch.float32)
+
+            rot_input = ME.TensorField(
+                features=ee_rgb,
+                coordinates=ME.utils.batched_coordinates(
+                    [rot_points * _config.INFERENCE.ROTATION.scale], dtype=torch.float32
+                ),
+                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+                device=_device,
+            ).sparse()
+            rot_output = self._rotation_model(rot_input)
+
+            return rot_output[0][3:].cpu().numpy()
+
+    def predict_translation(self, ee_raw_points, ee_rgb):
+        with torch.no_grad():
+            if _config.INFERENCE.TRANSLATION.center_at_origin:
+                ee_pos_points, pos_origin_offset = preprocess.center_at_origin(ee_raw_points)
+            else:
+                ee_pos_points = ee_raw_points
+                pos_origin_offset = np.array([0.0, 0.0, 0.0])
+
+            pos_points = torch.from_numpy(ee_pos_points).to(dtype=torch.float32)
+
+            pos_in_field = ME.TensorField(
+                features=ee_rgb,
+                coordinates=ME.utils.batched_coordinates(
+                    [pos_points * _config.INFERENCE.TRANSLATION.scale], dtype=torch.float32
+                ),
+                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+                device=_device,
+            )
+            pos_input = pos_in_field.sparse()
+            pos_output = self._translation_model(pos_input)
+            pos_out_field = pos_output.slice(pos_in_field)
+
+        return pos_out_field.features, pos_origin_offset
 
 
 if __name__ == "__main__":

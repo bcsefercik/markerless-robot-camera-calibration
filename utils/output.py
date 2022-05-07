@@ -41,16 +41,21 @@ class ClusterUtil():
         return cluster_idx, mean_conf
 
 
-def get_pred_center(out, coords, ee_r=0.075, q=None):
+def get_pred_center(out, coords, ee_r=0.03, q=None):
     pred_center = coords[out[:, 1].argmax()]
 
     if q is not None:
         if not isinstance(q, torch.Tensor):
-            q = torch.tensor(q, dtype=torch.float32).view(1, -1)
+            q = torch.tensor(q, dtype=torch.float32)
         q = q.view(1, -1)
         rot_mat = get_quaternion_rotation_matrix_torch(q)[0]
         offset = torch.tensor([-ee_r, 0, 0])
-        pred_center += torch.matmul(rot_mat, offset)
+        offset_rotated = torch.matmul(rot_mat, offset)
+
+        if isinstance(pred_center, np.ndarray):
+            offset_rotated = offset_rotated.cpu().numpy()
+
+        pred_center += offset_rotated
 
     return pred_center
 

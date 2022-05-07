@@ -16,7 +16,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MinkowskiEngine as ME
 import torch
 from utils import config, logger, utils
-from utils.visualization import get_frame_from_pose, generate_colors
+from utils.visualization import (
+    get_frame_from_pose,
+    generate_colors,
+    create_coordinate_frame,
+)
 
 import data_engine
 from inference_engine import InferenceEngine
@@ -45,14 +49,21 @@ class MainApp:
         self.rot_mat = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]])
 
         if _config.INFERENCE.SEGMENTATION.class_colors is not None:
-            self._seg_colors = [(int(color[0:2], 16), int(color[2:4], 16), int(color[4:], 16)) for color in _config.INFERENCE.SEGMENTATION.class_colors]
+            self._seg_colors = [
+                (int(color[0:2], 16), int(color[2:4], 16), int(color[4:], 16))
+                for color in _config.INFERENCE.SEGMENTATION.class_colors
+            ]
             self._seg_colors = np.array(self._seg_colors) / 255
         else:
             np.random.seed(2)
-            self._seg_colors = generate_colors(len(_config.INFERENCE.SEGMENTATION.classes))
+            self._seg_colors = generate_colors(
+                len(_config.INFERENCE.SEGMENTATION.classes)
+            )
 
         self.window = gui.Application.instance.create_window(
-            "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey", 1000, 500
+            "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey",
+            1000,
+            500,
         )
         self.window.set_on_layout(self._on_layout)
         self.window.set_on_close(self._on_close)
@@ -68,6 +79,17 @@ class MainApp:
         self.kinect_frame = get_frame_from_pose(frame, [0] * 7)
         # kinect_frame.rotate(self.rot_mat)
         self.widget3d.scene.add_geometry("kinect_frame", self.kinect_frame, self.lit)
+
+        self.ee_frame = create_coordinate_frame([0, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
+        # self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
+
+        self.calibrated_ee_frame = create_coordinate_frame(
+            [-0.2, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+        )
+        self.widget3d.scene.add_geometry(
+            "calibrated_ee_frame", self.calibrated_ee_frame, self.lit
+        )
+        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
 
         data = self._data_source.get()
         self.pcd = o3d.geometry.PointCloud()
@@ -86,40 +108,45 @@ class MainApp:
             0.5 * em, gui.Margins(left=margin, top=margin, right=margin)
         )
 
-        # ipdb.set_trace()
+        self._seg_check = gui.Checkbox("Segmentation")
+        self._seg_check.checked = False
+        self._seg_check.set_on_checked(lambda state: self._seg_event.set() if state else self._seg_event.clear())
+        self.panel.add_child(self._seg_check)
 
-        self._kinect_frame_check = gui.Checkbox("Show Camera Frame")
+        self._kinect_frame_check = gui.Checkbox("Camera Frame")
         self._kinect_frame_check.checked = True
         self._kinect_frame_check.set_on_checked(self._toggle_kinect_frame)
         self.panel.add_child(self._kinect_frame_check)
 
-        self._seg_check = gui.Checkbox("Show Segmentation")
-        self._seg_check.checked = False
-        self._seg_check.set_on_checked(self._toggle_segmentation)
-        self.panel.add_child(self._seg_check)
+        self._instant_pred_check = gui.Checkbox("Instant Prediction")
+        self._instant_pred_check.checked = True
+        self._instant_pred_check.set_on_checked(
+            lambda state: self.widget3d.scene.show_geometry("ee_frame", state)
+        )
+        self.panel.add_child(self._instant_pred_check)
+
+        self._calibrated_pred_check = gui.Checkbox("Latest Calibrated Prediction")
+        self._calibrated_pred_check.checked = False
+        self._calibrated_pred_check.enabled = False
+        self._calibrated_pred_check.set_on_checked(
+            lambda state: self.widget3d.scene.show_geometry(
+                "calibrated_ee_frame", state
+            )
+        )
+        self.panel.add_child(self._calibrated_pred_check)
 
         self._calibrate_button = gui.Button("Calibrate")
         self._calibrate_button.vertical_padding_em = 0.5
         self._calibrate_button.set_on_clicked(self._calibrate)
         self.panel.add_child(self._calibrate_button)
 
-        self._results_label = gui.Label("Calibration Results")
+        self._results_label = gui.Label("")
         self.panel.add_child(self._results_label)
 
         self.window.add_child(self.panel)
 
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
-        # threading.Thread(target=self._inference_thread).start()
-
-    # def _inference_thread(self):
-    #     while True:
-    #         data = self._inference_queue.get()
-
-    #         if self.stop_event.is_set() or data is None:
-    #             return
-
-    #         # print(self._inference_engine.predict(data))
 
     def _toggle_kinect_frame(self, state):
         self.widget3d.scene.show_geometry("kinect_frame", state)
@@ -132,6 +159,11 @@ class MainApp:
 
     def _calibrate(self):
         self._calibrate_button.enabled = False
+
+        self._calibrated_pred_check.checked = False
+        self._calibrated_pred_check.enabled = False
+        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
+
         self._calibration_event.set()
 
     def _calibration_thread(self):
@@ -139,13 +171,21 @@ class MainApp:
             self._calibration_event.wait()
             if self.stop_event.is_set():
                 return
-
             self._results_label.text = "calibration yo!"
 
             time.sleep(5)
 
             self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
+
+            # self.calibrated_ee_frame = "nanananan"
+
             self._calibrate_button.enabled = True
+            self._calibrated_pred_check.checked = True
+            self._calibrated_pred_check.enabled = True
+            self.widget3d.scene.remove_geometry("calibrated_ee_frame")
+            self.widget3d.scene.add_geometry("calibrated_ee_frame", self.calibrated_ee_frame, self.lit)
+            self.widget3d.scene.show_geometry("calibrated_ee_frame", self._calibrated_pred_check.checked)
+
             self._calibration_event.clear()
         return True
 
@@ -169,8 +209,6 @@ class MainApp:
         self.stop_event.set()  # set before all
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
-        # self._inference_queue.put(None)  # needs to clear inference loop
-        # time.sleep(5)
 
         _logger.info("Closing.")
 
@@ -182,8 +220,6 @@ class MainApp:
 
         def update(data, result):
             print(result)
-            # ipdb.set_trace()
-
             if self._seg_event.is_set():
                 rgb = self._seg_colors[result.segmentation]
             else:
@@ -193,26 +229,26 @@ class MainApp:
             self.pcd.colors = o3d.utility.Vector3dVector(rgb)
             # self.pcd.rotate(self.rot_mat)
 
-            # print('update gui', data.timestamp)
-
             self.widget3d.scene.remove_geometry("pcd")
             self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
+
+            self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
+            self.widget3d.scene.remove_geometry("ee_frame")
+            self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
+            self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
 
         while not self.stop_event.is_set():
             data = self._data_source.get()
 
             result = self._inference_engine.predict(data)
 
-            try:
-                self._inference_queue.put_nowait(copy.deepcopy(data))
-            except queue.Full:
-                pass
-
             if not self.stop_event.is_set():
                 # Update the images. This must be done on the UI thread.
-                gui.Application.instance.post_to_main_thread(self.window, lambda: update(data, result))
+                gui.Application.instance.post_to_main_thread(
+                    self.window, lambda: update(data, result)
+                )
 
-            time.sleep(0.2)
+            # time.sleep(0.2)
 
 
 def main():
