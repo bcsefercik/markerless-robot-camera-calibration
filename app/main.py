@@ -248,7 +248,7 @@ class MainApp:
                     self.window, lambda: update(data, result)
                 )
 
-            time.sleep(0.02)
+            time.sleep(0.05)
 
 
 def main():
