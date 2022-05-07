@@ -44,7 +44,7 @@ class ClusterUtil():
 def get_pred_center(out, coords, ee_r=0.03, q=None):
     selected_indices = out[:, 1].sort(descending=True)[1][:8]
     # selected_indices = out[:, 1].argmax()
-    pred_center = mean_without_outliers(coords[selected_indices])
+    pred_center = mean_without_outliers(coords[selected_indices.cpu().numpy()])
 
     if q is not None:
         if not isinstance(q, torch.Tensor):
@@ -74,4 +74,3 @@ def get_segmentations_from_tensor_field(field: ME.TensorField):
 
 def mean_without_outliers(arr: np.array, axis_based: bool = False):
     return arr.mean(axis=0)
-
