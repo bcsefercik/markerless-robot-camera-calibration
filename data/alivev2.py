@@ -148,7 +148,7 @@ class AliveV2Dataset(Dataset):
 
         if len(rgb) > 0:
             if rgb.min() < 0:
-                # WRONG approach, tries to shit from data prep code.
+                # WRONG approach, tries to get rid of trouble from data prep code.
                 rgb[:, 0] = preprocessing.minmax_scale(rgb[:, 0], feature_range=(0, 1), axis=0)
                 rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
                 rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)

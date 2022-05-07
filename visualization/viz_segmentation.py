@@ -11,10 +11,7 @@ import open3d as o3d
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_roi_mask
-
-
-def generate_colors(n):
-    return np.random.rand(n, 3)
+from utils.visualization import generate_colors
 
 
 if __name__ == "__main__":

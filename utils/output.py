@@ -5,6 +5,8 @@ from sklearn.cluster import AgglomerativeClustering
 
 from utils.transformation import get_quaternion_rotation_matrix_torch
 
+import MinkowskiEngine as ME
+
 import ipdb
 
 
@@ -38,3 +40,12 @@ def get_pred_center(out, coords, ee_r=0.075, q=None):
         pred_center += torch.matmul(rot_mat, offset)
 
     return pred_center
+
+
+def get_segmentations_from_tensor_field(field: ME.TensorField):
+    logits = field.features
+    conf, preds = logits.max(1)
+    preds = preds.cpu().numpy()
+    conf = torch.sigmoid(conf).cpu().numpy()
+
+    return preds, conf

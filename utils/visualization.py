@@ -59,3 +59,7 @@ def create_coordinate_frame(pose, length=0.2, radius=0.0075,  switch_w=True):
     x_cylinder.rotate(rot_mat)
 
     return sphere + z_cylinder + y_cylinder + x_cylinder
+
+
+def generate_colors(n):
+    return np.random.rand(n, 3)

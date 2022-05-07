@@ -96,15 +96,16 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s50/default-000000012.pth'
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s200/default-000000002.pth
     backbone: 'minkunet'
-    scale: 50
-    classes: 3
+    classes: ['background', 'arm', 'ee']
+    class_colors: ['95A5A6', 'E74C3C', 'F1C40F']
+    scale: 200
+    center_at_origin: true
 
   TRANSLATION:
     checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin/default-000000096.pth'
     backbone: 'minkunet'
-    classes: ['background', 'ee']
     scale: 200
 
   ROTATION:

@@ -10,7 +10,8 @@ INFERENCE:
   data_source: /Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/dataset/alive_test_v2_splits.json
 
   SEGMENTATION:
-    checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/segmentation.pth'
+    checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/segmentation_s200_origin.pth'
+    scale: 200
 
   TRANSLATION:
     checkpoint: '/Users/bugra.sefercik/workspace/repos/unknown_object_segmentation/exp/inference/translation.pth'
