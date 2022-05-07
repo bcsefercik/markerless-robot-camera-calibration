@@ -28,7 +28,7 @@ class ClusterUtil():
         return cluster_idx
 
     def get_most_confident_cluster(self, points, confidences):
-        # TODO: implement if necessary
+        # TODO: implement this method if necessary
         mean_conf = 1.0
 
         labels = self.cluster.fit(points).labels_
@@ -42,11 +42,14 @@ class ClusterUtil():
 
 
 def get_pred_center(out, coords, ee_r=0.03, q=None):
-    pred_center = coords[out[:, 1].argmax()]
+    selected_indices = out[:, 1].sort(descending=True)[1][:8]
+    # selected_indices = out[:, 1].argmax()
+    pred_center = mean_without_outliers(coords[selected_indices])
 
     if q is not None:
         if not isinstance(q, torch.Tensor):
             q = torch.tensor(q, dtype=torch.float32)
+
         q = q.view(1, -1)
         rot_mat = get_quaternion_rotation_matrix_torch(q)[0]
         offset = torch.tensor([-ee_r, 0, 0])
@@ -67,3 +70,8 @@ def get_segmentations_from_tensor_field(field: ME.TensorField):
     conf = torch.sigmoid(conf).cpu().numpy()
 
     return preds, conf
+
+
+def mean_without_outliers(arr: np.array, axis_based: bool = False):
+    return arr.mean(axis=0)
+
