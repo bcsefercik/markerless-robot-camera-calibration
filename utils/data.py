@@ -1,4 +1,10 @@
+import os
+import sys
+
 import numpy as np
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.transformation import get_quaternion_rotation_matrix
 
 import ipdb
 
@@ -37,3 +43,23 @@ def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-50
     roi_mask = np.logical_and(points[:, 2] > min_z, roi_mask)
 
     return roi_mask
+
+
+def get_ee_idx(points, pose, switch_w=True, ee_dim=None):  # in training switch_w = False
+    if not isinstance(ee_dim, dict):
+        ee_dim = {
+            'min_z': -0,
+            'max_z': 0.13,
+            'min_x': -0.03,
+            'max_x': 0.03,
+            'min_y': -0.15,
+            'max_y': 0.15
+        }
+
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
+
+    ee_points = points - pose[:3]
+    new_points = (rot_mat.T @ ee_points.reshape((-1, 3, 1))).reshape((-1, 3))
+    ee_mask = get_roi_mask(new_points, **ee_dim)
+
+    return np.where(ee_mask)[0]
