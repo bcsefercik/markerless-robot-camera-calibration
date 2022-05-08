@@ -14,9 +14,9 @@ import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
-from utils.data import get_ee_idx, get_roi_mask
+from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_quaternion_rotation_matrix
+from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 from utils.preprocess import center_at_origin
 
 
@@ -53,25 +53,32 @@ if __name__ == "__main__":
     # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
     ee_frame = create_coordinate_frame(pose, switch_w=True)
 
-    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)
 
-    # ee_points = points[ee_idx]
-    # ee_rgb = rgb[ee_idx]
 
-    ee_points = points - pose[:3]
-    ee_rgb = rgb
+    # ee_points = points - pose[:3]
+    # ee_rgb = rgb
 
-    # new_points = ee_points - pose[:3]
+    # new_ee_points = ee_points - pose[:3]
+    #
+    ee_idx = get_ee_idx(points, pose, switch_w=True) # switch_w=False in dataloader
 
-    ee_idx = get_ee_idx(points, pose, switch_w=True)
+    closest_points_dists, closest_points_idx = get_ee_cross_section_idx(
+        points[ee_idx],  # ee_points
+        pose,
+        switch_w=True
+    )  # switch_w=False in dataloader
 
-    new_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1,3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    ee_rgb = rgb[ee_idx]
+    rgb[ee_idx] = np.array([1.0, 1.0, 0.13])
 
-    # new_points, origin_offset = center_at_origin(new_points)
-    new_points = new_points[:-1]
+    rgb[ee_idx[closest_points_idx]] = np.array([1.0, 0, 0])
+    # ipdb.set_trace()
+
+    # new_ee_points, origin_offset = center_at_origin(new_ee_points)
+    # new_ee_points = new_ee_points[:-1]
     # roi_mask = get_roi_mask(points)
 
-    # new_points = new_points[roi_mask]
+    # new_ee_points = new_ee_points[roi_mask]
     # ee_rgb = ee_rgb[roi_mask]
 
     # if rgb.min() < 0:
@@ -80,13 +87,29 @@ if __name__ == "__main__":
     #     rgb[:, 1] = preprocessing.minmax_scale(rgb[:, 1], feature_range=(0, 1), axis=0)
     #     rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
+    ee_points = points[ee_idx] - pose[:3]
 
-    # # points_show = np.concatenate((points, new_points), axis=0)
-    # # rgb = np.concatenate((rgb, ee_rgb), axis=0)
-    points_show = points
-    rgb = rgb
+    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points = new_ee_points[:-1]
+    ee_rgb[closest_points_idx] = np.array([1.0, 0, 0])
+    new_ee_points, origin_offset = center_at_origin(new_ee_points)
+    # new_ee_points += origin_offset
 
-    rgb[ee_idx] = np.array([1.0, 1.0, 0.1])
+    # reverse the transformation above
+    new_ee_points_reverse = new_ee_points
+    new_ee_points_reverse += origin_offset
+    new_ee_points_reverse = (rot_mat @ np.concatenate((new_ee_points_reverse, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points_reverse = new_ee_points_reverse[:-1]
+    new_ee_points_reverse += pose[:3]
+    ee_reverse_rgb = np.zeros_like(ee_rgb)
+    ee_reverse_rgb += np.array([1.0, 0.13, 0.13])
+
+    points_show = np.concatenate((points, new_ee_points, new_ee_points_reverse), axis=0)
+    rgb = np.concatenate((rgb, ee_rgb, ee_reverse_rgb), axis=0)
+    # points_show = points
+    # rgb = rgb
+
 
     pcd.points = o3d.utility.Vector3dVector(points_show)
     pcd.colors = o3d.utility.Vector3dVector(rgb)
@@ -95,4 +118,5 @@ if __name__ == "__main__":
     o3d.visualization.draw_geometries(
         # [pcd, kinect_frame, ee_frame]
         [pcd, kinect_frame]
+        # [pcd]
     )

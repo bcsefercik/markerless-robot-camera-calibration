@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.transformation import get_quaternion_rotation_matrix
+from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
 import ipdb
 
@@ -49,11 +49,11 @@ def get_ee_idx(points, pose, switch_w=True, ee_dim=None):  # in training switch_
     if not isinstance(ee_dim, dict):
         ee_dim = {
             'min_z': -0,
-            'max_z': 0.13,
+            'max_z': 0.12,
             'min_x': -0.03,
             'max_x': 0.03,
-            'min_y': -0.15,
-            'max_y': 0.15
+            'min_y': -0.11,
+            'max_y': 0.11
         }
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
@@ -63,3 +63,22 @@ def get_ee_idx(points, pose, switch_w=True, ee_dim=None):  # in training switch_
     ee_mask = get_roi_mask(new_points, **ee_dim)
 
     return np.where(ee_mask)[0]
+
+
+def get_ee_cross_section_idx(ee_points, pose, count=32, cutoff=0.004, switch_w=True):  # switch_w=False in dataloader
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
+
+    ee_points -= pose[:3]
+
+    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points = new_ee_points[:-1]
+
+    closest_points_dists, closest_points_idx = select_closest_points_to_line(
+        new_ee_points,
+        np.array([-0.05, 0, 0]),
+        np.array([0.05, 0, 0]),
+        count=count,
+        cutoff=cutoff
+    )
+
+    return closest_points_dists, closest_points_idx

@@ -6,7 +6,6 @@ import sklearn.preprocessing as preprocessing
 
 def center_at_origin(points: np.array):
     origin_offset = (points.max(axis=0) + points.min(axis=0)) / 2
-    points - origin_offset
 
     return points - origin_offset, origin_offset
 
