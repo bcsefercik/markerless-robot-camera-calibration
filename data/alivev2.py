@@ -11,7 +11,8 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
-from utils.data import get_ee_idx, get_roi_mask
+from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx
+from utils.preprocess import center_at_origin
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
 
@@ -91,7 +92,7 @@ class AliveV2Dataset(Dataset):
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
         pose = np.array(pose, dtype=np.float32)  # xyzw
-        pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
+        pose = np.insert(pose[:6], 3, pose[-1])  # WXYZ
 
         other = {
             "filename": file_name,
@@ -161,26 +162,28 @@ class AliveV2Dataset(Dataset):
 
         if self.voting_enabled:
             if i not in self.ee_closest_points_idx:
-                rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)
-                p2_diff = rot_mat @ np.array([0.08, 0, 0])
-                _, self.ee_closest_points_idx[i] = select_closest_points_to_line(
-                    points,
-                    pose[0, :3],
-                    pose[0, :3] + p2_diff,
-                    count=_config.VOTE.count,
-                    cutoff=_config.VOTE.cutoff
-                )
+                closest_points_dists, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
+                    points,  # ee points
+                    pose[0],
+                    count=32,
+                    cutoff=0.004,
+                    switch_w=False
+                )  # switch_w=False in dataloader
 
             if _config.DATA.data_type == "ee_seg":
                 labels *= 0
 
             labels[self.ee_closest_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
 
+        if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
+            rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader
+            points = (rot_mat.T @ points.reshape((-1, 3, 1))).reshape((-1, 3))
+
         if _config.DATA.center_at_origin:
-            origin_offset = (points.max(axis=0) + points.min(axis=0)) / 2
-            points -= origin_offset
+            points, origin_offset = center_at_origin(points)
             pose[:, :3] -= origin_offset
             other['origin_offset'] = origin_offset
+
         elif _config.DATA.base_at_origin:
             origin_base_offset = points.min(axis=0)
             points -= origin_base_offset

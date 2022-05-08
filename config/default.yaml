@@ -43,6 +43,8 @@ DATA:
   center_at_origin: true
   base_at_origin: false
 
+  move_ee_to_origin: false
+
   ee_segmentation_enabled: true
 
 STRUCTURE:

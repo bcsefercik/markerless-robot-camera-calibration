@@ -166,7 +166,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         start_epoch = time.time()
         for i, batch in enumerate(val_iter):
             try:
-                coords, feats, labels, _, others = batch
+                coords, feats, labels, poses, others = batch
                 labels = labels.to(device=_device)
 
                 model_input = ME.SparseTensor(
@@ -179,14 +179,14 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                 accuracies = compute_accuracies(out.features, labels, others)
                 am_dict["accuracy"].update(statistics.mean(accuracies), len(others))
 
-                center_dists = compute_center_dists(out.features, labels, coords, others)
+                center_dists = compute_center_dists(out.features, labels, coords, poses, others)
                 if len(center_dists) > 0:
                     am_dict["center_dist"].update(statistics.mean(center_dists), len(others))
 
                 _logger.info(
                     f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
                 )
-            except Exception:
+            except Exception as e:
                 _logger.exception(str(batch))
                 print(str(batch))
                 print(str(e))
