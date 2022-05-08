@@ -195,15 +195,7 @@ if __name__ == "__main__":
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    _backbone = _config()["STRUCTURE"].get("backbone")
-    if _backbone == "minkunet101":
-        from model.backbone.minkunet import MinkUNet101 as UNet
-    elif _backbone == "minkunet34C":
-        from model.backbone.minkunet import MinkUNet34C as UNet
-    elif _backbone == "minkunet14A":
-        from model.backbone.minkunet import MinkUNet14A as UNet
-    else:
-        from model.backbone.minkunet import MinkUNet18D as UNet
+    from model.robotnet_segmentation import RobotNetSegmentation
 
     from data.alivev2 import AliveV2Dataset, collate
 
@@ -212,8 +204,8 @@ if __name__ == "__main__":
         reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
     ).to(_device)
 
-    model = UNet(
-        in_channels=_config.DATA.input_channel, out_channels=_config.DATA.classes
+    model = RobotNetSegmentation(
+        in_channels=_config.DATA.input_channel, num_classes=_config.DATA.classes
     )
     _logger.info(f"Model: {str(model)}")
 

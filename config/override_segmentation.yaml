@@ -1,9 +1,9 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp35_segmentation_origin_s50.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s50'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_seg_origin_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_origin_s200'
 
 GENERAL:
-  save_freq: 4
+  save_freq: 2
   seed: 1
 
 DATA:
@@ -12,9 +12,9 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 8
+  batch_size: 3
 
-  scale: 50  # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 200 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean
@@ -31,6 +31,9 @@ DATA:
 
   center_at_origin: true
 
+  position_eligibility_enabled: true
+  orientation_eligibility_enabled: true
+
   # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
   #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
   # # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
@@ -46,7 +49,6 @@ STRUCTURE:
 
   bottleneck: True
   backbone: 'minkunet'
-
 TRAIN:
   fixed_modules: []
   optim: 'Adam' # Adam or SGD

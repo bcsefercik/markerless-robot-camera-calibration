@@ -15,7 +15,7 @@ DATA:
   folder: '/kuacc/users/bsefercik/dataset/alivev2'
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
   batch_size: 16 # v100->26, t4->8 mink18d
@@ -26,7 +26,7 @@ DATA:
   mode: 4  # 4: mean
   input_channel: 3 # rgb or gray
 
-  classes: 2
+  classes: 3  # 0: bg, 1: robot arm, 2: end-effector
   ignore_label: -100
   pose_dim: 7
 
@@ -42,6 +42,8 @@ DATA:
 
   center_at_origin: true
   base_at_origin: false
+
+  ee_segmentation_enabled: true
 
 STRUCTURE:
   m: 32 # 16 or 32
@@ -96,7 +98,7 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp35_segmentation_origin_s200/default-000000002.pth
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d/default-000000008.pth
     backbone: 'minkunet'
     classes: ['background', 'arm', 'ee']
     class_colors: ['2C3E50', 'E74C3C', 'F1C40F']

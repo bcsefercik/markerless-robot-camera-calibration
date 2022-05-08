@@ -134,15 +134,7 @@ if __name__ == "__main__":
     if _use_cuda:
         torch.cuda.empty_cache()
 
-    backbone = _config()["STRUCTURE"].get("backbone")
-    if backbone == "minkunet101":
-        from model.backbone.minkunet import MinkUNet101 as UNet
-    elif backbone == "minkunet34C":
-        from model.backbone.minkunet import MinkUNet34C as UNet
-    elif backbone == "minkunet14A":
-        from model.backbone.minkunet import MinkUNet14A as UNet
-    else:
-        from model.backbone.minkunet import MinkUNet18D as UNet
+    from model.robotnet_segmentation import RobotNetSegmentation
 
     from data.alivev2 import AliveV2Dataset, collate_non_quantized
 
@@ -151,8 +143,8 @@ if __name__ == "__main__":
         reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
     ).to(_device)
 
-    model = UNet(
-        in_channels=_config.DATA.input_channel, out_channels=_config.DATA.classes
+    model = RobotNetSegmentation(
+        in_channels=_config.DATA.input_channel, num_classes=_config.DATA.classes
     )
 
     start_epoch = utils.checkpoint_restore(

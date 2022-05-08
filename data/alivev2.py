@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
-from utils.data import get_roi_mask
+from utils.data import get_ee_idx, get_roi_mask
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
 
@@ -39,10 +39,12 @@ class AliveV2Dataset(Dataset):
         )
         self.quantization_enabled = quantization_enabled
         self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
+        if self.ee_segmentation_enabled:
+            self.ee_idx = dict()
 
         self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
         if self.voting_enabled:
-            self.ee_points_idx = dict()
+            self.ee_closest_points_idx = dict()
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -88,6 +90,8 @@ class AliveV2Dataset(Dataset):
         points = points.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.float32)
+        pose = np.array(pose, dtype=np.float32)  # xyzw
+        pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
 
         other = {
             "filename": file_name,
@@ -97,17 +101,16 @@ class AliveV2Dataset(Dataset):
             other.update(self.file_names[i])
 
         if self.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
-            with open(other['filepath'].replace('.pickle', '_eemask.pickle'), 'rb') as fp:
-                eemask = pickle.load(fp)
-            labels[eemask] = 2
+            if i not in self.ee_idx:
+                self.ee_idx[i] = get_ee_idx(points, pose, switch_w=False)
+
+            labels[self.ee_idx[i]] = 2
 
         arm_idx = labels == 1
         if self.ee_segmentation_enabled:
             arm_idx += (labels == 2)
 
         labels = np.reshape(labels, (-1, 1))
-        pose = np.array(pose, dtype=np.float32)  # xyzw
-        pose = np.insert(pose[:6], 3, pose[-1])  # wxyz
         pose = np.reshape(pose, (1, -1))
 
         if _config.DATA.data_type == "gt_seg":
@@ -127,12 +130,12 @@ class AliveV2Dataset(Dataset):
             rgb = rgb[arm_bbox]
             labels = labels[arm_bbox]
         elif _config.DATA.data_type == "ee_seg":
-            if len(eemask) < 1:
+            if len(self.ee_idx[i]) < 1:
                 return None
 
-            points = points[eemask]
-            rgb = rgb[eemask]
-            labels = labels[eemask]
+            points = points[self.ee_idx[i]]
+            rgb = rgb[self.ee_idx[i]]
+            labels = labels[self.ee_idx[i]]
 
         if self.roi is not None:
             instance_roi = get_roi_mask(
@@ -157,10 +160,10 @@ class AliveV2Dataset(Dataset):
                 rgb -= 0.5
 
         if self.voting_enabled:
-            if i not in self.ee_points_idx:
-                rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=True)
+            if i not in self.ee_closest_points_idx:
+                rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)
                 p2_diff = rot_mat @ np.array([0.08, 0, 0])
-                _, self.ee_points_idx[i] = select_closest_points_to_line(
+                _, self.ee_closest_points_idx[i] = select_closest_points_to_line(
                     points,
                     pose[0, :3],
                     pose[0, :3] + p2_diff,
@@ -171,7 +174,7 @@ class AliveV2Dataset(Dataset):
             if _config.DATA.data_type == "ee_seg":
                 labels *= 0
 
-            labels[self.ee_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
+            labels[self.ee_closest_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
 
         if _config.DATA.center_at_origin:
             origin_offset = (points.max(axis=0) + points.min(axis=0)) / 2
