@@ -29,6 +29,16 @@ class DataEngineInterface(metaclass=abc.ABCMeta):
         """Load in the data set"""
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def run(self) -> None:
+        """Load in the data set"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def exit(self) -> None:
+        """Load in the data set"""
+        raise NotImplementedError
+
 
 class PickleDataEngine(DataEngineInterface):
     def __init__(self, data_path, split='test') -> None:
@@ -51,13 +61,11 @@ class PickleDataEngine(DataEngineInterface):
 
         return PointCloudDTO(points=points, rgb=rgb, timestamp=datetime.utcnow())
 
+    def run(self):
+        return None
+
+    def exit(self):
+        return None
+
     def __len__(self):
         return len(self.data_pool)
-
-
-class FreenectDataEngine(DataEngineInterface):
-    def __init__(self) -> None:
-        pass
-
-    def get(self) -> PointCloudDTO:
-        pass

@@ -8,6 +8,7 @@ DATA:
 
 INFERENCE:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  # data_source: null
 
   INPUT:
     roi: {}

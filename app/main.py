@@ -37,7 +37,9 @@ class MainApp:
         if os.path.isfile(str(data_source)):
             self._data_source = data_engine.PickleDataEngine(data_source)
         else:
-            self._data_source = data_engine.FreenectDataEngine()
+            import freenect_data_engine
+
+            self._data_source = freenect_data_engine.FreenectDataEngine()
 
         self._inference_engine = InferenceEngine()
 
@@ -148,6 +150,8 @@ class MainApp:
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
 
+        self._data_source.run()
+
     def _toggle_kinect_frame(self, state):
         self.widget3d.scene.show_geometry("kinect_frame", state)
 
@@ -209,6 +213,7 @@ class MainApp:
         self.stop_event.set()  # set before all
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
+        self._data_source.exit()
 
         _logger.info("Closing.")
 
@@ -219,7 +224,7 @@ class MainApp:
         # the scene or any part of the UI.
 
         def update(data, result):
-            print(result)
+            # print(result)
             if self._seg_event.is_set():
                 rgb = self._seg_colors[result.segmentation]
             else:
@@ -239,14 +244,17 @@ class MainApp:
 
         while not self.stop_event.is_set():
             data = self._data_source.get()
+            # print(data.points.shape)
+            # print(data.rgb.shape)
 
-            result = self._inference_engine.predict(data)
+            if data is not None:
+                result = self._inference_engine.predict(data)
 
-            if not self.stop_event.is_set():
-                # Update the images. This must be done on the UI thread.
-                gui.Application.instance.post_to_main_thread(
-                    self.window, lambda: update(data, result)
-                )
+                if not self.stop_event.is_set():
+                    # Update the images. This must be done on the UI thread.
+                    gui.Application.instance.post_to_main_thread(
+                        self.window, lambda: update(data, result)
+                    )
 
             time.sleep(0.05)
 
