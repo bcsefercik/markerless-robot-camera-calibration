@@ -177,7 +177,9 @@ class AliveV2Dataset(Dataset):
 
         if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
             rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader
-            points = (rot_mat.T @ points.reshape((-1, 3, 1))).reshape((-1, 3))
+            points = (rot_mat.T @ np.concatenate((points, pose[0, :3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+            pose[0, :3] = np.array(points[-1], copy=True)
+            points = points[:-1]
 
         if _config.DATA.center_at_origin:
             points, origin_offset = center_at_origin(points)

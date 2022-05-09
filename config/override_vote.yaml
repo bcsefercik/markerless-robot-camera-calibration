@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp37_vote_origin_move-ee_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp37_vote_origin_move-ee_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp37_vote_origin_move-ee_s200_waa.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp37_vote_origin_move-ee_s200_waa'
 
 GENERAL:
   save_freq: 16
