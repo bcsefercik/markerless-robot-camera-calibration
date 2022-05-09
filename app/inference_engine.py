@@ -139,8 +139,7 @@ class InferenceEngine:
             result_dto.ee_pose[3:] = rot_result
 
             # Translation estimation
-            pos_model_out, _ = self.predict_translation(ee_raw_points, ee_rgb, q=rot_result)
-            pos_result = output.get_pred_center(pos_model_out, ee_raw_points, q=rot_result)
+            pos_result, _ = self.predict_translation(ee_raw_points, ee_rgb, q=rot_result)
             result_dto.ee_pose[:3] = pos_result
 
             return result_dto
@@ -170,29 +169,37 @@ class InferenceEngine:
     def predict_translation(self, ee_raw_points, ee_rgb, q=None):
         with torch.no_grad():
             ee_points = np.array(ee_raw_points, copy=True)
-            if _config.INFERENCE.TRANSLATION.move_ee_to_origin and q is not None:
+            if (_config.INFERENCE.TRANSLATION.move_ee_to_origin or _config.INFERENCE.TRANSLATION.magic_enabled) and q is not None:
                 rot_mat = get_quaternion_rotation_matrix(q, switch_w=False)  # switch_w=False in inference
                 ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape((-1, 3))
 
-            if _config.INFERENCE.TRANSLATION.center_at_origin:
+            if _config.INFERENCE.TRANSLATION.center_at_origin or _config.INFERENCE.TRANSLATION.magic_enabled:
                 ee_pos_points, pos_origin_offset = preprocess.center_at_origin(ee_points)
             else:
                 ee_pos_points = ee_points
                 pos_origin_offset = np.array([0.0, 0.0, 0.0])
 
-            pos_points = torch.from_numpy(ee_pos_points).to(dtype=torch.float32)
+            if _config.INFERENCE.TRANSLATION.magic_enabled:
+                min_z = ee_pos_points.min(axis=0)[2]
+                ee_pos_magic = np.array([-0.01, 0.0, min_z])
+                ee_pos_magic_reverse = ee_pos_magic + pos_origin_offset
+                pos_result = rot_mat @ ee_pos_magic_reverse
+            else:
+                pos_points = torch.from_numpy(ee_pos_points).to(dtype=torch.float32)
 
-            pos_in_field = ME.TensorField(
-                features=ee_rgb,
-                coordinates=ME.utils.batched_coordinates(
-                    [pos_points * _config.INFERENCE.TRANSLATION.scale], dtype=torch.float32
-                ),
-                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
-                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
-                device=_device,
-            )
-            pos_input = pos_in_field.sparse()
-            pos_output = self._translation_model(pos_input)
-            pos_out_field = pos_output.slice(pos_in_field)
+                pos_in_field = ME.TensorField(
+                    features=ee_rgb,
+                    coordinates=ME.utils.batched_coordinates(
+                        [pos_points * _config.INFERENCE.TRANSLATION.scale], dtype=torch.float32
+                    ),
+                    quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+                    minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+                    device=_device,
+                )
+                pos_input = pos_in_field.sparse()
+                pos_output = self._translation_model(pos_input)
+                pos_out_field = pos_output.slice(pos_in_field)
 
-        return pos_out_field.features, pos_origin_offset
+                pos_result = output.get_pred_center(pos_out_field.features, ee_raw_points, q=q)
+
+        return pos_result, pos_origin_offset

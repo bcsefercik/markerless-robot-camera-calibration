@@ -23,6 +23,7 @@ INFERENCE:
     scale: 200
     center_at_origin: true
     move_ee_to_origin: true
+    magic_enabled: true
 
   ROTATION:
     checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation_s200_posematch_origin_e104_20220509.pth
