@@ -237,10 +237,11 @@ class MainApp:
             self.widget3d.scene.remove_geometry("pcd")
             self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
 
-            self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
             self.widget3d.scene.remove_geometry("ee_frame")
-            self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
-            self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
+            if np.absolute(result.ee_pose).sum() > 1e-3:
+                self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
+                self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
+                self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
 
         while not self.stop_event.is_set():
             data = self._data_source.get()
