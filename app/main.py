@@ -147,10 +147,46 @@ class MainApp:
 
         self.window.add_child(self.panel)
 
+        self.logo_panel = gui.Vert(
+            0.5 * em, gui.Margins(left=margin, top=margin, right=margin)
+        )
+        logo_img = o3d.io.read_image(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)),
+            'ku_logo.png'
+        ))
+        self.logo_rgb_widget = gui.ImageWidget(logo_img)
+        self.logo_panel.add_child(self.logo_rgb_widget)
+        self.window.add_child(self.logo_panel)
+
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
 
         self._data_source.run()
+
+    def _on_layout(self, layout_context):
+        contentRect = self.window.content_rect
+        panel_width = 15 * layout_context.theme.font_size  # 15 ems wide
+        self.widget3d.frame = gui.Rect(
+            contentRect.x,
+            contentRect.y,
+            contentRect.width - panel_width,
+            contentRect.height,
+        )
+        self.panel.frame = gui.Rect(
+            self.widget3d.frame.get_right(),
+            contentRect.y,
+            panel_width,
+            contentRect.height,
+        )
+        logo_panel_height = 3.6 * layout_context.theme.font_size  # 15 ems wide
+        self.logo_panel.frame = gui.Rect(
+            self.widget3d.frame.get_right(),
+            contentRect.height - logo_panel_height,
+            panel_width,
+            logo_panel_height,
+        )
+        self.logo_panel.background_color = gui.Color(0.8, 0.8, 0.8)
+        # ipdb.set_trace()
 
     def _toggle_kinect_frame(self, state):
         self.widget3d.scene.show_geometry("kinect_frame", state)
@@ -192,22 +228,6 @@ class MainApp:
 
             self._calibration_event.clear()
         return True
-
-    def _on_layout(self, layout_context):
-        contentRect = self.window.content_rect
-        panel_width = 15 * layout_context.theme.font_size  # 15 ems wide
-        self.widget3d.frame = gui.Rect(
-            contentRect.x,
-            contentRect.y,
-            contentRect.width - panel_width,
-            contentRect.height,
-        )
-        self.panel.frame = gui.Rect(
-            self.widget3d.frame.get_right(),
-            contentRect.y,
-            panel_width,
-            contentRect.height,
-        )
 
     def _on_close(self):
         self.stop_event.set()  # set before all
