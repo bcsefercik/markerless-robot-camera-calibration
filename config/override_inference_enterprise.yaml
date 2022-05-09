@@ -25,7 +25,7 @@ INFERENCE:
     move_ee_to_origin: true
 
   ROTATION:
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation_s200_geodesic_origin_20220509.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation_s200_geodesic_origin_e120_20220509.pth
 
 exp_path: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference
 log_path: /home/ercan/bcs_workspace/unknown_object_segmentation/log/inference.log
