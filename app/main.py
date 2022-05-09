@@ -178,14 +178,14 @@ class MainApp:
             panel_width,
             contentRect.height,
         )
-        logo_panel_height = 3.6 * layout_context.theme.font_size  # 15 ems wide
+        logo_panel_height = 5 * layout_context.theme.font_size  # 15 ems wide
         self.logo_panel.frame = gui.Rect(
             self.widget3d.frame.get_right(),
             contentRect.height - logo_panel_height,
             panel_width,
             logo_panel_height,
         )
-        self.logo_panel.background_color = gui.Color(0.8, 0.8, 0.8)
+        self.logo_panel.background_color = gui.Color(0.3, 0.3, 0.3)
         # ipdb.set_trace()
 
     def _toggle_kinect_frame(self, state):
