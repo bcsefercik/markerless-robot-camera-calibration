@@ -16,18 +16,16 @@ _config = config.Config()
 
 _backbone = _config()['STRUCTURE'].get('backbone')
 if _config.MODE == "inference":
-    _backbone = _config.INFERENCE.ROTATION.backbone
+    _backbone = _config.INFERENCE.SEGMENTATION.backbone
 
-if _backbone == 'minkunet':
-    from model.backbone.minkunet import MinkUNet18D as UNet
-elif _backbone == 'minkunet101':
+if _backbone == 'minkunet101':
     from model.backbone.minkunet import MinkUNet101 as UNet
 elif _backbone == 'minkunet34C':
     from model.backbone.minkunet import MinkUNet34C as UNet
 elif _backbone == 'minkunet14A':
     from model.backbone.minkunet import MinkUNet14A as UNet
 else:
-    from model.backbone.aliveunet import AliveUNet as UNet
+    from model.backbone.minkunet import MinkUNet18D as UNet
 
 M = _config.STRUCTURE.m
 

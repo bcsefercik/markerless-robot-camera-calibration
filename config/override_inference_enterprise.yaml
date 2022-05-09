@@ -14,9 +14,9 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200.pth'
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
     scale: 200
-    center_at_origin: false
+    center_at_origin: true
 
   TRANSLATION:
     checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/translation_s200_origin.pth'

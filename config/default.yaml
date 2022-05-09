@@ -101,7 +101,7 @@ INFERENCE:
 
   SEGMENTATION:
     checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d/default-000000008.pth
-    backbone: 'minkunet'
+    backbone: 'robotnet_segmentation'
     classes: ['background', 'arm', 'ee']
     class_colors: ['2C3E50', 'E74C3C', 'F1C40F']
     scale: 200

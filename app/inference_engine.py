@@ -17,6 +17,7 @@ from data.alivev2 import AliveV2Dataset, collate_non_quantized
 from utils import config, logger, utils, preprocess, output
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
+from model.robotnet_segmentation import RobotNetSegmentation
 from model.robotnet_encode import RobotNetEncode
 from model.robotnet import RobotNet
 from dto import ResultDTO, PointCloudDTO
@@ -43,10 +44,15 @@ class InferenceEngine:
         self.models["translation"] = RobotNetVote
         self.models["robotnet_encode"] = RobotNetEncode
         self.models["robotnet"] = RobotNet
+        self.models["robotnet_segmentation"] = RobotNetSegmentation
 
+        # self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
+        #     in_channels=_config.DATA.input_channel,
+        #     out_channels=len(_config.INFERENCE.SEGMENTATION.classes),
+        # )
         self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
             in_channels=_config.DATA.input_channel,
-            out_channels=len(_config.INFERENCE.SEGMENTATION.classes),
+            num_classes=len(_config.INFERENCE.SEGMENTATION.classes),
         )
         utils.checkpoint_restore(
             self._segmentation_model,
