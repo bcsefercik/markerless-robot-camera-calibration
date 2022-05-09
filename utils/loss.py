@@ -197,7 +197,6 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         if reduction == "mean":
             loss_rot_total /= len(x.decomposed_coordinates)
-
         return loss_rot_total
 
     def compute_pose_match_loss(y, y_pred, reduction=reduction, x=None):
@@ -233,6 +232,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     elif loss_type == LossType.POSE:
         loss_func = compute_pose_loss
     elif loss_type == LossType.SHAPE_MATCH:
+        assert not _config.DATA.center_at_origin
         loss_func = compute_shape_match_loss
     elif loss_type == LossType.POSE_MATCH:
         assert _config.DATA.voxelize_position

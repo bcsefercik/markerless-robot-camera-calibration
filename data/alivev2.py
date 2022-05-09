@@ -101,18 +101,33 @@ class AliveV2Dataset(Dataset):
         if isinstance(self.file_names[i], dict):
             other.update(self.file_names[i])
 
+        arm_idx = np.where(labels == 1)[0]
+
         if self.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
             if i not in self.ee_idx:
-                self.ee_idx[i] = get_ee_idx(points, pose, switch_w=False)
+                self.ee_idx[i] = get_ee_idx(
+                    points,
+                    pose,
+                    ee_dim={
+                        'min_z': -0,
+                        'max_z': 0.16,
+                        'min_x': -0.06,
+                        'max_x': 0.06,
+                        'min_y': -0.16,
+                        'max_y': 0.16
+                    },  # leave big margin for bbox since we remove non arm points
+                    switch_w=False)
+
+                # remove ee idx which is not arm idx too
+                ee_arm_match_idx = np.isin(self.ee_idx[i], arm_idx, assume_unique=True)
+                self.ee_idx[i] = self.ee_idx[i][ee_arm_match_idx]
 
             labels[self.ee_idx[i]] = 2
 
-        arm_idx = labels == 1
-        if self.ee_segmentation_enabled:
-            arm_idx += (labels == 2)
 
         labels = np.reshape(labels, (-1, 1))
         pose = np.reshape(pose, (1, -1))
+        # ipdb.set_trace()
 
         if _config.DATA.data_type == "gt_seg":
             points = points[arm_idx]
@@ -159,6 +174,7 @@ class AliveV2Dataset(Dataset):
 
             if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
                 rgb -= 0.5
+        # ipdb.set_trace()
 
         if self.voting_enabled:
             if i not in self.ee_closest_points_idx:

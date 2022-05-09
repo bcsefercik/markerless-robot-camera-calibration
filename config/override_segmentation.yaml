@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_seg_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_seg_origin_allarmee_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_origin_allarmee_s200'
 
 GENERAL:
   save_freq: 2
@@ -29,7 +29,7 @@ DATA:
 
   ee_segmentation_enabled: true
 
-  center_at_origin: false
+  center_at_origin: true
 
   position_eligibility_enabled: true
   orientation_eligibility_enabled: true

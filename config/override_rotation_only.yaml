@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp38_ee_seg_geodesic_origin.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_geodesic_origin'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp38_ee_seg_shapematch_baseorigin.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_shapematch_baseorigin'
 
 GENERAL:
   save_freq: 8
@@ -32,7 +32,8 @@ DATA:
   position_eligibility_enabled: true
   orientation_eligibility_enabled: true
 
-  center_at_origin: true
+  center_at_origin: false
+  base_at_origin: true
 
   move_ee_to_origin: false
 
@@ -45,7 +46,7 @@ STRUCTURE:
   disable_orientation: false
 
 TRAIN:
-  loss_type: "wgeodesic"
+  loss_type: "shape_match"
 
 TEST:
   batch_size: 2
