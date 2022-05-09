@@ -214,6 +214,7 @@ class MainApp:
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
         self._data_source.exit()
+        time.sleep(4)
 
         _logger.info("Closing.")
 
