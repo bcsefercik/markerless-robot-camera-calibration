@@ -115,11 +115,11 @@ INFERENCE:
     backbone: 'minkunet'
     scale: 200
     center_at_origin: true
+    move_ee_to_origin: true
 
   ROTATION:
     backbone: 'minkunet'
     encode_only: true
     scale: 200
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp37_vote_origin_move-ee_s200_waa/default-000000144.pth
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_geodesic_origin/default-000000072.pth
     center_at_origin: true
-    move_ee_to_origin: true

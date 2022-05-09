@@ -1,5 +1,5 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp38_ee_seg_shapematch_origin.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_shapematch_origin'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp38_ee_seg_geodesic_origin.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_geodesic_origin'
 
 GENERAL:
   save_freq: 8
@@ -7,6 +7,8 @@ GENERAL:
 DATA:
   batch_size: 32
   workers: 4
+  # batch_size: 2
+  # workers: 0
   data_type: 'ee_seg'
 
   scale: 200
@@ -19,13 +21,13 @@ DATA:
 
   # arm_point_count_threshold: 20000
 
-  roi:  [ '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_limits.json',
-          '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
-          '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
+  # roi:  [ '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_limits.json',
+  #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
+  #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
   # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
   #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
   # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
-  roi_offset: 0.13  # m
+  # roi_offset: 0.13  # m
 
   position_eligibility_enabled: true
   orientation_eligibility_enabled: true
@@ -43,7 +45,7 @@ STRUCTURE:
   disable_orientation: false
 
 TRAIN:
-  loss_type: "shape_match"
+  loss_type: "wgeodesic"
 
 TEST:
   batch_size: 2
