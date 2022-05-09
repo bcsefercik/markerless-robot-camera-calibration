@@ -51,7 +51,7 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
     return rot_matrix
 
 
-def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:
+def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:  # Input: WXYZ
     """
     Taken from: https://github.com/facebookresearch/pytorch3d/blob/main/pytorch3d/transforms/rotation_conversions.py
     Convert rotations given as quaternions to rotation matrices.

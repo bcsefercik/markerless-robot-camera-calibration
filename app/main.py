@@ -93,10 +93,10 @@ class MainApp:
         )
         self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
 
-        data = self._data_source.get()
+        _init_points = np.random.rand(200000, 3) * 2
         self.pcd = o3d.geometry.PointCloud()
-        self.pcd.points = o3d.utility.Vector3dVector(data.points)
-        self.pcd.colors = o3d.utility.Vector3dVector(data.rgb)
+        self.pcd.points = o3d.utility.Vector3dVector(_init_points)
+        self.pcd.colors = o3d.utility.Vector3dVector(np.zeros_like(_init_points))
         self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
 
         bounds = self.widget3d.scene.bounding_box

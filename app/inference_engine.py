@@ -11,10 +11,12 @@ import torch
 from torch.utils.data import DataLoader
 import numpy as np
 
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.alivev2 import AliveV2Dataset, collate_non_quantized
 from utils import config, logger, utils, preprocess, output
+from utils.transformation import get_quaternion_rotation_matrix
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
 from model.robotnet_segmentation import RobotNetSegmentation
@@ -117,9 +119,14 @@ class InferenceEngine:
             ee_idx = np.where(seg_results == 2)[0]
             seg_results[ee_idx] = 1  # initially, set all ee pred to arm
 
-            ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
-            seg_results[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
             result_dto = ResultDTO(segmentation=seg_results)
+
+            if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
+                return result_dto
+
+            ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
+            result_dto.segmentation[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
+
 
             ee_raw_points = data.points[ee_idx[ee_idx_inside]]  # no origin offset
             ee_raw_rgb = rgb[ee_idx[ee_idx_inside]]
@@ -132,7 +139,7 @@ class InferenceEngine:
             result_dto.ee_pose[3:] = rot_result
 
             # Translation estimation
-            pos_model_out, _ = self.predict_translation(ee_raw_points, ee_rgb)
+            pos_model_out, _ = self.predict_translation(ee_raw_points, ee_rgb, q=rot_result)
             pos_result = output.get_pred_center(pos_model_out, ee_raw_points, q=rot_result)
             result_dto.ee_pose[:3] = pos_result
 
@@ -160,12 +167,17 @@ class InferenceEngine:
 
             return rot_output[0][3:].cpu().numpy()
 
-    def predict_translation(self, ee_raw_points, ee_rgb):
+    def predict_translation(self, ee_raw_points, ee_rgb, q=None):
         with torch.no_grad():
+            ee_points = np.array(ee_raw_points, copy=True)
+            if _config.INFERENCE.TRANSLATION.move_ee_to_origin and q is not None:
+                rot_mat = get_quaternion_rotation_matrix(q, switch_w=False)  # switch_w=False in inference
+                ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape((-1, 3))
+
             if _config.INFERENCE.TRANSLATION.center_at_origin:
-                ee_pos_points, pos_origin_offset = preprocess.center_at_origin(ee_raw_points)
+                ee_pos_points, pos_origin_offset = preprocess.center_at_origin(ee_points)
             else:
-                ee_pos_points = ee_raw_points
+                ee_pos_points = ee_points
                 pos_origin_offset = np.array([0.0, 0.0, 0.0])
 
             pos_points = torch.from_numpy(ee_pos_points).to(dtype=torch.float32)
