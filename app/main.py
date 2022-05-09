@@ -93,7 +93,7 @@ class MainApp:
         )
         self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
 
-        _init_points = np.random.rand(200000, 3) * 2
+        _init_points = (np.random.rand(200000, 3) - 0.5) * 3
         self.pcd = o3d.geometry.PointCloud()
         self.pcd.points = o3d.utility.Vector3dVector(_init_points)
         self.pcd.colors = o3d.utility.Vector3dVector(np.zeros_like(_init_points))
