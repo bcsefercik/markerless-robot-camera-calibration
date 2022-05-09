@@ -2,10 +2,11 @@ log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/test.log
 
 DATA:
   batch_size: 20
+  workers: 0
 
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
-  # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
 
   position_eligibility_enabled: false
   orientation_eligibility_enabled: false
@@ -14,5 +15,5 @@ DATA:
 
 TEST:
   workers: 3
-  checkpoint: default-000000002.pth
+  checkpoint: default-000000144.pth
   rotation_results: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_2_s400/default-000000320_results_alive_test_v2_splits_test.json

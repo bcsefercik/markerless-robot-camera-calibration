@@ -100,7 +100,7 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp31_segmentation_s200_wee_18d/default-000000008.pth
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_origin_s200/default-000000008.pth
     backbone: 'robotnet_segmentation'
     classes: ['background', 'arm', 'ee']
     class_colors: ['2C3E50', 'E74C3C', 'F1C40F']
@@ -117,5 +117,6 @@ INFERENCE:
     backbone: 'minkunet'
     encode_only: true
     scale: 200
-    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp33_rot_only_ee_seg_shapematch_origin_s200/default-000000208.pth'
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp37_vote_origin_move-ee_s200_waa/default-000000144.pth
     center_at_origin: true
+    move_ee_to_origin: true

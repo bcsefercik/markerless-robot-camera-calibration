@@ -19,9 +19,10 @@ INFERENCE:
     center_at_origin: true
 
   TRANSLATION:
-    checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/translation_s200_origin.pth'
+    checkpoint: inference/translation_s200_origin_move-ee_20220509.pth
     scale: 200
     center_at_origin: true
+    move_ee_to_origin: true
 
   ROTATION:
     checkpoint: '/home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation.pth'
