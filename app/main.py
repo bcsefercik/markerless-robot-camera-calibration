@@ -148,13 +148,13 @@ class MainApp:
         self.window.add_child(self.panel)
 
         self.logo_panel = gui.Vert(
-            0.5 * em, gui.Margins(left=margin, top=margin, right=margin)
+            0.5 * em, gui.Margins(left=margin, bottom=margin)
         )
-        logo_img = o3d.io.read_image(
+        self.logo_img = o3d.io.read_image(
             os.path.join(os.path.dirname(os.path.abspath(__file__)),
             'ku_logo.png'
         ))
-        self.logo_rgb_widget = gui.ImageWidget(logo_img)
+        self.logo_rgb_widget = gui.ImageWidget(self.logo_img)
         self.logo_panel.add_child(self.logo_rgb_widget)
         self.window.add_child(self.logo_panel)
 
@@ -178,14 +178,15 @@ class MainApp:
             panel_width,
             contentRect.height,
         )
-        logo_panel_height = 5 * layout_context.theme.font_size  # 15 ems wide
+        logo_panel_height = 46
+        logo_panel_width = 159
         self.logo_panel.frame = gui.Rect(
-            self.widget3d.frame.get_right(),
+            self.widget3d.frame.get_left(),
             contentRect.height - logo_panel_height,
-            panel_width,
+            logo_panel_width,
             logo_panel_height,
         )
-        self.logo_panel.background_color = gui.Color(0.3, 0.3, 0.3)
+        self.logo_panel.background_color = gui.Color(0.3, 0.3, 0.3, 0)
         # ipdb.set_trace()
 
     def _toggle_kinect_frame(self, state):
