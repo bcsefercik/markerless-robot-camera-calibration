@@ -88,27 +88,39 @@ if __name__ == "__main__":
     #     rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
-    ee_points = points[ee_idx] - pose[:3]
+    ee_points = points[ee_idx]
 
     new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
-    new_ee_points = new_ee_points[:-1]
+
     ee_rgb[closest_points_idx] = np.array([1.0, 0, 0])
     new_ee_points, origin_offset = center_at_origin(new_ee_points)
-    # new_ee_points += origin_offset
+    new_ee_pose_pos = new_ee_points[-1]
+    new_ee_points = new_ee_points[:-1]
 
     # reverse the transformation above
-    new_ee_points_reverse = new_ee_points
+    new_ee_points_reverse = np.array(new_ee_points, copy=True)
     new_ee_points_reverse += origin_offset
     new_ee_points_reverse = (rot_mat @ np.concatenate((new_ee_points_reverse, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
     new_ee_points_reverse = new_ee_points_reverse[:-1]
-    new_ee_points_reverse += pose[:3]
-    ee_reverse_rgb = np.zeros_like(ee_rgb)
-    ee_reverse_rgb += np.array([1.0, 0.13, 0.13])
+    ee_reverse_rgb = np.zeros_like(ee_rgb) + np.array([1.0, 0.13, 1.0])
 
+
+    _, min_y, min_z = new_ee_points.min(axis=0)
+    max_y = new_ee_points.max(axis=0)[1]
+
+    ee_pos_magic = np.array([-0.01, 0.0, min_z])
+    ee_pos_magic_reverse = ee_pos_magic + origin_offset
+    ee_pos_magic_reverse = rot_mat @ ee_pos_magic_reverse
+
+    ee_pos_magic_reverse_pose = ee_pos_magic_reverse.tolist() + ee_orientation
+    # ee_pos_magic_reverse_pose = new_ee_pose_pos.tolist() + [0] * 4
+    ee_magic_frame = create_coordinate_frame(ee_pos_magic_reverse_pose, switch_w=False)
+
+    ipdb.set_trace()
     points_show = np.concatenate((points, new_ee_points, new_ee_points_reverse), axis=0)
     rgb = np.concatenate((rgb, ee_rgb, ee_reverse_rgb), axis=0)
-    # points_show = points
-    # rgb = rgb
+    # points_show = new_ee_points
+    # rgb = ee_rgb
 
 
     pcd.points = o3d.utility.Vector3dVector(points_show)
@@ -117,6 +129,7 @@ if __name__ == "__main__":
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(
         # [pcd, kinect_frame, ee_frame]
-        [pcd, kinect_frame]
+        # [pcd, kinect_frame]
+        [pcd, ee_magic_frame, ee_frame]
         # [pcd]
     )

@@ -5,6 +5,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
+from utils.preprocess import center_at_origin
 
 import ipdb
 
@@ -82,3 +83,31 @@ def get_ee_cross_section_idx(ee_points, pose, count=32, cutoff=0.004, switch_w=T
     )
 
     return closest_points_dists, closest_points_idx
+
+
+def get_key_points(ee_points, pose, switch_w=True):  # switch_w=False in dataloader
+    new_ee_points = np.array(ee_points, copy=True)
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
+    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_pos = new_ee_points[-1:]
+    new_ee_points = new_ee_points[:-1]
+    new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pos)
+    new_ee_points -= ee_pose_offset
+
+    key_points = np.array([
+        [0.022, 0.09, 0],
+        [0.022, -0.09, 0],
+        [0.014, 0.095, 0.07],
+        [0.014, -0.095, 0.07],
+        [0, 0.048, 0.12],  # gripper
+        [0, -0.048, 0.12],  # gripper
+        [-0.022, 0.09, 0],
+        [-0.022, -0.09, 0],
+        [-0.014, 0.095, 0.07],
+        [-0.014, -0.095, 0.07]
+    ])
+
+    key_points += ee_pose_offset
+    key_points = (rot_mat @  key_points.reshape((-1, 3, 1))).reshape((-1, 3))
+
+    return key_points

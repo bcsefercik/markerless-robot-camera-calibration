@@ -10,6 +10,12 @@ def center_at_origin(points: np.array):
     return points - origin_offset, origin_offset
 
 
+def base_at_origin(points: np.array):
+    origin_base_offset = points.min(axis=0)
+
+    return points - origin_base_offset, origin_base_offset
+
+
 def normalize_colors(rgb_input: np.array, is_color_in_range_0_255: bool = False):
     rgb = np.array(rgb_input, copy=True)
 
