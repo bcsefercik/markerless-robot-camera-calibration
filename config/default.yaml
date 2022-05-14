@@ -134,3 +134,4 @@ INFERENCE:
     backbone: 'robotnet_segmentation'
     scale: 800
     center_at_origin: true
+    conf_threshold: 0.99999

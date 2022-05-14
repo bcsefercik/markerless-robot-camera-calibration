@@ -83,4 +83,3 @@ def get_key_points(logits: torch.tensor, conf_th=0.999):
     idx = softmax[1][classes].cpu().numpy()
 
     return idx, classes
-

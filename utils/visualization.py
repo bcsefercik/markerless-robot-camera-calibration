@@ -63,3 +63,23 @@ def create_coordinate_frame(pose, length=0.2, radius=0.0075,  switch_w=True):
 
 def generate_colors(n):
     return np.random.rand(n, 3)
+
+
+def get_key_point_colors():
+    np.random.seed(13)
+    return generate_colors(10)
+
+
+def generate_key_point_spheres(key_points, colors=get_key_point_colors(), radius=0.01):
+    spheres = o3d.geometry.TriangleMesh.create_sphere(radius=radius)
+    spheres.translate(key_points[0][1])
+    spheres.paint_uniform_color(colors[key_points[0][0]])
+
+    for cls, coor in key_points[1:]:
+        sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius)
+        sphere.translate(coor)
+        sphere.paint_uniform_color(colors[cls])
+
+        spheres += sphere
+
+    return spheres

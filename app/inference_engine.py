@@ -88,6 +88,17 @@ class InferenceEngine:
         )
         self._rotation_model.eval()
 
+        self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+            in_channels=_config.DATA.input_channel,
+            num_classes=10,  # num of key points
+        )
+        utils.checkpoint_restore(
+            self._key_points_model,
+            f=_config.INFERENCE.KEY_POINTS.checkpoint,
+            use_cuda=_use_cuda,
+        )
+        self._key_points_model.eval()
+
     def predict(self, data: PointCloudDTO):
         with torch.no_grad():
             rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
@@ -127,7 +138,6 @@ class InferenceEngine:
             ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
             result_dto.segmentation[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
 
-
             ee_raw_points = data.points[ee_idx[ee_idx_inside]]  # no origin offset
             ee_raw_rgb = rgb[ee_idx[ee_idx_inside]]
             ee_rgb = torch.from_numpy(ee_raw_rgb).to(dtype=torch.float32)
@@ -141,6 +151,10 @@ class InferenceEngine:
             # Translation estimation
             pos_result, _ = self.predict_translation(ee_raw_points, ee_rgb, q=rot_result)
             result_dto.ee_pose[:3] = pos_result
+
+            # Key Points estimation
+            kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_rgb)
+            result_dto.key_points = list(zip(kp_classes, kp_coords))
 
             return result_dto
 
@@ -203,3 +217,30 @@ class InferenceEngine:
                 pos_result = output.get_pred_center(pos_out_field.features, ee_raw_points, q=q)
 
         return pos_result, pos_origin_offset
+
+    def predict_key_points(self, raw_points, rgb):
+        points = np.array(raw_points, copy=True)
+
+        if _config.INFERENCE.KEY_POINTS.center_at_origin:
+            points, origin_offset = preprocess.center_at_origin(points)
+        else:
+            origin_offset = np.array([0.0, 0.0, 0.0])
+
+        points = torch.from_numpy(points).to(dtype=torch.float32)
+
+        in_field = ME.TensorField(
+            features=rgb,
+            coordinates=ME.utils.batched_coordinates(
+                [points * _config.INFERENCE.KEY_POINTS.scale], dtype=torch.float32
+            ),
+            quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+            minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+            device=_device,
+        )
+        inp = in_field.sparse()
+        out = self._key_points_model(inp)
+        out_field = out.slice(in_field)
+        kp_idx, kp_classes = output.get_key_points(out_field.features, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold)
+        kp_coords = raw_points[kp_idx]
+
+        return kp_coords, kp_classes

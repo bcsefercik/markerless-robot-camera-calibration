@@ -20,6 +20,7 @@ from utils.visualization import (
     get_frame_from_pose,
     generate_colors,
     create_coordinate_frame,
+    generate_key_point_spheres
 )
 
 import data_engine
@@ -81,6 +82,7 @@ class MainApp:
         self.kinect_frame = get_frame_from_pose(frame, [0] * 7)
         # kinect_frame.rotate(self.rot_mat)
         self.widget3d.scene.add_geometry("kinect_frame", self.kinect_frame, self.lit)
+
 
         self.ee_frame = create_coordinate_frame([0, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
         # self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
@@ -264,6 +266,14 @@ class MainApp:
                 self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
                 self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
                 self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
+
+            self.widget3d.scene.remove_geometry("key_points")
+            if result.key_points is not None and len(result.key_points) > 0:
+                self.widget3d.scene.add_geometry(
+                    "key_points",
+                    generate_key_point_spheres(result.key_points, radius=0.015),
+                    self.lit
+                )
 
         while not self.stop_event.is_set():
             data = self._data_source.get()

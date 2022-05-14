@@ -17,7 +17,8 @@ class PointCloudDTO:
 class ResultDTO:
     segmentation: np.array
     ee_pose: np.array = np.zeros(7, dtype=np.float)
+    base_pose: np.array = None
+    key_points: list((int, np.array)) = None
     timestamp: datetime = None
     confidence: float = None
-    base_pose: np.array = None
     id: str = None
