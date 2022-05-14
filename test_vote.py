@@ -77,7 +77,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 in_field = ME.TensorField(
                     features=feats[start:end],
                     coordinates=ME.utils.batched_coordinates(
-                        coords[start:end],
+                        [coords[start:end]],
                         dtype=torch.float32,
                     ),
                     quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,

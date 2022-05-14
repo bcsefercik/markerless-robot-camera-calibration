@@ -3,13 +3,15 @@ log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp39_key
 exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp39_keypoints_s800'
 
 GENERAL:
-  save_freq: 8
+  save_freq: 2
   seed: 1
 
 DATA:
+  keypoints_enabled: true  # MOST IMPORTANT
+
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
-  batch_size: 16
+  batch_size: 48
   workers: 4
 
   scale: 800 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)

@@ -48,7 +48,6 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
             try:
                 coords, feats, labels, _, others = batch
                 labels = labels.to(device=_device)
-
                 # model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
                 # out = model(model_input)
 
@@ -58,6 +57,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                 for fi, other_info in enumerate(others):
                     start = other_info["offset"][0]
                     end = other_info["offset"][1]
+
 
                     in_field = ME.TensorField(
                         features=feats[start:end],
@@ -71,6 +71,8 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     soutput = model(sinput)
                     out_field = soutput.slice(in_field)
                     logits = out_field.F
+
+                    ipdb.set_trace()
 
                     _, preds = logits.max(1)
                     preds = preds.cpu().numpy()
@@ -104,7 +106,8 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     # ipdb.set_trace()
             except Exception as e:
                 print(e)
-                _logger.exception(f"Filenames: {json.dumps(others)}")
+                _logger.exception(f"Filenames: {json.dumps([o['filepath'] for o in others])}")
+                raise e
 
         with open(output_filename.replace('.txt', '.pickle'), "wb") as fp:
             pickle.dump(results_json, fp)
@@ -134,7 +137,10 @@ if __name__ == "__main__":
     if _use_cuda:
         torch.cuda.empty_cache()
 
-    from model.robotnet_segmentation import RobotNetSegmentation
+    if _config()["STRUCTURE"].get("encode_only", False):
+        from model.robotnet_encode_keypoint import RobotNetEncode as RobotNet
+    else:
+        from model.robotnet_segmentation import RobotNetSegmentation as RobotNet
 
     from data.alivev2 import AliveV2Dataset, collate_non_batched
 
@@ -143,9 +149,7 @@ if __name__ == "__main__":
         reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
     ).to(_device)
 
-    model = RobotNetSegmentation(
-        in_channels=_config.DATA.input_channel, num_classes=_config.DATA.classes
-    )
+    model = RobotNet(in_channels=3, num_classes=10, D=3)  # out: # of kps
 
     start_epoch = utils.checkpoint_restore(
         model,

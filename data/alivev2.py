@@ -4,7 +4,6 @@ import pickle
 import glob
 import ipdb
 
-import ipdb
 import torch
 import numpy as np
 import sklearn.preprocessing as preprocessing
@@ -367,6 +366,5 @@ def collate_non_batched(data):
         others[i]["offset"] = (start_offset, end_offset)
         start_offset = end_offset
 
-    # ipdb.set_trace()
 
     return coords_batch, feats_batch, labels_batch, poses_batch, others
