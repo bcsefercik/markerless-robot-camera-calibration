@@ -232,8 +232,7 @@ class AliveV2Dataset(Dataset):
             )
         else:
             discrete_coords, unique_feats, unique_labels = points, rgb, labels
-            if not _config.DATA.keypoints_enabled:
-                discrete_coords /= self.quantization_size
+            discrete_coords /= self.quantization_size
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 

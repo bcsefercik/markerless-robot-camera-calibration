@@ -73,4 +73,14 @@ def get_segmentations_from_tensor_field(field: ME.TensorField):
 
 
 def mean_without_outliers(arr: np.array, axis_based: bool = False):
+    # TODO: implement
     return arr.mean(axis=0)
+
+
+def get_key_points(logits: torch.tensor, conf_th=0.999):
+    softmax = logits.softmax(1).max(0)
+    classes = np.where(softmax[0].cpu() > conf_th)[0]
+    idx = softmax[1][classes].cpu().numpy()
+
+    return idx, classes
+

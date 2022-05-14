@@ -18,7 +18,7 @@ import open3d as o3d
 
 from utils import config, logger, utils, metrics
 # from train_segmentation import compute_accuracies
-from utils.output import ClusterUtil
+from utils.output import ClusterUtil, get_key_points
 
 import ipdb
 
@@ -72,37 +72,19 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     out_field = soutput.slice(in_field)
                     logits = out_field.F
 
-                    ipdb.set_trace()
-
-                    _, preds = logits.max(1)
-                    preds = preds.cpu().numpy()
-                    labels_cpu = labels[start:end].cpu().numpy().reshape((-1))
-
+                    key_points_idx, key_points_classes = get_key_points(logits)
+                    key_points_pred = (coords[start:end][key_points_idx] * data_loader.dataset.quantization_size) + other_info['origin_offset']
+                    key_points_gt = other_info['key_points'][key_points_classes]
+                    dists = np.linalg.norm(key_points_gt - key_points_pred.cpu().numpy(), axis=1)
                     # if you need to cluster/filter ee output use following line
                     # biggest_ee_idx = _ee_cluster.get_largest_cluster(coords[start:end][labels_cpu == 2])
-
-                    accuracy = (preds == labels_cpu).sum() / len(labels_cpu)
 
                     fname = other_info["filename"]
                     position = other_info["position"]
 
                     print(f"{position}/{fname}")
-                    # preds_fi = [round(p, 4) for p in out[fi].tolist()]
-                    result = {
-                        "accuracy": round(float(accuracy), 4),
-                        "labels": labels_cpu.tolist(),
-                        "preds": preds.tolist()
-                    }
 
-                    individual_results[position]["accuracy"].append(
-                        result["accuracy"]
-                    )
-                    results_json[f"{position}/{fname}"] = result
 
-                    with open(output_filename, "a") as fp:
-                        fp.write(
-                            f"{position}/{fname}: {result['accuracy']}\n"
-                        )
                     # ipdb.set_trace()
             except Exception as e:
                 print(e)
