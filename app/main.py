@@ -129,6 +129,13 @@ class MainApp:
         )
         self.panel.add_child(self._instant_pred_check)
 
+        self._kp_check = gui.Checkbox("Key Point Prediction")
+        self._kp_check.checked = True
+        self._kp_check.set_on_checked(
+            lambda state: self.widget3d.scene.show_geometry("key_points", state)
+        )
+        self.panel.add_child(self._kp_check)
+
         self._calibrated_pred_check = gui.Checkbox("Latest Calibrated Prediction")
         self._calibrated_pred_check.checked = False
         self._calibrated_pred_check.enabled = False
@@ -274,6 +281,7 @@ class MainApp:
                     generate_key_point_spheres(result.key_points, radius=0.015),
                     self.lit
                 )
+                self.widget3d.scene.show_geometry("key_points", self._kp_check.checked)
 
         while not self.stop_event.is_set():
             data = self._data_source.get()
