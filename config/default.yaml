@@ -128,3 +128,9 @@ INFERENCE:
     scale: 200
     checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_geodesic_origin/default-000000072.pth
     center_at_origin: true
+
+  KEY_POINTS:
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp39_keypoints_s800/default-000000012.pth
+    backbone: 'robotnet_segmentation'
+    scale: 800
+    center_at_origin: true
