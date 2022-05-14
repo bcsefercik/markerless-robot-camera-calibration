@@ -5,4 +5,13 @@ DATA:
   batch_size: 2
   workers: 0
 
+  scale: 800
+
   center_at_origin: true
+
+  quantization_enabled: true
+
+  keypoints_enabled: true
+
+STRUCTURE:
+  encode_only: false

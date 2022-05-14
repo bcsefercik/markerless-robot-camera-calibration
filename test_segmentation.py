@@ -61,7 +61,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
 
                     in_field = ME.TensorField(
                         features=feats[start:end],
-                        coordinates=ME.utils.batched_coordinates([coords[start:end] / data_loader.dataset.quantization_size], dtype=torch.float32),
+                        coordinates=ME.utils.batched_coordinates(coords[start:end], dtype=torch.float32),
                         quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
                         minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
                         device=_device,
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
     from model.robotnet_segmentation import RobotNetSegmentation
 
-    from data.alivev2 import AliveV2Dataset, collate_non_quantized
+    from data.alivev2 import AliveV2Dataset, collate_non_batched
 
     criterion = nn.CrossEntropyLoss(
         ignore_index=_config.DATA.ignore_label,
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         data_loader = DataLoader(
             dataset,
             batch_size=_config.TEST.batch_size,
-            collate_fn=collate_non_quantized,
+            collate_fn=collate_non_batched,
             num_workers=_config.TEST.workers,
             shuffle=False,
             drop_last=False,

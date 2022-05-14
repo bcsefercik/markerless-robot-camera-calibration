@@ -110,7 +110,7 @@ def get_closest_point(p, points, maximize_dim=None):
     return min_idx, min_point, min_dist
 
 
-def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ignore_index=-100):  # switch_w=False in dataloader
+def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ignore_label=-100):  # switch_w=False in dataloader
     new_ee_points = np.array(ee_points, copy=True)
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
     new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
@@ -132,32 +132,32 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
         [-0.014, -0.095, 0.07]
     ])
 
-    point_idx = [ignore_index] * len(key_points)
+    key_points_idx = np.zeros(len(key_points), dtype=np.long) + ignore_label
 
     front_side_mask = new_ee_points[:, 0] > 0.005
     front_side_idx = np.where(front_side_mask)[0]
     p1_idx, p1_closest, dist = get_closest_point(key_points[0], new_ee_points[front_side_mask])
     if p1_closest is not None and dist < euclidean_threshold:
         key_points[0] = p1_closest
-        point_idx[0] = front_side_idx[p1_idx]
+        key_points_idx[0] = front_side_idx[p1_idx]
         key_points[6] = p1_closest + [-0.04, 0, 0]
 
     p2_idx, p2_closest, dist = get_closest_point(key_points[1], new_ee_points[front_side_mask])
     if p2_closest is not None and dist < euclidean_threshold:
         key_points[1] = p2_closest
-        point_idx[1] = front_side_idx[p2_idx]
+        key_points_idx[1] = front_side_idx[p2_idx]
         key_points[7] = p2_closest + [-0.04, 0, 0]
 
     p3_idx, p3_closest, dist = get_closest_point(key_points[2], new_ee_points[front_side_mask])
     if p3_closest is not None and dist < euclidean_threshold:
         key_points[2] = p3_closest
-        point_idx[2] = front_side_idx[p3_idx]
+        key_points_idx[2] = front_side_idx[p3_idx]
         key_points[8] = p3_closest + [-0.03, 0, 0]
 
     p4_idx, p4_closest, dist = get_closest_point(key_points[3], new_ee_points[front_side_mask])
     if p4_closest is not None and dist < euclidean_threshold:
         key_points[3] = p4_closest
-        point_idx[3] = front_side_idx[p4_idx]
+        key_points_idx[3] = front_side_idx[p4_idx]
         key_points[9] = p4_closest + [-0.03, 0, 0]
 
     back_side_mask = new_ee_points[:, 0] < -0.01
@@ -165,22 +165,22 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
     if sum(back_side_mask) > 0:
         p7_idx, p7_closest, dist = get_closest_point(key_points[6], new_ee_points[back_side_mask])
         if p7_closest is not None and dist < euclidean_threshold:
-            point_idx[6] = back_side_idx[p7_idx]
+            key_points_idx[6] = back_side_idx[p7_idx]
             key_points[6] = p7_closest
 
         p8_idx, p8_closest, dist = get_closest_point(key_points[7], new_ee_points[back_side_mask])
         if p8_closest is not None and dist < euclidean_threshold:
-            point_idx[7] = back_side_idx[p8_idx]
+            key_points_idx[7] = back_side_idx[p8_idx]
             key_points[7] = p8_closest
 
         p9_idx, p9_closest, dist = get_closest_point(key_points[8], new_ee_points[back_side_mask])
         if p9_closest is not None and dist < euclidean_threshold:
-            point_idx[8] = back_side_idx[p9_idx]
+            key_points_idx[8] = back_side_idx[p9_idx]
             key_points[8] = p9_closest
 
         p10_idx, p10_closest, dist = get_closest_point(key_points[9], new_ee_points[back_side_mask])
         if p10_closest is not None and dist < euclidean_threshold:
-            point_idx[9] = back_side_idx[p10_idx]
+            key_points_idx[9] = back_side_idx[p10_idx]
             key_points[9] = p10_closest
 
     gripper_mask = new_ee_points[:, 2] > 0.08
@@ -196,7 +196,7 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
         )
         if p5_closest is not None:
             key_points[4] = p5_closest
-            point_idx[4] = gripper_idx[p5_idx]
+            key_points_idx[4] = gripper_idx[p5_idx]
 
     # P6 right gripper
     p6_closest = None
@@ -208,7 +208,7 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
         )
         if p6_closest is not None:
             key_points[5] = p6_closest
-            point_idx[5] = gripper_idx[p6_idx]
+            key_points_idx[5] = gripper_idx[p6_idx]
 
     if p5_closest is None and p6_closest is not None:
         key_points[4] = (p6_closest * [1, -1, 1])
@@ -221,4 +221,4 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
     key_points += ee_pose_offset
     key_points = (rot_mat @  key_points.reshape((-1, 3, 1))).reshape((-1, 3))
 
-    return key_points, point_idx
+    return key_points, key_points_idx

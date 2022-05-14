@@ -1,0 +1,36 @@
+# Top Level Params
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp39_keypoints_s800.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp39_keypoints_s800'
+
+GENERAL:
+  save_freq: 8
+  seed: 1
+
+DATA:
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+
+  batch_size: 16
+  workers: 4
+
+  scale: 800 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+
+  ignore_label: -100
+
+  data_type: ee_seg  #'seg'  # ['seg', 'gt_seg', null]
+
+  ee_segmentation_enabled: true
+
+  center_at_origin: true
+
+  position_eligibility_enabled: true
+  orientation_eligibility_enabled: true
+
+  roi: null
+
+TRAIN:
+  loss_reduction: "sum"
+
+STRUCTURE:
+  encode_only: false
+
+

@@ -200,7 +200,11 @@ if __name__ == "__main__":
             print(f"Dataset {dt} split is empty.")
             continue
 
-        dataset = AliveV2Dataset(set_name=dt, file_names=file_names[dt])
+        dataset = AliveV2Dataset(
+            set_name=dt,
+            file_names=file_names[dt],
+            quantization_enabled=_config.DATA.quantization_enabled
+        )
         data_loader = DataLoader(
             dataset,
             batch_size=_config.TEST.batch_size,

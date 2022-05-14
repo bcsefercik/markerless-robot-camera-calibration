@@ -14,7 +14,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data.alivev2 import AliveV2Dataset, collate_non_quantized
+from data.alivev2 import AliveV2Dataset, collate_non_batched
 from utils import config, logger, utils, preprocess, output
 from utils.transformation import get_quaternion_rotation_matrix
 from model.backbone import minkunet

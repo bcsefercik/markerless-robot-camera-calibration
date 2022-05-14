@@ -15,7 +15,7 @@ DATA:
   folder: '/kuacc/users/bsefercik/dataset/alivev2'
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 0
   batch_size: 2 # v100->26, t4->8 mink18d
@@ -46,6 +46,10 @@ DATA:
   move_ee_to_origin: false
 
   ee_segmentation_enabled: true
+
+  quantization_enabled: true
+
+  keypoints_enabled: false
 
 STRUCTURE:
   m: 32 # 16 or 32

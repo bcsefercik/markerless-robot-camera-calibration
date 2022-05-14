@@ -2,6 +2,7 @@ import json
 import os
 import pickle
 import glob
+import ipdb
 
 import ipdb
 import torch
@@ -11,7 +12,7 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
-from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx
+from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points
 from utils.preprocess import center_at_origin
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
@@ -42,6 +43,9 @@ class AliveV2Dataset(Dataset):
         self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
         if self.ee_segmentation_enabled:
             self.ee_idx = dict()
+
+        if _config.DATA.keypoints_enabled:
+            self.key_points = dict()
 
         self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
         if self.voting_enabled:
@@ -116,18 +120,13 @@ class AliveV2Dataset(Dataset):
                         'min_y': -0.13,
                         'max_y': 0.13
                     },  # leave big margin for bbox since we remove non arm points
+                    arm_idx=arm_idx,
                     switch_w=False)
-
-                # remove ee idx which is not arm idx too
-                ee_arm_match_idx = np.isin(self.ee_idx[i], arm_idx, assume_unique=True)
-                self.ee_idx[i] = self.ee_idx[i][ee_arm_match_idx]
 
             labels[self.ee_idx[i]] = 2
 
-
         labels = np.reshape(labels, (-1, 1))
         pose = np.reshape(pose, (1, -1))
-        # ipdb.set_trace()
 
         if _config.DATA.data_type == "gt_seg":
             points = points[arm_idx]
@@ -178,7 +177,7 @@ class AliveV2Dataset(Dataset):
 
         if self.voting_enabled:
             if i not in self.ee_closest_points_idx:
-                closest_points_dists, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
+                _, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
                     points,  # ee points
                     pose[0],
                     count=32,
@@ -190,6 +189,22 @@ class AliveV2Dataset(Dataset):
                 labels *= 0
 
             labels[self.ee_closest_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
+
+        if _config.DATA.keypoints_enabled:
+            if self.key_points.get(i, None) is None:
+                self.key_points[i] = get_key_points(
+                    points,
+                    pose[0],
+                    ignore_label=_config.DATA.ignore_label,
+                    switch_w=False
+                )
+            key_points, kp_idx = self.key_points[i]
+            other['key_points'] = key_points
+            other['key_points_idx'] = kp_idx
+            labels[:] = _config.DATA.ignore_label
+            kp_real = kp_idx > -1
+            labels[kp_idx[kp_real]] = np.arange(len(kp_real), dtype=np.long)[kp_real].reshape(-1, 1)
+
 
         if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
             rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader
@@ -218,6 +233,8 @@ class AliveV2Dataset(Dataset):
             )
         else:
             discrete_coords, unique_feats, unique_labels = points, rgb, labels
+            if not _config.DATA.keypoints_enabled:
+                discrete_coords /= self.quantization_size
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 
@@ -275,7 +292,6 @@ def collate(data):
     coords, feats, labels, poses, others = list(
         zip(*data)
     )  # same size as getitem's return's
-
     coords_batch = ME.utils.batched_coordinates(coords)
     feats_batch = torch.from_numpy(np.concatenate(feats, 0)).to(dtype=torch.float32)
     labels_batch = torch.from_numpy(np.concatenate(labels, 0)).long()
@@ -299,7 +315,38 @@ def collate(data):
     return coords_batch, feats_batch, labels_batch, poses_batch, others
 
 
-def collate_non_quantized(data):
+def collate_sparse(data):
+    data = [d for d in data if d is not None]
+    coords, feats, labels, poses, others = list(
+        zip(*data)
+    )  # same size as getitem's return's
+    coords_batch, feats_batch, labels_batch = ME.utils.sparse_collate(
+        coords,
+        feats,
+        labels,
+        dtype=torch.float32,
+    )
+    poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
+
+    start_offset = 0
+    for i, o in enumerate(others):
+        if not o.get('position'):
+            others[i]["position"] = o["filename"].split("/")[-3]
+        others[i]["filename"] = o["filename"].split("/")[-1]
+
+        end_offset = start_offset + len(labels[i])
+        others[i]["offset"] = (start_offset, end_offset)
+        start_offset = end_offset
+
+        if _config.STRUCTURE.use_joint_angles:
+            others[i]['joint_angles'] = torch.from_numpy(
+                others[i]['joint_angles'].reshape((1, -1))
+            ).to(dtype=torch.float32)
+
+    return coords_batch, feats_batch, labels_batch, poses_batch, others
+
+
+def collate_non_batched(data):
     data = [d for d in data if d is not None]
     coords, feats, labels, poses, others = list(
         zip(*data)

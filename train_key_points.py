@@ -9,6 +9,7 @@ from collections import defaultdict
 
 import torch
 import torch.optim as optim
+import torch.nn as nn
 from torch.utils.data import DataLoader
 import numpy as np
 import MinkowskiEngine as ME
@@ -59,38 +60,19 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 _config.TRAIN.multiplier,
             )
 
-            coords, feats, _, poses, others = batch
-            poses = poses.to(device=_device)
+            coords, feats, labels, _, others = batch
+            labels = labels.to(device=_device)
 
             model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
-
-            if _config.STRUCTURE.use_joint_angles:
-                joint_angles = [o['joint_angles'] for o in others]
-                joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
-                model_input = (model_input, joint_angles)
 
             out = model(model_input)
 
             optimizer.zero_grad()
-            loss = criterion(poses, out, x=model_input)
+            loss = criterion(out.features, labels)
             loss.backward()
             optimizer.step()
 
-            dists = metrics.compute_pose_dist(poses, out, position_voxelization=_position_quantization_size)
-            am_dict["loss"].update(loss.item(), len(poses))
-            am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
-            am_dict["dist_position"].update(
-                statistics.mean(dists[1].tolist()), len(poses)
-            )
-            am_dict["dist_orientation"].update(
-                statistics.mean(dists[2].tolist()), len(poses)
-            )
-            am_dict["angle_diff"].update(statistics.mean(dists[3].tolist()), len(poses))
-
-            if _config.STRUCTURE.compute_confidence:
-                conf_am_dict["position_confidence"].update(statistics.mean(out[:, 7].tolist()), len(out[:, 7]))
-                conf_am_dict["orientation_confidence"].update(statistics.mean(out[:, 8].tolist()), len(out[:, 8]))
-                conf_am_dict["confidence"].update(statistics.mean(out[:, 9].tolist()), len(out[:, 9]))
+            am_dict["loss"].update(loss.item(), len(others))
 
             current_iter = (epoch - 1) * len(train_data_loader) + i + 1
             max_iter = _config.TRAIN.epochs * len(train_data_loader)
@@ -149,8 +131,8 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         start_epoch = time.time()
         for i, batch in enumerate(val_iter):
             try:
-                coords, feats, _, poses, others = batch
-                poses = poses.to(device=_device)
+                coords, feats, labels, _, others = batch
+                labels = labels.to(device=_device)
 
                 model_input = ME.SparseTensor(
                     feats, coordinates=coords, device=_device, requires_grad=False
@@ -160,27 +142,9 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
                     model_input = (model_input, joint_angles)
                 out = model(model_input)
-                loss = criterion(poses, out, x=model_input)
+                loss = criterion(out.features, labels)
 
-                poses[:, :3] *= _position_quantization_size
-
-                dists = metrics.compute_pose_dist(poses, out)
-                am_dict["loss"].update(loss.item(), len(poses))
-                am_dict["dist"].update(statistics.mean(dists[0].tolist()), len(poses))
-                am_dict["dist_position"].update(
-                    statistics.mean(dists[1].tolist()), len(poses)
-                )
-                am_dict["dist_orientation"].update(
-                    statistics.mean(dists[2].tolist()), len(poses)
-                )
-                am_dict["angle_diff"].update(
-                    statistics.mean(dists[3].tolist()), len(poses)
-                )
-                if _config.STRUCTURE.compute_confidence:
-                    conf_am_dict["position_confidence"].update(statistics.mean(out[:, 7].tolist()), len(out[:, 7]))
-                    conf_am_dict["orientation_confidence"].update(statistics.mean(out[:, 8].tolist()), len(out[:, 8]))
-                    conf_am_dict["confidence"].update(statistics.mean(out[:, 9].tolist()), len(out[:, 9]))
-
+                am_dict["loss"].update(loss.item(), len(others))
 
                 _logger.info(
                     f'iter: {i + 1}/{len(val_data_loader)} loss: {am_dict["loss"].val:.4f}({am_dict["loss"].avg:.4f})'
@@ -229,20 +193,21 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
 
     if _config()["STRUCTURE"].get("encode_only", False):
-        from model.robotnet_encode import RobotNetEncode as RobotNet
+        from model.robotnet_encode_keypoint import RobotNetEncode as RobotNet
     else:
-        from model.robotnet import RobotNet
+        from model.robotnet_segmentation import RobotNetSegmentation as RobotNet
 
-    from data.alivev2 import AliveV2Dataset, collate
+    from data.alivev2 import AliveV2Dataset
+    # from data.alivev2 import collate_sparse as collate
+    from data.alivev2 import collate
 
-    criterion = get_criterion(
-        device=_device,
-        loss_type=LossType(_config()['TRAIN'].get('loss_type', 'mse')),
-        reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
-    )
+    criterion = nn.CrossEntropyLoss(
+        ignore_index=_config.DATA.ignore_label,
+        reduction=_config()["TRAIN"].get("loss_reduction", "mean"),
+    ).to(_device)
 
     confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
-    model = RobotNet(in_channels=3, out_channels=10 if confidence_enabled else 7, D=3)
+    model = RobotNet(in_channels=3, num_classes=10, D=3)  # out: # of kps
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":
