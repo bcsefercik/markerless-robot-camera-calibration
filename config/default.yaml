@@ -51,6 +51,8 @@ DATA:
 
   keypoints_enabled: false
 
+  use_coordinates_as_features: false
+
 STRUCTURE:
   m: 32 # 16 or 32
   block_reps: 2

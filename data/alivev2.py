@@ -222,6 +222,12 @@ class AliveV2Dataset(Dataset):
             pose[:, :3] -= origin_base_offset
             other['origin_base_offset'] = origin_base_offset
 
+        if _config.DATA.use_coordinates_as_features:
+            rgb = np.array(points, copy=True)
+            if not _config.DATA.center_at_origin:
+                rgb, rgb_origin_offset = center_at_origin(rgb)
+            rgb /= rgb.max(axis=0)  # bw [-1, 1]
+
         if self.quantization_enabled:
             discrete_coords, unique_feats, unique_labels = ME.utils.sparse_quantize(
                 coordinates=points,
