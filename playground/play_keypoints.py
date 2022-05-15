@@ -14,7 +14,7 @@ import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
-from utils.data import get_6_key_points, get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
+from utils.data import collect_closest_points, get_6_key_points, get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
 from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 from utils.preprocess import center_at_origin
@@ -97,10 +97,16 @@ if __name__ == "__main__":
 
     key_points, key_points_idx = get_6_key_points(ee_points, pose, switch_w=True)
     key_points = key_points[key_points_idx > -1]
-    key_points_idx = np.where(key_points_idx > -1)[0]
+    key_points_cls = np.where(key_points_idx > -1)[0]
+    key_points_idx = key_points_idx[key_points_idx > -1]
+    pcls_idx, p_idx = collect_closest_points(key_points_idx, ee_points)
+    key_points_cls = key_points_cls[pcls_idx]
+    key_points = ee_points[p_idx]
+    print(len(key_points_cls))
+    # ipdb.set_trace()
 
     shapes = generate_key_point_shapes(
-        list(zip(key_points_idx, key_points)),
+        list(zip(key_points_cls, key_points)),
         radius=0.016,
         shape='octahedron'
     )

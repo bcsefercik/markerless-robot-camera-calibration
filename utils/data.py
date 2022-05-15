@@ -300,3 +300,10 @@ def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, i
     key_points = (rot_mat @  key_points.reshape((-1, 3, 1))).reshape((-1, 3))
 
     return key_points, point_idx
+
+
+def collect_closest_points(idx, points, euclidean_threshold=0.006):
+    norms = np.linalg.norm(points[idx].reshape(-1,1,3) - points, axis=2)
+    pcls_idx, p_idx = np.where(norms < euclidean_threshold)
+
+    return pcls_idx, p_idx
