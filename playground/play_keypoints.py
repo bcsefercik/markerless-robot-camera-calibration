@@ -14,8 +14,8 @@ import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
-from utils.data import get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
-from utils.visualization import create_coordinate_frame, generate_colors
+from utils.data import get_6_key_points, get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
+from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 from utils.preprocess import center_at_origin
 
@@ -35,31 +35,29 @@ def pick_points(pcd):
     print("")
     return vis.get_picked_points()
 
+
 if __name__ == "__main__":
+    data, semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
-    np.random.seed(13)
-    key_point_colors = generate_colors(10)
-
-    (
-        points,
-        rgb,
-        labels,
-        instance_label,
-        pose,
-    ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
-
+    if isinstance(data, dict):
+        points = data['points']
+        rgb = data['rgb']
+        labels = data['labels']
+        pose = data['pose']
+    else:
+        points, rgb, labels, _, pose = data
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
 
-    arm_idx = labels == 1
-
+    arm_idx = np.where(labels == 1)[0]
     print('# of points:', len(rgb))
-    print('# of arm points:', arm_idx.sum())
-
+    print('# of arm points:', len(arm_idx))
+    rgb[arm_idx] = np.zeros_like(rgb[arm_idx]) + np.array([0.3, 0.3, 0.3])
     points = points[arm_idx]
     rgb = rgb[arm_idx]
     labels = [arm_idx]
+    arm_idx = np.arange(len(arm_idx))
 
     pcd = o3d.geometry.PointCloud()
 
@@ -78,13 +76,11 @@ if __name__ == "__main__":
 
     # new_ee_points = ee_points - pose[:3]
     #
-    ee_idx = get_ee_idx(points, pose, switch_w=True) # switch_w=False in dataloader
-
-
+    ee_idx = get_ee_idx(points, pose, switch_w=True, arm_idx=arm_idx) # switch_w=False in dataloader
 
     ee_rgb = rgb[ee_idx]
     ee_rgb = np.zeros_like(ee_rgb) + np.array([0.3, 0.3, 0.3])
-    rgb[ee_idx] = np.array([1.0, 1.0, 0.13])
+    # rgb[ee_idx] = np.array([1.0, 1.0, 0.13])
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
     ee_points = points[ee_idx]
@@ -99,19 +95,15 @@ if __name__ == "__main__":
     new_ee_points -= ee_pose_offset
     # ipdb.set_trace()
 
-    key_points = get_key_points(ee_points, pose, switch_w=True)
+    key_points, key_points_idx = get_6_key_points(ee_points, pose, switch_w=True)
+    key_points = key_points[key_points_idx > -1]
+    key_points_idx = np.where(key_points_idx > -1)[0]
 
-
-    spheres = o3d.geometry.TriangleMesh.create_sphere(radius=0.008)
-    spheres.translate(key_points[0])
-    spheres.paint_uniform_color(key_point_colors[0])
-
-    for i in range(1, len(key_points)):
-        sphere = o3d.geometry.TriangleMesh.create_sphere(radius=0.008)
-        sphere.translate(key_points[i])
-        sphere.paint_uniform_color(key_point_colors[i])
-
-        spheres += sphere
+    shapes = generate_key_point_shapes(
+        list(zip(key_points_idx, key_points)),
+        radius=0.016,
+        shape='octahedron'
+    )
 
     # # reverse the transformation above
     # new_ee_points_reverse = np.array(new_ee_points, copy=True)
@@ -147,73 +139,7 @@ if __name__ == "__main__":
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(
         # [pcd, kinect_frame, ee_frame]
-        [pcd, kinect_frame, spheres]
+        [pcd, ee_frame, kinect_frame, shapes]
         # [pcd, ee_magic_frame, ee_frame]
         # [pcd]
     )
-
-
-# import numpy as np
-# import copy
-# import open3d as o3d
-
-
-# def demo_crop_geometry():
-#     print("Demo for manual geometry cropping")
-#     print(
-#         "1) Press 'Y' twice to align geometry with negative direction of y-axis"
-#     )
-#     print("2) Press 'K' to lock screen and to switch to selection mode")
-#     print("3) Drag for rectangle selection,")
-#     print("   or use ctrl + left click for polygon selection")
-#     print("4) Press 'C' to get a selected geometry and to save it")
-#     print("5) Press 'F' to switch to freeview mode")
-#     pcd = o3d.io.read_point_cloud("../../TestData/ICP/cloud_bin_0.pcd")
-#     o3d.visualization.draw_geometries_with_editing([pcd])
-
-
-# def draw_registration_result(source, target, transformation):
-#     source_temp = copy.deepcopy(source)
-#     target_temp = copy.deepcopy(target)
-#     source_temp.paint_uniform_color([1, 0.706, 0])
-#     target_temp.paint_uniform_color([0, 0.651, 0.929])
-#     source_temp.transform(transformation)
-#     o3d.visualization.draw_geometries([source_temp, target_temp])
-
-
-
-# def demo_manual_registration():
-#     print("Demo for manual ICP")
-#     source = o3d.io.read_point_cloud("../../TestData/ICP/cloud_bin_0.pcd")
-#     target = o3d.io.read_point_cloud("../../TestData/ICP/cloud_bin_2.pcd")
-#     print("Visualization of two point clouds before manual alignment")
-#     draw_registration_result(source, target, np.identity(4))
-
-#     # pick points from two point clouds and builds correspondences
-#     picked_id_source = pick_points(source)
-#     picked_id_target = pick_points(target)
-#     assert (len(picked_id_source) >= 3 and len(picked_id_target) >= 3)
-#     assert (len(picked_id_source) == len(picked_id_target))
-#     corr = np.zeros((len(picked_id_source), 2))
-#     corr[:, 0] = picked_id_source
-#     corr[:, 1] = picked_id_target
-
-#     # estimate rough transformation using correspondences
-#     print("Compute a rough transform using the correspondences given by user")
-#     p2p = o3d.registration.TransformationEstimationPointToPoint()
-#     trans_init = p2p.compute_transformation(source, target,
-#                                             o3d.utility.Vector2iVector(corr))
-
-#     # point-to-point ICP for refinement
-#     print("Perform point-to-point ICP refinement")
-#     threshold = 0.03  # 3cm distance threshold
-#     reg_p2p = o3d.registration.registration_icp(
-#         source, target, threshold, trans_init,
-#         o3d.registration.TransformationEstimationPointToPoint())
-#     draw_registration_result(source, target, reg_p2p.transformation)
-#     print("")
-
-
-# if __name__ == "__main__":
-#     demo_crop_geometry()
-#     demo_manual_registration()

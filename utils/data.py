@@ -60,7 +60,6 @@ def get_ee_idx(points, pose, switch_w=True, ee_dim=None, arm_idx=None):  # in tr
         }
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
-
     ee_points = points - pose[:3]
     new_points = (rot_mat.T @ ee_points.reshape((-1, 3, 1))).reshape((-1, 3))
     ee_mask = get_roi_mask(new_points, **ee_dim)
@@ -222,3 +221,82 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
     key_points = (rot_mat @  key_points.reshape((-1, 3, 1))).reshape((-1, 3))
 
     return key_points, key_points_idx
+
+
+def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, ignore_index=-100):
+    new_ee_points = np.array(ee_points, copy=True)
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
+    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_pos = new_ee_points[-1:]
+    new_ee_points = new_ee_points[:-1]
+    new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pos)
+    new_ee_points -= ee_pose_offset
+
+    key_points = np.array([
+        [0.02, 0.09, 0],  # P1: top left
+        [0.02, -0.09, 0],  # P2: top right
+        [0.014, 0.095, 0.07],  # P3: bottom left
+        [0.014, -0.095, 0.07],  # P4: bottom right
+        [0, 0.048, 0.12],  # gripper
+        [0, -0.048, 0.12],  # gripper
+    ])
+
+    point_idx = np.ones(len(key_points), dtype=np.int) * ignore_index
+
+    ee_mask = (new_ee_points[:, 0] > -0.005) * (new_ee_points[:, 2] < 0.09)
+    ee_idx = np.where(ee_mask)[0]
+    ee_selection = new_ee_points[ee_mask]
+
+    ee_bbox = np.array([
+        [0.24, 0.32, -0.2],  # P1: top left
+        [0.24, -0.32, -0.2],  # P2: top right
+        [0.24, 0.32, 0.2],  # P3: bottom left
+        [0.24, -0.32, 0.2],  # P4: bottom right
+    ])
+
+    front_pidx = np.linalg.norm(ee_bbox.reshape((-1, 1, 3)) - ee_selection, axis=2).argmin(axis=1)
+    front_kp_candidates = new_ee_points[ee_idx[front_pidx]]
+    front_point_idx_candidates = ee_idx[front_pidx]
+    dists_candidates = np.linalg.norm(key_points[:4] - front_kp_candidates, axis=1) < euclidean_threshold
+    key_points[:4][dists_candidates] = front_kp_candidates[dists_candidates]
+    point_idx[:4][dists_candidates] = front_point_idx_candidates[dists_candidates]
+
+    gripper_mask = new_ee_points[:, 2] > 0.08
+    gripper_idx = np.where(gripper_mask)[0]
+    gripper_selection = new_ee_points[gripper_mask]
+    # P5 left gripper
+    p5_closest = None
+    if len(gripper_selection[gripper_selection[:, 1] > 0]) > 0:
+        p5_idx, p5_closest, dist = get_closest_point(
+            [0, 0.01, 0.1],
+            gripper_selection[gripper_selection[:, 1] > 0],
+            maximize_dim=2
+        )
+        if p5_closest is not None:
+            key_points[4] = p5_closest
+            point_idx[4] = gripper_idx[p5_idx]
+
+    # P6 right gripper
+    p6_closest = None
+    if len(gripper_selection[gripper_selection[:, 1] < 0]) > 0:
+        p6_idx, p6_closest, dist = get_closest_point(
+            [0, -0.01, 0.1],
+            gripper_selection[gripper_selection[:, 1] < 0],
+            maximize_dim=2
+        )
+        if p6_closest is not None:
+            key_points[5] = p6_closest
+            point_idx[5] = gripper_idx[p6_idx]
+
+    if p5_closest is None and p6_closest is not None:
+        key_points[4] = (p6_closest * [1, -1, 1])
+    elif p5_closest  is not None and p6_closest is None:
+        key_points[5] = (p5_closest * [1, -1, 1])
+
+    key_points[4][2] = max(key_points[4][2], key_points[5][2])
+    key_points[5][2] = key_points[4][2]
+
+    key_points += ee_pose_offset
+    key_points = (rot_mat @  key_points.reshape((-1, 3, 1))).reshape((-1, 3))
+
+    return key_points, point_idx

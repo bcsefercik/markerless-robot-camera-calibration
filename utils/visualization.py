@@ -25,36 +25,27 @@ def get_frame_from_pose(base_frame, pose, switch_w=True):
     return ee_frame
 
 
-def create_coordinate_frame(pose, length=0.2, radius=0.0075,  switch_w=True):
+def create_coordinate_frame(pose, length=0.2, radius=0.0075, switch_w=True):
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
 
-    sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius*2.2)
+    sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius * 2.2)
     sphere.translate(pose[:3])
     sphere.paint_uniform_color([0.6, 0.6, 0.6])
 
-    z_cylinder = o3d.geometry.TriangleMesh.create_cylinder(
-        radius=radius,
-        height=length
-    )
+    z_cylinder = o3d.geometry.TriangleMesh.create_cylinder(radius=radius, height=length)
     z_cylinder.rotate(rot_mat)
-    z_cylinder.translate(pose[:3] + rot_mat @ np.array([0, 0, length/2]))
+    z_cylinder.translate(pose[:3] + rot_mat @ np.array([0, 0, length / 2]))
     z_cylinder.paint_uniform_color([0.1, 0.1, 0.9])
 
-    y_cylinder = o3d.geometry.TriangleMesh.create_cylinder(
-        radius=radius,
-        height=length
-    )
+    y_cylinder = o3d.geometry.TriangleMesh.create_cylinder(radius=radius, height=length)
     y_cylinder.paint_uniform_color([0.1, 0.9, 0.1])
-    y_cylinder.translate(pose[:3] + rot_mat @ np.array([0, length/2, 0]))
+    y_cylinder.translate(pose[:3] + rot_mat @ np.array([0, length / 2, 0]))
     y_cylinder.rotate([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
     y_cylinder.rotate(rot_mat)
 
-    x_cylinder = o3d.geometry.TriangleMesh.create_cylinder(
-        radius=radius,
-        height=length
-    )
+    x_cylinder = o3d.geometry.TriangleMesh.create_cylinder(radius=radius, height=length)
     x_cylinder.paint_uniform_color([0.9, 0.1, 0.1])
-    x_cylinder.translate(pose[:3] + rot_mat @ np.array([length/2, 0, 0]))
+    x_cylinder.translate(pose[:3] + rot_mat @ np.array([length / 2, 0, 0]))
     x_cylinder.rotate([[0, 0, -1], [0, 1, 0], [1, 0, 0]])
     x_cylinder.rotate(rot_mat)
 
@@ -66,20 +57,30 @@ def generate_colors(n):
 
 
 def get_key_point_colors():
-    np.random.seed(13)
+    np.random.seed(5)
     return generate_colors(10)
 
 
-def generate_key_point_spheres(key_points, colors=get_key_point_colors(), radius=0.01):
-    spheres = o3d.geometry.TriangleMesh.create_sphere(radius=radius)
-    spheres.translate(key_points[0][1])
-    spheres.paint_uniform_color(colors[key_points[0][0]])
+def generate_key_point_shapes(
+    key_points,
+    colors=get_key_point_colors(),
+    radius=0.01,
+    shape='icosahedron',
+):
+    if shape == 'sphere':
+        shape_generator = o3d.geometry.TriangleMesh.create_sphere
+    elif shape == 'octahedron':
+        shape_generator = o3d.geometry.TriangleMesh.create_octahedron
+    else:
+        shape_generator = o3d.geometry.TriangleMesh.create_icosahedron
 
-    for cls, coor in key_points[1:]:
-        sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius)
-        sphere.translate(coor)
-        sphere.paint_uniform_color(colors[cls])
+    shapes = o3d.geometry.TriangleMesh()
 
-        spheres += sphere
+    for cls, coor in key_points:
+        shape = shape_generator(radius=radius)
+        shape.translate(coor)
+        shape.paint_uniform_color(colors[cls])
 
-    return spheres
+        shapes += shape
+
+    return shapes
