@@ -174,7 +174,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         _tensorboard_writer.flush()
 
 
-if __name__ == "__main__":
+def main():
     job_id = uuid.uuid4()
     _logger.info("=================================================\n")
     _logger.info(f"Job ID: {job_id}")
@@ -288,3 +288,15 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     _logger.info("DONE!")
+
+
+if __name__ == "__main__":
+    while True:
+        try:
+            main()
+        except KeyboardInterrupt:
+            break
+        except:
+            _logger.exception("main() crashed.")
+        else:
+            break
