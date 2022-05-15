@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
-from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points
+from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points, get_6_key_points
 from utils.preprocess import center_at_origin
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
@@ -49,6 +49,9 @@ class AliveV2Dataset(Dataset):
         self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
         if self.voting_enabled:
             self.ee_closest_points_idx = dict()
+
+        if _config.DATA.keypoints_enabled:
+            self.key_points_generator = get_6_key_points if _config.DATA.num_of_keypoints == 6 else get_key_points
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -191,12 +194,13 @@ class AliveV2Dataset(Dataset):
 
         if _config.DATA.keypoints_enabled:
             if self.key_points.get(i, None) is None:
-                self.key_points[i] = get_key_points(
+                self.key_points[i] = self.key_points_generator(
                     points,
                     pose[0],
                     ignore_label=_config.DATA.ignore_label,
-                    switch_w=False
+                    switch_w=False  # switch_w=False in dataloader
                 )
+
             key_points, kp_idx = self.key_points[i]
             other['key_points'] = key_points
             other['key_points_idx'] = kp_idx

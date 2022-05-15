@@ -223,7 +223,7 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
     return key_points, key_points_idx
 
 
-def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, ignore_index=-100):
+def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, ignore_label=-100):
     new_ee_points = np.array(ee_points, copy=True)
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
     new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
@@ -241,7 +241,7 @@ def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, i
         [0, -0.048, 0.12],  # gripper
     ])
 
-    point_idx = np.ones(len(key_points), dtype=np.int) * ignore_index
+    point_idx = np.ones(len(key_points), dtype=np.int) * ignore_label
 
     ee_mask = (new_ee_points[:, 0] > -0.005) * (new_ee_points[:, 2] < 0.09)
     ee_idx = np.where(ee_mask)[0]

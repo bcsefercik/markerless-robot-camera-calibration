@@ -52,6 +52,7 @@ DATA:
   keypoints_enabled: false
 
   use_coordinates_as_features: false
+  num_of_keypoints: 6  # or 10
 
 STRUCTURE:
   m: 32 # 16 or 32
