@@ -30,11 +30,11 @@ INFERENCE:
     center_at_origin: true
 
   KEY_POINTS:
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/key_points_origin_coords-only_e12_20220515.pth
-    scale: 800
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/key_points_origin_coords-only_e10_s200_20220515.pth
+    scale: 200
     center_at_origin: true
     use_coordinates_as_features: true
-    conf_threshold: 0.9999
+    conf_threshold: 0.99
 
 exp_path: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference
 log_path: /home/ercan/bcs_workspace/unknown_object_segmentation/log/inference.log

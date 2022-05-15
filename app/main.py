@@ -20,7 +20,7 @@ from utils.visualization import (
     get_frame_from_pose,
     generate_colors,
     create_coordinate_frame,
-    generate_key_point_spheres
+    generate_key_point_shapes
 )
 
 import data_engine
@@ -278,7 +278,7 @@ class MainApp:
             if result.key_points is not None and len(result.key_points) > 0:
                 self.widget3d.scene.add_geometry(
                     "key_points",
-                    generate_key_point_spheres(result.key_points, radius=0.015),
+                    generate_key_point_shapes(result.key_points, radius=0.008),
                     self.lit
                 )
                 self.widget3d.scene.show_geometry("key_points", self._kp_check.checked)
