@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 import MinkowskiEngine as ME
 
 from utils import file_utils, logger, config
-from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points, get_6_key_points
+from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points, get_6_key_points, collect_closest_points
 from utils.preprocess import center_at_origin
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
@@ -194,20 +194,22 @@ class AliveV2Dataset(Dataset):
 
         if _config.DATA.keypoints_enabled:
             if self.key_points.get(i, None) is None:
-                self.key_points[i] = self.key_points_generator(
+                key_points, kp_idx = self.key_points_generator(
                     points,
                     pose[0],
                     ignore_label=_config.DATA.ignore_label,
                     switch_w=False  # switch_w=False in dataloader
                 )
+                kp_real = kp_idx > -1
+                kp_classes_real = np.arange(len(kp_idx), dtype=np.int)[kp_real]
+                kp_idx_real = kp_idx[kp_real]
+                pcls_idx, kp_idx = collect_closest_points(kp_idx_real, points)
+                kp_classes = kp_classes_real[pcls_idx]
 
-            key_points, kp_idx = self.key_points[i]
-            other['key_points'] = key_points
-            other['key_points_idx'] = kp_idx
-            labels[:] = _config.DATA.ignore_label
-            kp_real = kp_idx > -1
-            labels[kp_idx[kp_real]] = np.arange(len(kp_real), dtype=np.long)[kp_real].reshape(-1, 1)
+                self.key_points[i] = (kp_classes, kp_idx)
 
+            kp_classes, kp_idx = self.key_points[i]
+            labels[kp_idx] = kp_classes.reshape(-1, 1)
 
         if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
             rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader

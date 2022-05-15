@@ -1,3 +1,4 @@
+from bdb import BdbQuit
 import random
 import time
 import json
@@ -298,12 +299,14 @@ def main():
 
 
 if __name__ == "__main__":
+    # main()
     while True:
         try:
             main()
-        except KeyboardInterrupt:
-            break
-        except:
+        except RuntimeError:
             _logger.exception("main() crashed.")
+            if _use_cuda:
+                torch.cuda.empty_cache()
+            time.sleep(2)
         else:
             break

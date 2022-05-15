@@ -319,9 +319,12 @@ if __name__ == "__main__":
     while True:
         try:
             main()
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, BdbQuit):
             break
         except:
+            if _use_cuda:
+                torch.cuda.empty_cache()
+            time.sleep(2)
             _logger.exception("main() crashed.")
         else:
             break

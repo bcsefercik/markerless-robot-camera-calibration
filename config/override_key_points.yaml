@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp40_keypoints_coords-only_s800.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp40_keypoints_coords-only_s800'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp41_kp_s800.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp41_kp_s800'
 
 GENERAL:
   save_freq: 2
@@ -10,11 +10,11 @@ DATA:
   keypoints_enabled: true  # MOST IMPORTANT
   num_of_keypoints: 6  # or 10
 
-  use_coordinates_as_features: true
+  use_coordinates_as_features: false
 
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
-  batch_size: 32
+  batch_size: 24
   workers: 4
 
   scale: 800 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
