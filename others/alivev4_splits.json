@@ -16,7 +16,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/3.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 8284
+            "arm_point_count": 8284,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/4.pickle",
@@ -34,7 +36,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/6.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 9658
+            "arm_point_count": 9658,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/7.pickle",
@@ -52,7 +56,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/9.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 12569
+            "arm_point_count": 12569,
+            "position_eligibility": false,
+            "orientation_eligibility": false
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/10.pickle",
@@ -70,7 +76,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/12.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 17535
+            "arm_point_count": 17535,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/13.pickle",
@@ -88,7 +96,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/15.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 21226
+            "arm_point_count": 21226,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/16.pickle",
@@ -106,7 +116,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/18.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 24535
+            "arm_point_count": 24535,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/19.pickle",
@@ -124,7 +136,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/21.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 26207
+            "arm_point_count": 26207,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/22.pickle",
@@ -142,7 +156,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/24.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 28559
+            "arm_point_count": 28559,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/25.pickle",
@@ -160,7 +176,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/27.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 30636
+            "arm_point_count": 30636,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/28.pickle",
@@ -178,7 +196,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/30.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 36251
+            "arm_point_count": 36251,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/31.pickle",
@@ -196,7 +216,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/33.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 39200
+            "arm_point_count": 39200,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/34.pickle",
@@ -214,7 +236,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/36.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 36029
+            "arm_point_count": 36029,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/37.pickle",
@@ -232,7 +256,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/39.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 30582
+            "arm_point_count": 30582,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/40.pickle",
@@ -250,7 +276,9 @@
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/42.pickle",
             "position": "p2_fair",
             "light": "half",
-            "arm_point_count": 31471
+            "arm_point_count": 31471,
+            "position_eligibility": true,
+            "orientation_eligibility": true
         },
         {
             "filepath": "/kuacc/users/bsefercik/dataset/alivev4/p2_fair_half/labeled/43.pickle",
