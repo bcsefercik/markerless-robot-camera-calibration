@@ -175,7 +175,7 @@ if __name__ == "__main__":
 
     from model.robotnet_vote import RobotNetVote
 
-    from data.alivev2 import AliveV2Dataset, collate_non_batched
+    from data.alivev2 import AliveV2Dataset, collate_tupled
 
     criterion = nn.BCELoss(
         reduction=_config()["TRAIN"].get("loss_reduction", "mean")
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         data_loader = DataLoader(
             dataset,
             batch_size=_config.TEST.batch_size,
-            collate_fn=collate_non_batched,
+            collate_fn=collate_tupled,
             num_workers=_config.TEST.workers,
             shuffle=False,
             drop_last=False,

@@ -78,7 +78,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     dists = np.linalg.norm(key_points_gt - key_points_pred.cpu().numpy(), axis=1)
                     # if you need to cluster/filter ee output use following line
                     # biggest_ee_idx = _ee_cluster.get_largest_cluster(coords[start:end][labels_cpu == 2])
-
+                    print(dists)
                     fname = other_info["filename"]
                     position = other_info["position"]
 
