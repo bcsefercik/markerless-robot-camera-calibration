@@ -80,7 +80,7 @@ class AliveV2Dataset(Dataset):
                     else:
                         self.roi[k][kk] -= _config()['DATA'].get('roi_offset', 0)
 
-    def __getitem__(self, i):
+    def load_generic_data(self, i):
         # TODO: extract instance, semantic here
         x, semantic_pred, file_name = self.load_data_file(i)
         joint_angles = None
@@ -134,18 +134,6 @@ class AliveV2Dataset(Dataset):
             points = points[arm_idx]
             rgb = rgb[arm_idx]
             labels = labels[arm_idx]
-        elif _config.DATA.data_type == "gt_bbox":
-            min_point = points[arm_idx].min(axis=0)
-            max_point = points[arm_idx].max(axis=0)
-            arm_bbox = (
-                np.logical_and(points <= max_point, points >= min_point).sum(
-                    axis=1
-                )
-                == 3
-            )
-            points = points[arm_bbox]
-            rgb = rgb[arm_bbox]
-            labels = labels[arm_bbox]
         elif _config.DATA.data_type == "ee_seg":
             if len(self.ee_idx[i]) < 1:
                 return None
@@ -163,9 +151,6 @@ class AliveV2Dataset(Dataset):
             rgb = rgb[instance_roi]
             labels = labels[instance_roi]
 
-        if _config()["DATA"].get("voxelize_position", False):
-            pose[0, :3] /= self.quantization_size
-
         if len(rgb) > 0:
             if rgb.min() < 0:
                 # WRONG approach, tries to get rid of trouble from data prep code.
@@ -175,42 +160,10 @@ class AliveV2Dataset(Dataset):
 
             if rgb.min() > (-1e-6) and rgb.max() < (1+1e-6):
                 rgb -= 0.5
-        # ipdb.set_trace()
 
-        if self.voting_enabled:
-            if i not in self.ee_closest_points_idx:
-                _, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
-                    points,  # ee points
-                    pose[0],
-                    count=32,
-                    cutoff=0.004,
-                    switch_w=False
-                )  # switch_w=False in dataloader
+        return points, rgb, labels, instance_labels, pose, joint_angles, other
 
-            if _config.DATA.data_type == "ee_seg":
-                labels *= 0
-
-            labels[self.ee_closest_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
-
-        if _config.DATA.keypoints_enabled:
-            if self.key_points.get(i, None) is None:
-                key_points, kp_idx = self.key_points_generator(
-                    points,
-                    pose[0],
-                    ignore_label=_config.DATA.ignore_label,
-                    switch_w=False  # switch_w=False in dataloader
-                )
-                kp_real = kp_idx > -1
-                kp_classes_real = np.arange(len(kp_idx), dtype=np.int)[kp_real]
-                kp_idx_real = kp_idx[kp_real]
-                pcls_idx, kp_idx = collect_closest_points(kp_idx_real, points)
-                kp_classes = kp_classes_real[pcls_idx]
-
-                self.key_points[i] = (kp_classes, kp_idx)
-
-            kp_classes, kp_idx = self.key_points[i]
-            labels[kp_idx] = kp_classes.reshape(-1, 1)
-
+    def conduct_post_point_normalization(self, points, pose, other):
         if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
             rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader
             points = (rot_mat.T @ np.concatenate((points, pose[0, :3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
@@ -228,6 +181,62 @@ class AliveV2Dataset(Dataset):
             pose[:, :3] -= origin_base_offset
             other['origin_base_offset'] = origin_base_offset
 
+        return points, pose, other
+
+    def load_key_points(self, i, points, pose, labels):
+        labels *= 0
+        labels += _config.DATA.ignore_label
+
+        if self.key_points.get(i, None) is None:
+            key_points, kp_idx = self.key_points_generator(
+                points,
+                pose[0],
+                ignore_label=_config.DATA.ignore_label,
+                switch_w=False  # switch_w=False in dataloader
+            )
+            kp_real = kp_idx > -1
+            kp_classes_real = np.arange(len(kp_idx), dtype=np.int)[kp_real]
+            kp_idx_real = kp_idx[kp_real]
+            pcls_idx, kp_idx = collect_closest_points(kp_idx_real, points)
+            kp_classes = kp_classes_real[pcls_idx]
+
+            self.key_points[i] = (kp_classes, kp_idx)
+
+        kp_classes, kp_idx = self.key_points[i]
+        labels[kp_idx] = kp_classes.reshape(-1, 1)
+
+        return labels
+
+    def __getitem__(self, i):
+        points, rgb, labels, instance_labels, pose, joint_angles, other = self.load_generic_data(i)
+
+        if _config()["DATA"].get("voxelize_position", False):
+            pose[0, :3] /= self.quantization_size
+        # ipdb.set_trace()
+
+        if self.voting_enabled:
+            if _config.DATA.keypoints_enabled:
+                raise AttributeError("Voting and keypoint cannot be simultaneously enabled.")
+
+            if i not in self.ee_closest_points_idx:
+                _, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
+                    points,  # ee points
+                    pose[0],
+                    count=32,
+                    cutoff=0.004,
+                    switch_w=False
+                )  # switch_w=False in dataloader
+
+            if _config.DATA.data_type == "ee_seg":
+                labels *= 0
+
+            labels[self.ee_closest_points_idx[i], :] = (1 if _config.DATA.data_type == "ee_seg" else 3)
+
+        if _config.DATA.keypoints_enabled:
+            labels = self.load_key_points(i, points, pose, labels)
+
+        points, pose, other = self.conduct_post_point_normalization(points, pose, other)
+
         if _config.DATA.use_coordinates_as_features:
             rgb = np.array(points, copy=True)
             if not _config.DATA.center_at_origin:
@@ -244,7 +253,7 @@ class AliveV2Dataset(Dataset):
             )
         else:
             discrete_coords, unique_feats, unique_labels = points, rgb, labels
-            discrete_coords /= self.quantization_size
+            # discrete_coords /= self.quantization_size
 
         return discrete_coords, unique_feats, unique_labels, pose, other
 
@@ -356,7 +365,7 @@ def collate_sparse(data):
     return coords_batch, feats_batch, labels_batch, poses_batch, others
 
 
-def collate_non_batched(data):
+def collate_stacked(data):
     data = [d for d in data if d is not None]
     coords, feats, labels, poses, others = list(
         zip(*data)

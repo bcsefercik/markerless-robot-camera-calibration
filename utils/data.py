@@ -12,6 +12,35 @@ from utils.preprocess import center_at_origin
 import ipdb
 
 
+def get_farthest_point_sample_idx(point, npoint):
+    """
+    Input:
+        xyz: pointcloud data, [N, D]
+        npoint: number of samples
+    Return:
+        centroids: sampled pointcloud index, [npoint, D]
+    """
+    N, D = point.shape
+    xyz = point[:, :3]
+    centroids = np.zeros((npoint,))
+    distance = np.ones((N,)) * 1e10
+    farthest = np.random.randint(0, N)
+    for i in range(npoint):
+        centroids[i] = farthest
+        centroid = xyz[farthest, :]
+        dist = np.sum((xyz - centroid) ** 2, -1)
+        mask = dist < distance
+        distance[mask] = dist[mask]
+        farthest = np.argmax(distance, -1)
+
+    return centroids.astype(np.int32)
+
+
+def get_farthest_point_sample(point, npoint):
+    idx = get_farthest_point_sample_idx(point, npoint)
+    return point[idx]
+
+
 def normalize_color(
     color, is_color_in_range_0_255: bool = False
 ):
