@@ -38,7 +38,7 @@ class AliveV2DenseDataset(AliveV2Dataset):
         labels = labels[sample_idx]
 
         if _config.DATA.keypoints_enabled:
-            labels = self.load_key_points(i, points, pose, labels)
+            labels = self.load_key_points(i, points, pose, labels, p2p_label=False)
 
         points, pose, other = self.conduct_post_point_normalization(points, pose, other)
 

@@ -183,7 +183,7 @@ class AliveV2Dataset(Dataset):
 
         return points, pose, other
 
-    def load_key_points(self, i, points, pose, labels):
+    def load_key_points(self, i, points, pose, labels, p2p_label=True):
         labels *= 0
         labels += _config.DATA.ignore_label
 
@@ -194,6 +194,10 @@ class AliveV2Dataset(Dataset):
                 ignore_label=_config.DATA.ignore_label,
                 switch_w=False  # switch_w=False in dataloader
             )
+
+            if not p2p_label:
+                return kp_idx
+
             kp_real = kp_idx > -1
             kp_classes_real = np.arange(len(kp_idx), dtype=np.int)[kp_real]
             kp_idx_real = kp_idx[kp_real]
@@ -365,7 +369,7 @@ def collate_sparse(data):
     return coords_batch, feats_batch, labels_batch, poses_batch, others
 
 
-def collate_stacked(data):
+def collate_tupled(data):
     data = [d for d in data if d is not None]
     coords, feats, labels, poses, others = list(
         zip(*data)

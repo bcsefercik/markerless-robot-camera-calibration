@@ -62,14 +62,19 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             )
 
             coords, feats, labels, _, others = batch
+            coords = coords.to(device=_device)
+            feats = feats.to(device=_device)
             labels = labels.to(device=_device)
 
-            model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
-
-            out = model(model_input)
+            if _config.STRUCTURE.backbone == 'pointnet2':
+                model_input = coords.transpose(2, 1)
+                out = model(model_input)[0]
+            else:
+                model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+                out = model(model_input).features
 
             optimizer.zero_grad()
-            loss = criterion(out.features, labels)
+            loss = criterion(out, labels)
             loss.backward()
             optimizer.step()
 
@@ -193,14 +198,16 @@ def main():
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    if _config()["STRUCTURE"].get("encode_only", False):
-        from model.robotnet_encode_keypoint import RobotNetEncode as RobotNet
+    if _config.STRUCTURE.backbone == 'pointnet2':
+        from model.pointnet2 import PointNet2
+        model = PointNet2(_config.DATA.num_of_keypoints, in_channels=3)
+        from data.alivev2_dense import AliveV2DenseDataset as AliveV2Dataset
+        from data.alivev2_dense import collate
     else:
         from model.robotnet_segmentation import RobotNetSegmentation as RobotNet
-
-    from data.alivev2 import AliveV2Dataset
-    # from data.alivev2 import collate_sparse as collate
-    from data.alivev2 import collate
+        model = RobotNet(in_channels=3, num_classes=_config.DATA.num_of_keypoints, D=3)  # out: # of kps
+        from data.alivev2 import collate
+        from data.alivev2 import AliveV2Dataset
 
     criterion = nn.CrossEntropyLoss(
         ignore_index=_config.DATA.ignore_label,
@@ -208,7 +215,7 @@ def main():
     ).to(_device)
 
     confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
-    model = RobotNet(in_channels=3, num_classes=10, D=3)  # out: # of kps
+
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":
