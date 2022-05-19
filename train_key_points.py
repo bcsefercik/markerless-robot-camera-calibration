@@ -21,6 +21,8 @@ from utils.loss import get_criterion, LossType
 
 import ipdb
 
+from utils.preprocess import normalize_points
+
 
 _config = config.Config()
 _config.save()
@@ -62,12 +64,20 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
             )
 
             coords, feats, labels, _, others = batch
+
             coords = coords.to(device=_device)
             feats = feats.to(device=_device)
             labels = labels.to(device=_device)
 
             if _config.STRUCTURE.backbone == 'pointnet2':
-                model_input = coords.transpose(2, 1)
+                model_input = torch.cat((coords, feats), dim=-1)
+
+                if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
+                    coords_normal = normalize_points(coords.cpu().numpy())
+                    coords_normal = torch.from_numpy(coords_normal).to(device=_device)
+                    model_input = torch.cat((model_input, coords_normal), dim=-1)
+
+                model_input = model_input.transpose(2, 1)
                 out = model(model_input)[0]
             else:
                 model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
@@ -138,17 +148,27 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
         for i, batch in enumerate(val_iter):
             try:
                 coords, feats, labels, _, others = batch
+
+                coords, feats, labels, _, others = batch
+                coords = coords.to(device=_device)
+                feats = feats.to(device=_device)
                 labels = labels.to(device=_device)
 
-                model_input = ME.SparseTensor(
-                    feats, coordinates=coords, device=_device, requires_grad=False
-                )
-                if _config.STRUCTURE.use_joint_angles:
-                    joint_angles = [o['joint_angles'] for o in others]
-                    joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
-                    model_input = (model_input, joint_angles)
-                out = model(model_input)
-                loss = criterion(out.features, labels)
+                if _config.STRUCTURE.backbone == 'pointnet2':
+                    model_input = torch.cat((coords, feats), dim=-1)
+
+                    if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
+                        coords_normal = normalize_points(coords.cpu().numpy())
+                        coords_normal = torch.from_numpy(coords_normal).to(device=_device)
+                        model_input = torch.cat((model_input, coords_normal), dim=-1)
+
+                    model_input = model_input.transpose(2, 1)
+                    out = model(model_input)[0]
+                else:
+                    model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+                    out = model(model_input).features
+
+                loss = criterion(out, labels)
 
                 am_dict["loss"].update(loss.item(), len(others))
 
@@ -199,8 +219,9 @@ def main():
         torch.cuda.empty_cache()
 
     if _config.STRUCTURE.backbone == 'pointnet2':
-        from model.pointnet2 import PointNet2
-        model = PointNet2(_config.DATA.num_of_keypoints, in_channels=3)
+        from model.pointnet2 import PointNet2SSG
+        in_channels = 6 if _config.DATA.use_coordinates_as_features else 9
+        model = PointNet2SSG(_config.DATA.num_of_keypoints, in_channels=in_channels)
         from data.alivev2_dense import AliveV2DenseDataset as AliveV2Dataset
         from data.alivev2_dense import collate
     else:
@@ -299,8 +320,6 @@ def main():
             )
 
             eval_epoch(val_data_loader, model, criterion, epoch)
-
-    # ipdb.set_trace()
 
     _logger.info("DONE!")
 
