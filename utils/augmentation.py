@@ -23,3 +23,8 @@ def distort_elastic(x, gran, mag):
         return np.hstack([i(x_)[:, None] for i in interp])
 
     return x + g(x) * mag
+
+
+def add_noise(x, sigma=0.0016, clip=0.005):
+    noise = np.clip(sigma*np.random.randn(*x.shape), -1*clip, clip)
+    return x + noise
