@@ -58,6 +58,9 @@ DATA:
   use_point_normals: false
   pointcloud_sampling_method: farthest  # uniform
 
+  augmentation: []  # select from: [elastic, noise, transform, flip, gravity]
+  augmentation_probability: 0.2
+
 
 STRUCTURE:
   m: 32 # 16 or 32

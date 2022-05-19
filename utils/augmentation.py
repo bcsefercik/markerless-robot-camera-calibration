@@ -60,12 +60,15 @@ def rotate_along_gravity(pc):
 def augment(
     points,
     probability=0.2,
+    copy=False,
     elastic=False,
     noise=False,
     transform=False,
     flip=False,
     gravity=False
 ):
+    points = np.array(points, copy=copy)
+
     if elastic and np.random.rand() < probability:
         points = distort_elastic(points, 1, 4)
 

@@ -18,6 +18,7 @@ from utils import file_utils, logger, config
 from utils.data import get_ee_idx, get_roi_mask, get_key_points, get_6_key_points, collect_closest_points, get_farthest_point_sample_idx
 from utils.preprocess import center_at_origin, normalize_points
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
+from utils import augmentation as aug
 
 
 _config = config.Config()
@@ -51,6 +52,13 @@ class AliveV2DenseDataset(AliveV2Dataset):
 
         if _config.DATA.keypoints_enabled:
             labels = self.load_key_points(i, points, pose, labels, p2p_label=False)
+
+        if self.augment:  # TODO: add augmentation for pose
+            points = aug.augment(
+                points,
+                probability=_config.DATA.augmentation_probability,
+                **{k: True for k in _config.DATA.augmentation}
+            )
 
         points, pose, other = self.conduct_post_point_ops(points, pose, other)
 

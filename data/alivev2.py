@@ -25,6 +25,8 @@ _logger = logger.Logger().get()
 
 class AliveV2Dataset(Dataset):
     def __init__(self, set_name="train", augment=False, file_names=list(), quantization_enabled=True):
+        self.augment = augment or (set_name=='train' and len(_config.DATA.augmentation) > 0)
+
         self.dataset = _config()["DATA"].get("folder", "")
         self.dataset = os.path.join(self.dataset, set_name)
 
