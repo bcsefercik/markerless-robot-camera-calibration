@@ -32,3 +32,13 @@ def normalize_colors(rgb_input: np.array, is_color_in_range_0_255: bool = False)
         rgb -= 0.5
 
     return rgb
+
+
+def normalize_points(pc, ver=2):
+    if ver == 1:
+        return pc
+    else:
+        pc = np.array(pc, copy=True)
+        pc = pc - pc.mean(0)
+        pc /= np.max(np.linalg.norm(pc, axis=-1))
+    return pc

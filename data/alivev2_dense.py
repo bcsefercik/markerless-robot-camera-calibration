@@ -3,6 +3,7 @@ import os
 import pickle
 import glob
 from random import sample
+import time
 import ipdb
 
 import torch
@@ -15,7 +16,7 @@ from model.pointnet2_utils import farthest_point_sample
 
 from utils import file_utils, logger, config
 from utils.data import get_ee_idx, get_roi_mask, get_key_points, get_6_key_points, collect_closest_points, get_farthest_point_sample_idx
-from utils.preprocess import center_at_origin
+from utils.preprocess import center_at_origin, normalize_points
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 
 
@@ -28,10 +29,18 @@ class AliveV2DenseDataset(AliveV2Dataset):
     def __getitem__(self, i):
         points, rgb, labels, _, pose, _, other = self.load_generic_data(i)
 
-        sample_idx = get_farthest_point_sample_idx(
-            points,
-            _config.DATA.num_of_dense_input_points
-        )
+        if len(points) < _config.DATA.num_of_dense_input_points:
+            return None
+
+        if i not in self.sample_idx_memo:
+            # takes ~0.5 sec, omg!
+            self.sample_idx_memo[i] = get_farthest_point_sample_idx(
+                points,
+                _config.DATA.num_of_dense_input_points
+            )
+        # sample_idx = np.arange(2048)
+
+        sample_idx = self.sample_idx_memo[i]
 
         points = points[sample_idx]
         rgb = rgb[sample_idx]
@@ -40,15 +49,11 @@ class AliveV2DenseDataset(AliveV2Dataset):
         if _config.DATA.keypoints_enabled:
             labels = self.load_key_points(i, points, pose, labels, p2p_label=False)
 
-        points, pose, other = self.conduct_post_point_normalization(points, pose, other)
+        points, pose, other = self.conduct_post_point_ops(points, pose, other)
 
-        if _config.DATA.use_coordinates_as_features:
-            rgb = np.array(points, copy=True)
-            if not _config.DATA.center_at_origin:
-                rgb, rgb_origin_offset = center_at_origin(rgb)
-            rgb /= rgb.max(axis=0)  # bw [-1, 1]
+        feats = normalize_points(points) if _config.DATA.use_coordinates_as_features else rgb
 
-        return points, rgb, labels, pose, other
+        return points, feats, labels, pose, other
 
 
 def collate(data):

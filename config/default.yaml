@@ -54,6 +54,8 @@ DATA:
   use_coordinates_as_features: false
   num_of_keypoints: 6  # or 10
   num_of_dense_input_points: 2048
+  use_point_normals: false
+
 
 STRUCTURE:
   m: 32 # 16 or 32

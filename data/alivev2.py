@@ -1,14 +1,17 @@
 import json
 import os
-import pickle
 import glob
+import time
 import ipdb
+from datetime import timedelta
+
 
 import torch
 import numpy as np
 import sklearn.preprocessing as preprocessing
 from torch.utils.data import Dataset
 import MinkowskiEngine as ME
+from tqdm import tqdm, trange
 
 from utils import file_utils, logger, config
 from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points, get_6_key_points, collect_closest_points
@@ -79,6 +82,15 @@ class AliveV2Dataset(Dataset):
                         self.roi[k][kk] += _config()['DATA'].get('roi_offset', 0)
                     else:
                         self.roi[k][kk] -= _config()['DATA'].get('roi_offset', 0)
+
+        self.sample_idx_memo = dict()
+
+        # loadd caches for fast fetch, can't do in get item due to multiprocessing
+        _logger.info(f"Loading dataset caches ({set_name})")
+        s = time.time()
+        for i in trange(len(self.file_names)):
+            self.__getitem__(i)
+        _logger.info(f"Successfully loaded caches in {timedelta(seconds=time.time() - s)} ({set_name})")
 
     def load_generic_data(self, i):
         # TODO: extract instance, semantic here
@@ -163,7 +175,7 @@ class AliveV2Dataset(Dataset):
 
         return points, rgb, labels, instance_labels, pose, joint_angles, other
 
-    def conduct_post_point_normalization(self, points, pose, other):
+    def conduct_post_point_ops(self, points, pose, other):
         if  _config.DATA.data_type == "ee_seg" and _config.DATA.move_ee_to_origin:
             rot_mat = get_quaternion_rotation_matrix(pose[0, 3:], switch_w=False)  # switch_w=False in dataloader
             points = (rot_mat.T @ np.concatenate((points, pose[0, :3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
@@ -239,7 +251,7 @@ class AliveV2Dataset(Dataset):
         if _config.DATA.keypoints_enabled:
             labels = self.load_key_points(i, points, pose, labels)
 
-        points, pose, other = self.conduct_post_point_normalization(points, pose, other)
+        points, pose, other = self.conduct_post_point_ops(points, pose, other)
 
         if _config.DATA.use_coordinates_as_features:
             rgb = np.array(points, copy=True)
