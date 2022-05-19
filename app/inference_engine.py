@@ -15,14 +15,17 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.alivev2 import AliveV2Dataset, collate_tupled
-from utils import config, logger, utils, preprocess, output
+from utils import config, logger, utils, preprocess
+from utils import output as out_utils
 from utils.transformation import get_quaternion_rotation_matrix
+from utils.data import get_farthest_point_sample_idx
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
 from model.robotnet_segmentation import RobotNetSegmentation
 from model.robotnet_encode import RobotNetEncode
 from model.robotnet import RobotNet
 from dto import ResultDTO, PointCloudDTO
+from model.pointnet2 import PointNet2SSG
 
 import MinkowskiEngine as ME
 
@@ -36,7 +39,7 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 class InferenceEngine:
     def __init__(self) -> None:
-        self.cluster_util = output.ClusterUtil()
+        self.cluster_util = out_utils.ClusterUtil()
 
         self.models = defaultdict(lambda: minkunet.MinkUNet18D)
         self.models["minkunet101"] = minkunet.MinkUNet101
@@ -47,6 +50,7 @@ class InferenceEngine:
         self.models["robotnet_encode"] = RobotNetEncode
         self.models["robotnet"] = RobotNet
         self.models["robotnet_segmentation"] = RobotNetSegmentation
+        self.models["pointnet2"] = PointNet2SSG
 
         # self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
         #     in_channels=_config.DATA.input_channel,
@@ -88,10 +92,19 @@ class InferenceEngine:
         )
         self._rotation_model.eval()
 
-        self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
-            in_channels=_config.DATA.input_channel,
-            num_classes=10,  # num of key points
-        )
+        if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
+            in_channels = (
+                6 if _config.INFERENCE.KEY_POINTS.use_coordinates_as_features else 9
+            )
+            self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+                in_channels=in_channels,
+                num_classes=_config.INFERENCE.KEY_POINTS.num_of_keypoints,  # num of key points
+            )
+        else:
+            self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+                in_channels=_config.DATA.input_channel,
+                num_classes=10,  # num of key points, TODO: get from _config.INFERENCE.KEY_POINTS.backbone
+            )
         utils.checkpoint_restore(
             self._key_points_model,
             f=_config.INFERENCE.KEY_POINTS.checkpoint,
@@ -115,7 +128,8 @@ class InferenceEngine:
             seg_in_field = ME.TensorField(
                 features=seg_rgb,
                 coordinates=ME.utils.batched_coordinates(
-                    [seg_points * _config.INFERENCE.SEGMENTATION.scale], dtype=torch.float32
+                    [seg_points * _config.INFERENCE.SEGMENTATION.scale],
+                    dtype=torch.float32,
                 ),
                 quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
                 minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
@@ -125,7 +139,9 @@ class InferenceEngine:
             seg_output = self._segmentation_model(seg_input)
             seg_out_field = seg_output.slice(seg_in_field)
 
-            seg_results, seg_conf = output.get_segmentations_from_tensor_field(seg_out_field)
+            seg_results, seg_conf = out_utils.get_segmentations_from_tensor_field(
+                seg_out_field
+            )
             ee_mask = seg_results == 2
             ee_idx = np.where(seg_results == 2)[0]
             seg_results[ee_idx] = 1  # initially, set all ee pred to arm
@@ -136,7 +152,9 @@ class InferenceEngine:
                 return result_dto
 
             ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
-            result_dto.segmentation[ee_idx[ee_idx_inside]] = 2  # set ee classes within largest linkage cluster
+            result_dto.segmentation[
+                ee_idx[ee_idx_inside]
+            ] = 2  # set ee classes within largest linkage cluster
 
             ee_raw_points = data.points[ee_idx[ee_idx_inside]]  # no origin offset
             ee_raw_rgb = rgb[ee_idx[ee_idx_inside]]
@@ -149,7 +167,9 @@ class InferenceEngine:
             result_dto.ee_pose[3:] = rot_result
 
             # Translation estimation
-            pos_result, _ = self.predict_translation(ee_raw_points, ee_rgb, q=rot_result)
+            pos_result, _ = self.predict_translation(
+                ee_raw_points, ee_rgb, q=rot_result
+            )
             result_dto.ee_pose[:3] = pos_result
 
             # Key Points estimation
@@ -183,12 +203,24 @@ class InferenceEngine:
     def predict_translation(self, ee_raw_points, ee_rgb, q=None):
         with torch.no_grad():
             ee_points = np.array(ee_raw_points, copy=True)
-            if (_config.INFERENCE.TRANSLATION.move_ee_to_origin or _config.INFERENCE.TRANSLATION.magic_enabled) and q is not None:
-                rot_mat = get_quaternion_rotation_matrix(q, switch_w=False)  # switch_w=False in inference
-                ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape((-1, 3))
+            if (
+                _config.INFERENCE.TRANSLATION.move_ee_to_origin
+                or _config.INFERENCE.TRANSLATION.magic_enabled
+            ) and q is not None:
+                rot_mat = get_quaternion_rotation_matrix(
+                    q, switch_w=False
+                )  # switch_w=False in inference
+                ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape(
+                    (-1, 3)
+                )
 
-            if _config.INFERENCE.TRANSLATION.center_at_origin or _config.INFERENCE.TRANSLATION.magic_enabled:
-                ee_pos_points, pos_origin_offset = preprocess.center_at_origin(ee_points)
+            if (
+                _config.INFERENCE.TRANSLATION.center_at_origin
+                or _config.INFERENCE.TRANSLATION.magic_enabled
+            ):
+                ee_pos_points, pos_origin_offset = preprocess.center_at_origin(
+                    ee_points
+                )
             else:
                 ee_pos_points = ee_points
                 pos_origin_offset = np.array([0.0, 0.0, 0.0])
@@ -204,7 +236,8 @@ class InferenceEngine:
                 pos_in_field = ME.TensorField(
                     features=ee_rgb,
                     coordinates=ME.utils.batched_coordinates(
-                        [pos_points * _config.INFERENCE.TRANSLATION.scale], dtype=torch.float32
+                        [pos_points * _config.INFERENCE.TRANSLATION.scale],
+                        dtype=torch.float32,
                     ),
                     quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
                     minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
@@ -214,7 +247,9 @@ class InferenceEngine:
                 pos_output = self._translation_model(pos_input)
                 pos_out_field = pos_output.slice(pos_in_field)
 
-                pos_result = output.get_pred_center(pos_out_field.features, ee_raw_points, q=q)
+                pos_result = out_utils.get_pred_center(
+                    pos_out_field.features, ee_raw_points, q=q
+                )
 
         return pos_result, pos_origin_offset
 
@@ -237,19 +272,40 @@ class InferenceEngine:
         if not torch.is_tensor(rgb):
             rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
 
-        in_field = ME.TensorField(
-            features=rgb,
-            coordinates=ME.utils.batched_coordinates(
-                [points * _config.INFERENCE.KEY_POINTS.scale], dtype=torch.float32
-            ),
-            quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
-            minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
-            device=_device,
-        )
-        inp = in_field.sparse()
-        out = self._key_points_model(inp)
-        out_field = out.slice(in_field)
-        kp_idx, kp_classes = output.get_key_points(out_field.features, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold)
+        if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
+            sample_idx = get_farthest_point_sample_idx(
+                points.cpu().numpy(), _config.DATA.num_of_dense_input_points
+            )
+            inp = torch.cat(
+                (points[sample_idx], rgb[sample_idx]),
+                dim=-1
+            ).view(1, _config.DATA.num_of_dense_input_points, -1).transpose(2, 1).to(device=_device)
+
+            out = self._key_points_model(inp)[0].view( _config.DATA.num_of_dense_input_points, -1)
+            kp_idx, kp_classes = out_utils.get_key_points(
+                out, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold
+            )
+            kp_idx = sample_idx[kp_idx]
+            # ipdb.set_trace()
+
+        else:
+            in_field = ME.TensorField(
+                features=rgb,
+                coordinates=ME.utils.batched_coordinates(
+                    [points * _config.INFERENCE.KEY_POINTS.scale], dtype=torch.float32
+                ),
+                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+                device=_device,
+            )
+            inp = in_field.sparse()
+            out = self._key_points_model(inp)
+            output = out.slice(in_field).features
+
+            kp_idx, kp_classes = out_utils.get_key_points(
+                output, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold
+            )
+
         kp_coords = raw_points[kp_idx]
 
         return kp_coords, kp_classes
