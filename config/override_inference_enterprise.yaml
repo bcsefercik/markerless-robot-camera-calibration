@@ -34,7 +34,7 @@ INFERENCE:
     scale: 200
     center_at_origin: true
     use_coordinates_as_features: true
-    conf_threshold: 0.99
+    conf_threshold: 0.75
     backbone: pointnet2
     num_of_keypoints: 6
 

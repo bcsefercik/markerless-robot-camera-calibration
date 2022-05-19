@@ -262,10 +262,11 @@ class InferenceEngine:
             origin_offset = np.array([0.0, 0.0, 0.0])
 
         if _config.INFERENCE.KEY_POINTS.use_coordinates_as_features:
-            rgb = np.array(points, copy=True)
-            if not _config.INFERENCE.KEY_POINTS.center_at_origin:
-                rgb, rgb_origin_offset = preprocess.center_at_origin(rgb)
-            rgb /= rgb.max(axis=0)  # bw [-1, 1]
+            # rgb = np.array(points, copy=True)
+            # if not _config.INFERENCE.KEY_POINTS.center_at_origin:
+            #     rgb, rgb_origin_offset = preprocess.center_at_origin(rgb)
+            # rgb /= rgb.max(axis=0)  # bw [-1, 1]
+            rgb = preprocess.normalize_points(points)
 
         points = torch.from_numpy(points).to(dtype=torch.float32)
 
