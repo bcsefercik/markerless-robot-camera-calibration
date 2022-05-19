@@ -32,19 +32,22 @@ class AliveV2DenseDataset(AliveV2Dataset):
         if len(points) < _config.DATA.num_of_dense_input_points:
             return None
 
-        if i not in self.sample_idx_memo:
+        if _config.DATA.pointcloud_sampling_method is not None and i not in self.sample_idx_memo:
             # takes ~0.5 sec, omg!
-            self.sample_idx_memo[i] = get_farthest_point_sample_idx(
-                points,
-                _config.DATA.num_of_dense_input_points
-            )
+            if _config.DATA.pointcloud_sampling_method == 'uniform':
+                self.sample_idx_memo[i] = np.random.choice(len(points), _config.DATA.num_of_dense_input_points, replace=False)
+            else:
+                self.sample_idx_memo[i] = get_farthest_point_sample_idx(
+                    points,
+                    _config.DATA.num_of_dense_input_points
+                )
         # sample_idx = np.arange(2048)
+        if _config.DATA.pointcloud_sampling_method is not None:
+            sample_idx = self.sample_idx_memo[i]
 
-        sample_idx = self.sample_idx_memo[i]
-
-        points = points[sample_idx]
-        rgb = rgb[sample_idx]
-        labels = labels[sample_idx]
+            points = points[sample_idx]
+            rgb = rgb[sample_idx]
+            labels = labels[sample_idx]
 
         if _config.DATA.keypoints_enabled:
             labels = self.load_key_points(i, points, pose, labels, p2p_label=False)

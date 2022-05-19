@@ -56,6 +56,7 @@ DATA:
   num_of_keypoints: 6  # or 10
   num_of_dense_input_points: 2048
   use_point_normals: false
+  pointcloud_sampling_method: farthest  # uniform
 
 
 STRUCTURE:

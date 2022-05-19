@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp43_kp6_pt2_coord.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp43_kp6_pt2_coord_dev'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp44_kp6_pt2_coord_base_uniform.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp44_kp6_pt2_coord_base_uniform'
 
 GENERAL:
   save_freq: 2
@@ -9,15 +9,19 @@ GENERAL:
 DATA:
   keypoints_enabled: true  # MOST IMPORTANT
   num_of_keypoints: 6  # or 10
-  num_of_dense_input_points: 2048
+  num_of_dense_input_points: 4096
   load_cache_at_start: true
+  pointcloud_sampling_method: uniform  # farthest, uniform, null
 
   use_coordinates_as_features: true
   use_point_normals: true
 
+  center_at_origin: false
+  base_at_origin: true
+
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
-  batch_size: 64
+  batch_size: 32
   workers: 4
 
   scale: 800 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
@@ -27,8 +31,6 @@ DATA:
   data_type: ee_seg  #'seg'  # ['ee_seg', 'gt_seg', null]
 
   ee_segmentation_enabled: true
-
-  center_at_origin: true
 
   position_eligibility_enabled: true
   orientation_eligibility_enabled: true
