@@ -18,6 +18,7 @@ from utils.data import collect_closest_points, get_6_key_points, get_ee_cross_se
 from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 from utils.preprocess import center_at_origin
+from utils import augmentation as aug
 
 
 def pick_points(pcd):
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     arm_idx = np.where(labels == 1)[0]
     print('# of points:', len(rgb))
     print('# of arm points:', len(arm_idx))
-    rgb[arm_idx] = np.zeros_like(rgb[arm_idx]) + np.array([0.3, 0.3, 0.3])
+    # rgb[arm_idx] = np.zeros_like(rgb[arm_idx]) + np.array([0.3, 0.3, 0.3])
     points = points[arm_idx]
     rgb = rgb[arm_idx]
     labels = [arm_idx]
@@ -79,7 +80,7 @@ if __name__ == "__main__":
     ee_idx = get_ee_idx(points, pose, switch_w=True, arm_idx=arm_idx) # switch_w=False in dataloader
 
     ee_rgb = rgb[ee_idx]
-    ee_rgb = np.zeros_like(ee_rgb) + np.array([0.3, 0.3, 0.3])
+    # ee_rgb = np.zeros_like(ee_rgb) + np.array([0.3, 0.3, 0.3])
     # rgb[ee_idx] = np.array([1.0, 1.0, 0.13])
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
@@ -93,13 +94,14 @@ if __name__ == "__main__":
     new_ee_points = new_ee_points[:-1]
     new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pose_pos)
     new_ee_points -= ee_pose_offset
+
     # ipdb.set_trace()
 
-    key_points, key_points_idx = get_6_key_points(ee_points, pose, switch_w=True)
-    key_points = key_points[key_points_idx > -1]
-    key_points_cls = np.where(key_points_idx > -1)[0]
-    key_points_idx = key_points_idx[key_points_idx > -1]
-    pcls_idx, p_idx = collect_closest_points(key_points_idx, ee_points)
+    key_points, p_idx = get_6_key_points(ee_points, pose, switch_w=True)
+    key_points = key_points[p_idx > -1]
+    key_points_cls = np.where(p_idx > -1)[0]
+    key_points_idx = p_idx[p_idx > -1]
+    pcls_idx, p_idx = collect_closest_points(p_idx, ee_points)
     key_points_cls = key_points_cls[pcls_idx]
     key_points = ee_points[p_idx]
     print(len(key_points_cls))
@@ -110,6 +112,25 @@ if __name__ == "__main__":
         radius=0.016,
         shape='octahedron'
     )
+
+    ee_points_aug = np.array(new_ee_points, copy=True)
+    ee_points_aug -= np.array([0.1, 0.0, 0.0])
+
+    # ee_points_aug = aug.distort_elastic(ee_points_aug, 1, 4)
+    # ee_points_aug = aug.add_noise(ee_points_aug, sigma=0.0016, clip=0.005)
+    # ee_points_aug = aug.transform_random(ee_points_aug)
+    # ee_points_aug = aug.rotate_along_gravity(ee_points_aug)
+    ee_points_aug = aug.augment(
+        ee_points_aug,
+        elastic=True,
+        noise=True,
+        transform=True,
+        flip=True,
+        gravity=True
+    )
+
+
+
 
     # # reverse the transformation above
     # new_ee_points_reverse = np.array(new_ee_points, copy=True)
@@ -131,8 +152,8 @@ if __name__ == "__main__":
     # ee_magic_frame = create_coordinate_frame(ee_pos_magic_reverse_pose, switch_w=False)
 
     # ipdb.set_trace()
-    points_show = np.concatenate((points, new_ee_points), axis=0)
-    rgb = np.concatenate((rgb, ee_rgb), axis=0)
+    points_show = np.concatenate((points, new_ee_points, ee_points_aug), axis=0)
+    rgb = np.concatenate((rgb, ee_rgb, ee_rgb), axis=0)
     # points_show = new_ee_points
     # rgb = ee_rgb
 

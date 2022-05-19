@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import scipy
 from scipy.stats import special_ortho_group
@@ -41,9 +43,42 @@ def transform_random(pc):
     return pc
 
 
+def flip_random(pc):
+    m = np.eye(3)
+    m[0][0] *= np.random.randint(0, 2) * 2 - 1  # flip x randomly
+    return np.matmul(pc, m)
+
+
 def rotate_along_gravity(pc):
     angle = np.random.rand() * 2 * np.pi
     rot = np.array([[np.cos(angle), 0, -np.sin(angle)], [0, 1, 0], [np.sin(angle), 0, np.cos(angle)]])
     pc = (rot @ pc.T).T
 
     return pc
+
+
+def augment(
+    points,
+    probability=0.2,
+    elastic=False,
+    noise=False,
+    transform=False,
+    flip=False,
+    gravity=False
+):
+    if elastic and np.random.rand() < probability:
+        points = distort_elastic(points, 1, 4)
+
+    if noise and np.random.rand() < probability:
+        points = add_noise(points)
+
+    if transform and np.random.rand() < probability:
+        points = transform_random(points)
+
+    if flip and np.random.rand() < probability:
+        points = flip_random(points)
+
+    if gravity and np.random.rand() < probability:
+        points = rotate_along_gravity(points)
+
+    return points
