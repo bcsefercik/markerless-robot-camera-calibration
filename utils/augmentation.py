@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+from scipy.stats import special_ortho_group
 
 
 # Elastic distortion
@@ -28,3 +29,21 @@ def distort_elastic(x, gran, mag):
 def add_noise(x, sigma=0.0016, clip=0.005):
     noise = np.clip(sigma*np.random.randn(*x.shape), -1*clip, clip)
     return x + noise
+
+
+def transform_random(pc):
+    tr = np.random.rand() * 0.04
+    rot = special_ortho_group.rvs(3)
+    pc = pc @ rot
+    pc += np.array([[tr, 0, 0]])
+    pc = pc @ rot.T
+
+    return pc
+
+
+def rotate_along_gravity(pc):
+    angle = np.random.rand() * 2 * np.pi
+    rot = np.array([[np.cos(angle), 0, -np.sin(angle)], [0, 1, 0], [np.sin(angle), 0, np.cos(angle)]])
+    pc = (rot @ pc.T).T
+
+    return pc
