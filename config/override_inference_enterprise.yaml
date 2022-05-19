@@ -30,7 +30,8 @@ INFERENCE:
     center_at_origin: true
 
   KEY_POINTS:
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/key_points_pt2_coords_20220519.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/key_points_origin_coords-only_e48_kp6_s200_20220515.pth  # minkunet
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/kp6_pt2_coord_center_farthest_e52_20220519.pth
     scale: 200
     center_at_origin: true
     use_coordinates_as_features: true
