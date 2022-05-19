@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from model.pointnet2_utils import PointNetSetAbstraction, PointNetFeaturePropagation
-
+import ipdb
 
 class PointNet2SSG(nn.Module):
     def __init__(self, num_classes=10, in_channels=3):
@@ -35,6 +35,6 @@ class PointNet2SSG(nn.Module):
 
         x = self.drop1(F.relu(self.bn1(self.conv1(l0_points))))
         x = self.conv2(x)
-        x = F.log_softmax(x, dim=1)
+        # x = F.log_softmax(x, dim=1)
         x = x.permute(0, 2, 1)
         return x, l4_points
