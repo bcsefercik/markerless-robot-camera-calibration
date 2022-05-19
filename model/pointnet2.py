@@ -4,7 +4,7 @@ from model.pointnet2_utils import PointNetSetAbstraction, PointNetFeaturePropaga
 
 
 class PointNet2SSG(nn.Module):
-    def __init__(self, num_classes, in_channels=3):
+    def __init__(self, num_classes=10, in_channels=3):
         super(PointNet2SSG, self).__init__()
         self.sa1 = PointNetSetAbstraction(1024, 0.1, 32, in_channels + 3, [32, 32, 64], False)
         self.sa2 = PointNetSetAbstraction(256, 0.2, 32, 64 + 3, [64, 64, 128], False)

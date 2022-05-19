@@ -142,3 +142,5 @@ INFERENCE:
     scale: 800
     center_at_origin: true
     conf_threshold: 0.99999
+    use_coordinates_as_features: false
+    num_of_keypoints: 6
