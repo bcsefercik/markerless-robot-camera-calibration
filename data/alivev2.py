@@ -86,11 +86,12 @@ class AliveV2Dataset(Dataset):
         self.sample_idx_memo = dict()
 
         # loadd caches for fast fetch, can't do in get item due to multiprocessing
-        _logger.info(f"Loading dataset caches ({set_name})")
-        s = time.time()
-        for i in trange(len(self.file_names)):
-            self.__getitem__(i)
-        _logger.info(f"Successfully loaded caches in {timedelta(seconds=time.time() - s)} ({set_name})")
+        if _config.DATA.load_cache_at_start:
+            _logger.info(f"Loading dataset caches ({set_name})")
+            s = time.time()
+            for i in trange(len(self.file_names)):
+                self.__getitem__(i)
+            _logger.info(f"Successfully loaded caches in {timedelta(seconds=time.time() - s)} ({set_name})")
 
     def load_generic_data(self, i):
         # TODO: extract instance, semantic here
