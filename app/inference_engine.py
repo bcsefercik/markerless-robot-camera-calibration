@@ -274,9 +274,12 @@ class InferenceEngine:
             rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
 
         if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
-            sample_idx = get_farthest_point_sample_idx(
-                points.cpu().numpy(), _config.DATA.num_of_dense_input_points
-            )
+            if _config.DATA.pointcloud_sampling_method == 'uniform':
+                sample_idx = np.random.choice(len(points), _config.DATA.num_of_dense_input_points, replace=False)
+            else:
+                sample_idx = get_farthest_point_sample_idx(
+                    points.cpu().numpy(), _config.DATA.num_of_dense_input_points
+                )
             inp = torch.cat(
                 (points[sample_idx], rgb[sample_idx]),
                 dim=-1
