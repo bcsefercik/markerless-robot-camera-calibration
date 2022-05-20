@@ -15,7 +15,7 @@ import open3d as o3d
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import collect_closest_points, get_6_key_points, get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
-from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes
+from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes, get_key_point_colors
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
 from utils.preprocess import center_at_origin
 from utils import augmentation as aug
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
     ee_frame = create_coordinate_frame(pose, switch_w=True)
 
-
+    key_points_colors =  get_key_point_colors()
 
     # ee_points = points - pose[:3]
     # ee_rgb = rgb
@@ -94,24 +94,38 @@ if __name__ == "__main__":
     new_ee_points = new_ee_points[:-1]
     new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pose_pos)
     new_ee_points -= ee_pose_offset
+    ref_key_points, ref_p_idx = get_6_key_points(new_ee_points, np.array([0, 0, 0, 1, 0, 0, 0]), switch_w=False)
 
-    # ipdb.set_trace()
-
-    key_points, p_idx = get_6_key_points(ee_points, pose, switch_w=True)
-    key_points = key_points[p_idx > -1]
-    key_points_cls = np.where(p_idx > -1)[0]
-    key_points_idx = p_idx[p_idx > -1]
-    pcls_idx, p_idx = collect_closest_points(p_idx, ee_points)
-    key_points_cls = key_points_cls[pcls_idx]
-    key_points = ee_points[p_idx]
-    print(len(key_points_cls))
-    # ipdb.set_trace()
-
-    shapes = generate_key_point_shapes(
-        list(zip(key_points_cls, key_points)),
+    ref_shapes = generate_key_point_shapes(
+        list(zip(list(range(len(ref_p_idx))), ref_key_points)),
         radius=0.016,
         shape='octahedron'
     )
+
+    # ipdb.set_trace()
+
+    key_points_lean, p_idx = get_6_key_points(ee_points, pose, switch_w=True)
+    key_points_lean = key_points_lean[p_idx > -1]
+    ref_key_points_lean = ref_key_points[p_idx > -1]
+    key_points_cls_lean = np.where(p_idx > -1)[0]
+    key_points_idx = p_idx[p_idx > -1]
+    pcls_idx, p_idx = collect_closest_points(p_idx, ee_points)
+    key_points_cls = key_points_cls_lean[pcls_idx]
+    key_points = ee_points[p_idx]
+    # print(len(key_points_cls))
+    # ipdb.set_trace()
+
+    shapes = generate_key_point_shapes(
+        list(zip(key_points_cls_lean, key_points_lean)),
+        radius=0.016,
+        shape='octahedron'
+    )  # lean
+
+    # shapes = generate_key_point_shapes(
+    #     list(zip(key_points_cls, key_points)),
+    #     radius=0.016,
+    #     shape='octahedron'
+    # )  # multiple selection for each kp
 
     ee_points_aug = np.array(new_ee_points, copy=True)
     ee_points_aug -= np.array([0.1, 0.0, 0.0])
@@ -129,8 +143,14 @@ if __name__ == "__main__":
         gravity=True
     )
 
-
-
+    # draw ref lines
+    ref_line_points = ref_key_points_lean.tolist() + key_points_lean.tolist()
+    ref_line_segments = [[i, i + len(ref_key_points_lean)] for i in range(len(ref_key_points_lean))]
+    ref_line_colors = key_points_colors[key_points_cls_lean]
+    ref_line_set = o3d.geometry.LineSet()
+    ref_line_set.points = o3d.utility.Vector3dVector(ref_line_points)
+    ref_line_set.lines = o3d.utility.Vector2iVector(ref_line_segments)
+    ref_line_set.colors = o3d.utility.Vector3dVector(ref_line_colors)
 
     # # reverse the transformation above
     # new_ee_points_reverse = np.array(new_ee_points, copy=True)
@@ -152,8 +172,10 @@ if __name__ == "__main__":
     # ee_magic_frame = create_coordinate_frame(ee_pos_magic_reverse_pose, switch_w=False)
 
     # ipdb.set_trace()
-    points_show = np.concatenate((points, new_ee_points, ee_points_aug), axis=0)
-    rgb = np.concatenate((rgb, ee_rgb, ee_rgb), axis=0)
+    # points_show = np.concatenate((points, new_ee_points, ee_points_aug), axis=0)
+    # rgb = np.concatenate((rgb, ee_rgb, ee_rgb), axis=0)
+    points_show = np.concatenate((points, new_ee_points), axis=0)
+    rgb = np.concatenate((rgb, ee_rgb), axis=0)
     # points_show = new_ee_points
     # rgb = ee_rgb
 
@@ -166,7 +188,8 @@ if __name__ == "__main__":
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(
         # [pcd, kinect_frame, ee_frame]
-        [pcd, ee_frame, kinect_frame, shapes]
+        [pcd, ee_frame, kinect_frame, shapes, ref_shapes, ref_line_set]
+        # [pcd, ee_frame, kinect_frame, shapes]
         # [pcd, ee_magic_frame, ee_frame]
         # [pcd]
     )
