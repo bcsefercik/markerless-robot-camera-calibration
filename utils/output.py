@@ -28,7 +28,8 @@ class ClusterUtil():
         return cluster_idx
 
     def get_most_confident_cluster(self, points, confidences):
-        # TODO: implement this method if necessary
+        # TODO: implement this method if needed
+        pass
         mean_conf = 1.0
 
         labels = self.cluster.fit(points).labels_

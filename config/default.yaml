@@ -97,6 +97,8 @@ TRAIN:
   loss_type: "cos2"
   loss_reduction: "mean"
 
+  kp_prediction_checkpoint: null  # only for kp_to_pose
+
 TEST:
   batch_size: 2
   split: test
