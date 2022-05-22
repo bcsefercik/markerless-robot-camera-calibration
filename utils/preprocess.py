@@ -35,10 +35,14 @@ def normalize_colors(rgb_input: np.array, is_color_in_range_0_255: bool = False)
 
 
 def normalize_points(pc, ver=2):
-    if ver == 1:
+    if ver == 1 or not 1 < len(pc.shape) < 4:
         return pc
     else:
         pc = np.array(pc, copy=True)
-        pc = pc - pc.mean(0)
-        pc /= np.max(np.linalg.norm(pc, axis=-1))
+        if len(pc.shape) == 2:
+            pc = pc - pc.mean(0)
+            pc /= np.max(np.linalg.norm(pc, axis=-1))
+        elif len(pc.shape) == 3:
+            pc1 = pc - pc.mean(1).reshape(-1, 1, 3)
+            pc1 = pc1 / np.max(np.linalg.norm(pc1, axis=-1), axis=-1).reshape(-1, 1, 1)
     return pc
