@@ -1,5 +1,6 @@
 import ipdb
 
+import torch
 import numpy as np
 import sklearn.preprocessing as preprocessing
 
@@ -38,11 +39,16 @@ def normalize_points(pc, ver=2):
     if ver == 1 or not 1 < len(pc.shape) < 4:
         return pc
     else:
-        pc = np.array(pc, copy=True)
         if len(pc.shape) == 2:
+            pc = np.array(pc, copy=True)
             pc = pc - pc.mean(0)
             pc /= np.max(np.linalg.norm(pc, axis=-1))
         elif len(pc.shape) == 3:
-            pc1 = pc - pc.mean(1).reshape(-1, 1, 3)
-            pc1 = pc1 / np.max(np.linalg.norm(pc1, axis=-1), axis=-1).reshape(-1, 1, 1)
+            if torch.is_tensor(pc):
+                pc = pc - pc.mean(dim=1).view(-1, 1, 3)
+                pc /= torch.max(torch.linalg.norm(pc, dim=-1), dim=-1).values.view(-1, 1, 1)
+            else:
+                pc = pc - pc.mean(1).reshape(-1, 1, 3)
+                pc = pc / np.max(np.linalg.norm(pc, axis=-1), axis=-1).reshape(-1, 1, 1)
+
     return pc

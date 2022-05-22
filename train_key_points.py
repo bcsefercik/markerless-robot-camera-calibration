@@ -73,8 +73,7 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
                 model_input = torch.cat((coords, feats), dim=-1)
 
                 if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
-                    coords_normal = normalize_points(coords.cpu().numpy())
-                    coords_normal = torch.from_numpy(coords_normal).to(device=_device)
+                    coords_normal = normalize_points(coords)
                     model_input = torch.cat((model_input, coords_normal), dim=-1)
 
                 model_input = model_input.transpose(2, 1)
@@ -158,8 +157,7 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
                     model_input = torch.cat((coords, feats), dim=-1)
 
                     if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
-                        coords_normal = normalize_points(coords.cpu().numpy())
-                        coords_normal = torch.from_numpy(coords_normal).to(device=_device)
+                        coords_normal = normalize_points(coords)
                         model_input = torch.cat((model_input, coords_normal), dim=-1)
 
                     model_input = model_input.transpose(2, 1)
