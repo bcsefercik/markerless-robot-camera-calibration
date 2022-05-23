@@ -1,14 +1,14 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp38_ee_seg_shapematch_baseorigin.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_shapematch_baseorigin'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp47.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp47'
 
 GENERAL:
   save_freq: 8
 
 DATA:
-  batch_size: 32
-  workers: 4
-  # batch_size: 2
-  # workers: 0
+  # batch_size: 32
+  # workers: 4
+  batch_size: 2
+  workers: 0
   data_type: 'ee_seg'
 
   scale: 200

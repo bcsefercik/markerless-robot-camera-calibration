@@ -98,6 +98,7 @@ TRAIN:
   loss_reduction: "mean"
 
   kp_prediction_checkpoint: null  # only for kp_to_pose
+  kp_use_probabilities: true
 
 TEST:
   batch_size: 2

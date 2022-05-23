@@ -26,14 +26,14 @@ _logger = logger.Logger().get()
 
 
 class AliveV2DenseDataset(AliveV2Dataset):
-
     def __getitem__(self, i):
         points, rgb, labels, _, pose, _, other = self.load_generic_data(i)
 
         if len(points) < _config.DATA.num_of_dense_input_points:
+            self.file_idx_to_skip.add(i)
             return None
 
-        if _config.DATA.pointcloud_sampling_method is not None and i not in self.sample_idx_memo:
+        if _config.DATA.pointcloud_sampling_method is not None and self.sample_idx_memo[i] is None:
             # takes ~0.5 sec, omg!
             if _config.DATA.pointcloud_sampling_method == 'uniform':
                 self.sample_idx_memo[i] = np.random.choice(len(points), _config.DATA.num_of_dense_input_points, replace=False)
@@ -76,7 +76,7 @@ def collate(data):
     coords_batch = torch.from_numpy(np.stack(coords)).to(dtype=torch.float32)
     feats_batch = torch.from_numpy(np.stack(feats)).to(dtype=torch.float32)
     labels_batch = torch.from_numpy(np.stack(labels)).long()
-    poses_batch = torch.from_numpy(np.stack(poses)).to(dtype=torch.float32)
+    poses_batch = torch.from_numpy(np.concatenate(poses, 0)).to(dtype=torch.float32)
 
     start_offset = 0
     for i, o in enumerate(others):

@@ -44,19 +44,6 @@ class AliveV2Dataset(Dataset):
             "quantization_size", 1 / _config.DATA.scale
         )
         self.quantization_enabled = quantization_enabled
-        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
-        if self.ee_segmentation_enabled:
-            self.ee_idx = dict()
-
-        if _config.DATA.keypoints_enabled:
-            self.key_points = dict()
-
-        self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
-        if self.voting_enabled:
-            self.ee_closest_points_idx = dict()
-
-        if _config.DATA.keypoints_enabled:
-            self.key_points_generator = get_6_key_points if _config.DATA.num_of_keypoints == 6 else get_key_points
 
         self.test_split = _config.TEST.split
         self.test_workers = _config.TEST.workers
@@ -68,6 +55,16 @@ class AliveV2Dataset(Dataset):
 
         self.file_names = file_names
         self.load_file_names()
+
+        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
+        self.ee_idx = [None] * len(self.file_names)
+
+        self.key_points = [None] * len(self.file_names)
+        if _config.DATA.keypoints_enabled:
+            self.key_points_generator = get_6_key_points if _config.DATA.num_of_keypoints == 6 else get_key_points
+
+        self.voting_enabled = _config()["DATA"].get("voting_enabled", False)
+        self.ee_closest_points_idx = [None] * len(self.file_names)
 
         self.roi = None
 
@@ -85,7 +82,9 @@ class AliveV2Dataset(Dataset):
                     else:
                         self.roi[k][kk] -= _config()['DATA'].get('roi_offset', 0)
 
-        self.sample_idx_memo = dict()
+        self.sample_idx_memo = [None] * len(self.file_names)
+
+        self.file_idx_to_skip = set()
 
         # loadd caches for fast fetch, can't do in get item due to multiprocessing
         if _config.DATA.load_cache_at_start:
@@ -94,6 +93,12 @@ class AliveV2Dataset(Dataset):
             for i in trange(len(self.file_names)):
                 self.__getitem__(i)
             _logger.info(f"Successfully loaded caches in {timedelta(seconds=time.time() - s)} ({set_name})")
+
+            self.file_names = [v for i, v in enumerate(self.file_names) if i not in self.file_idx_to_skip]
+            self.sample_idx_memo = [v for i, v in enumerate(self.sample_idx_memo) if i not in self.file_idx_to_skip]
+            self.ee_idx = [v for i, v in enumerate(self.ee_idx) if i not in self.file_idx_to_skip]
+            self.key_points = [v for i, v in enumerate(self.key_points) if i not in self.file_idx_to_skip]
+            self.ee_closest_points_idx = [v for i, v in enumerate(self.ee_closest_points_idx) if i not in self.file_idx_to_skip]
 
     def load_generic_data(self, i):
         # TODO: extract instance, semantic here
@@ -125,7 +130,7 @@ class AliveV2Dataset(Dataset):
         arm_idx = np.where(labels == 1)[0]
 
         if self.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
-            if i not in self.ee_idx:
+            if self.ee_idx[i] is None:
                 self.ee_idx[i] = get_ee_idx(
                     points,
                     pose,
@@ -202,7 +207,7 @@ class AliveV2Dataset(Dataset):
         labels *= 0
         labels += _config.DATA.ignore_label
 
-        if self.key_points.get(i, None) is None:
+        if self.key_points[i] is None:
             key_points, kp_idx = self.key_points_generator(
                 points,
                 pose[0],
@@ -237,7 +242,7 @@ class AliveV2Dataset(Dataset):
             if _config.DATA.keypoints_enabled:
                 raise AttributeError("Voting and keypoint cannot be simultaneously enabled.")
 
-            if i not in self.ee_closest_points_idx:
+            if self.ee_closest_points_idx[i] is None:
                 _, self.ee_closest_points_idx[i] = get_ee_cross_section_idx(
                     points,  # ee points
                     pose[0],

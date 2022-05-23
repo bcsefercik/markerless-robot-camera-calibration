@@ -28,6 +28,7 @@ class LossType(Enum):
     POSE = "pose"
     SHAPE_MATCH = "shape_match"
     POSE_MATCH = "pose_match"
+    KP_POSE_MATCH = "kp_pose_match"
 
 
 def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
@@ -217,6 +218,28 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
 
         return loss_total
 
+    def compute_kp_pose_match_loss(y, y_pred, reduction=reduction, x=None, labels=None):
+        loss_total = 0.0
+
+        rot_mat = get_quaternion_rotation_matrix_torch(y[:, 3:])
+        rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
+        for i in range(len(x)):
+            kp_mask = labels[i] > _config.DATA.ignore_label if labels is not None else len(x[i]) * [True]
+            coords = x[i][kp_mask, :3]
+
+            y_translated = torch.matmul(rot_mat[i], coords.transpose(0, 1))
+            y_translated += y[i, :3].view(3, -1)
+            y_pred_translated = torch.matmul(rot_mat_pred[i], coords.transpose(0, 1))
+            y_pred_translated += y_pred[i, :3].view(3, -1)
+            norms = torch.linalg.norm(y_pred_translated - y_translated, dim=0)
+            probabilities = x[i][kp_mask, -1]
+            loss_total += (torch.pow(probabilities * norms, 2).sum() / (2 * norms.size()[0]))
+
+        if reduction == "mean":
+            loss_total /= len(x)
+
+        return loss_total
+
     loss_func = compute_loss
 
     if loss_type == LossType.COS:
@@ -237,5 +260,7 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
     elif loss_type == LossType.POSE_MATCH:
         assert _config.DATA.voxelize_position
         loss_func = compute_pose_match_loss
+    elif loss_type == LossType.KP_POSE_MATCH:
+        loss_func = compute_kp_pose_match_loss
 
     return loss_func

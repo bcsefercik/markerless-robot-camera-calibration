@@ -255,7 +255,7 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
 def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, ignore_label=-100):
     new_ee_points = np.array(ee_points, copy=True)
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
-    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points = (rot_mat.T @ np.concatenate((new_ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
     new_ee_pos = new_ee_points[-1:]
     new_ee_points = new_ee_points[:-1]
     new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pos)
@@ -284,6 +284,7 @@ def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, i
     ])
 
     front_pidx = np.linalg.norm(ee_bbox.reshape((-1, 1, 3)) - ee_selection, axis=2).argmin(axis=1)
+
     front_kp_candidates = new_ee_points[ee_idx[front_pidx]]
     front_point_idx_candidates = ee_idx[front_pidx]
     dists_candidates = np.linalg.norm(key_points[:4] - front_kp_candidates, axis=1) < euclidean_threshold
