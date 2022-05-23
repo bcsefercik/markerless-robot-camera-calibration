@@ -78,10 +78,10 @@ def mean_without_outliers(arr: np.array, axis_based: bool = False):
     return arr.mean(axis=0)
 
 
-def get_key_points(logits: torch.tensor, conf_th=0.999):
+def get_key_point_predictions(logits: torch.tensor, conf_th=0.999):
     softmax = logits.softmax(1).max(0)
     # print([round(r, 3) for r in softmax[0].cpu().tolist()])
     classes = np.where(softmax[0].cpu() > conf_th)[0]
     idx = softmax[1][classes].cpu().numpy()
 
-    return idx, classes
+    return idx, classes, softmax[0].cpu()[classes]

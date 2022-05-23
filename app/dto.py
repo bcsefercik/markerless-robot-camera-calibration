@@ -19,6 +19,7 @@ class ResultDTO:
     ee_pose: np.array = np.zeros(7, dtype=np.float)
     base_pose: np.array = None
     key_points: list((int, np.array)) = None
+    key_points_pose: np.array = None
     timestamp: datetime = None
     confidence: float = None
     id: str = None

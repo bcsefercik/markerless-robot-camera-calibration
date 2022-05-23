@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-
+from scipy.spatial.transform import Rotation
 import ipdb
 
 
@@ -170,6 +170,10 @@ def get_rigid_transform_3D(reference, target):
     t = -R @ centroid_A + centroid_B
 
     return R, t.reshape(-1)
+
+
+def get_q_from_matrix(rot_mat):
+    return Rotation.from_matrix(rot_mat).as_quat()
 
 
 if __name__ == '__main__':

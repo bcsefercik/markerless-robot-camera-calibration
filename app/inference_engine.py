@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data.alivev2 import AliveV2Dataset, collate_tupled
 from utils import config, logger, utils, preprocess
 from utils import output as out_utils
-from utils.transformation import get_quaternion_rotation_matrix
+from utils.transformation import get_q_from_matrix, get_quaternion_rotation_matrix, get_rigid_transform_3D
 from utils.data import get_farthest_point_sample_idx
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
@@ -112,6 +112,15 @@ class InferenceEngine:
         )
         self._key_points_model.eval()
 
+        self.reference_key_points = np.array([
+            [ 0.01982731,  0.08085986,  0.00321919],
+            [ 0.02171595, -0.08986182,  0.00388430],
+            [ 0.01288678,  0.09103118,  0.06127814],
+            [ 0.02079032, -0.09790908,  0.05609143],
+            [-0.00185802,  0.04654205,  0.11564558],
+            [ 0.00241113, -0.04262756,  0.11564558]
+       ])
+
     def predict(self, data: PointCloudDTO):
         with torch.no_grad():
             rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
@@ -174,6 +183,12 @@ class InferenceEngine:
 
             # Key Points estimation
             kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_rgb)
+
+            if len(kp_classes) > 3:
+                kp_rot_mat, kp_translation = get_rigid_transform_3D(self.reference_key_points[kp_classes], kp_coords)
+                kp_q = get_q_from_matrix(kp_rot_mat)
+                result_dto.key_points_pose = np.concatenate((kp_translation, kp_q))
+
             result_dto.key_points = list(zip(kp_classes, kp_coords))
 
             return result_dto
@@ -286,11 +301,10 @@ class InferenceEngine:
             ).view(1, _config.DATA.num_of_dense_input_points, -1).transpose(2, 1).to(device=_device)
 
             out = self._key_points_model(inp)[0].view( _config.DATA.num_of_dense_input_points, -1)
-            kp_idx, kp_classes = out_utils.get_key_points(
+            kp_idx, kp_classes, probs = out_utils.get_key_point_predictions(
                 out, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold
             )
             kp_idx = sample_idx[kp_idx]
-            # ipdb.set_trace()
 
         else:
             in_field = ME.TensorField(
@@ -306,7 +320,7 @@ class InferenceEngine:
             out = self._key_points_model(inp)
             output = out.slice(in_field).features
 
-            kp_idx, kp_classes = out_utils.get_key_points(
+            kp_idx, kp_classes, _ = out_utils.get_key_point_predictions(
                 output, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold
             )
 

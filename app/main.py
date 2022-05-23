@@ -271,6 +271,10 @@ class MainApp:
             self.widget3d.scene.remove_geometry("ee_frame")
             if np.absolute(result.ee_pose).sum() > 1e-3:
                 self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
+
+                # TODO: show pose pred and kp_pose_pred
+                if result.key_points_pose is not None:
+                    self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=True)
                 self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
                 self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
 

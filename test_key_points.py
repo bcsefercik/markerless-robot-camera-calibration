@@ -18,7 +18,7 @@ import open3d as o3d
 
 from utils import config, logger, utils, metrics
 # from train_segmentation import compute_accuracies
-from utils.output import ClusterUtil, get_key_points
+from utils.output import ClusterUtil, get_key_point_predictions
 
 import ipdb
 
@@ -72,7 +72,7 @@ def test(model, criterion, data_loader, output_filename="results.txt"):
                     out_field = soutput.slice(in_field)
                     logits = out_field.F
 
-                    key_points_idx, key_points_classes = get_key_points(logits)
+                    key_points_idx, key_points_classes, _ = get_key_point_predictions(logits)
                     key_points_pred = (coords[start:end][key_points_idx] * data_loader.dataset.quantization_size) + other_info['origin_offset']
                     key_points_gt = other_info['key_points'][key_points_classes]
                     dists = np.linalg.norm(key_points_gt - key_points_pred.cpu().numpy(), axis=1)
