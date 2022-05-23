@@ -168,14 +168,22 @@ def get_criterion(device="cuda", loss_type=LossType.ANGLE, reduction="mean"):
         rot_mat = get_quaternion_rotation_matrix_torch(y[:, 3:])
         rot_mat_pred = get_quaternion_rotation_matrix_torch(y_pred[:, 3:])
 
-        for i, coords in enumerate(x.decomposed_coordinates):
-            y_translated = torch.matmul(rot_mat[i], torch.transpose(coords.float(), 0, 1))
-            y_pred_translated = torch.matmul(rot_mat_pred[i], torch.transpose(coords.float(), 0, 1))
+        batch_size = len(x) if _config.STRUCTURE.backbone.startswith('pointnet') else len(x.decomposed_coordinates)
+        for i in range(batch_size):
+            if _config.STRUCTURE.backbone.startswith('pointnet'):
+                coords = x[i, :3]
+            else:
+                coords = x.decomposed_coordinates[i].float()
+                coords = coords.transpose(0, 1)
+
+            y_translated = torch.matmul(rot_mat[i], coords)
+            y_pred_translated = torch.matmul(rot_mat_pred[i], coords)
             norms = torch.linalg.norm(y_pred_translated - y_translated, dim=0)
             loss_rot_total += (torch.pow(norms, 2).sum() / (2 * norms.size()[0]))
 
         if reduction == "mean":
-            loss_rot_total /= len(x.decomposed_coordinates)
+            loss_rot_total /= batch_size
+            loss_rot_total *= 1e3  # to prevent NaN error
 
         return loss_rot_total
 

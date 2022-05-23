@@ -86,6 +86,8 @@ class AliveV2Dataset(Dataset):
 
         self.file_idx_to_skip = set()
 
+        # self.file_names = self.file_names[:128]
+
         # loadd caches for fast fetch, can't do in get item due to multiprocessing
         if _config.DATA.load_cache_at_start:
             _logger.info(f"Loading dataset caches ({set_name})")

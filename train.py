@@ -19,6 +19,8 @@ from utils.loss import get_criterion, LossType
 
 import ipdb
 
+from utils.preprocess import normalize_points
+
 
 _config = config.Config()
 _config.save()
@@ -61,15 +63,26 @@ def train_epoch(train_data_loader, model, optimizer, criterion, epoch):
 
             coords, feats, _, poses, others = batch
             poses = poses.to(device=_device)
+            coords = coords.to(device=_device)
+            feats = feats.to(device=_device)
 
-            model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+            if _config.STRUCTURE.backbone == 'pointnet2':
+                model_input = torch.cat((coords, feats), dim=-1)
 
-            if _config.STRUCTURE.use_joint_angles:
-                joint_angles = [o['joint_angles'] for o in others]
-                joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
-                model_input = (model_input, joint_angles)
+                if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
+                    coords_normal = normalize_points(coords)
+                    model_input = torch.cat((model_input, coords_normal), dim=-1)
 
-            out = model(model_input)
+                model_input = model_input.transpose(2, 1).contiguous()
+                out = model(model_input)[0]
+            else:
+                model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+
+                if _config.STRUCTURE.use_joint_angles:
+                    joint_angles = [o['joint_angles'] for o in others]
+                    joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
+                    model_input = (model_input, joint_angles)
+                out = model(model_input)
 
             optimizer.zero_grad()
             loss = criterion(poses, out, x=model_input)
@@ -151,15 +164,27 @@ def eval_epoch(val_data_loader, model, criterion, epoch):
             try:
                 coords, feats, _, poses, others = batch
                 poses = poses.to(device=_device)
+                coords = coords.to(device=_device)
+                feats = feats.to(device=_device)
 
-                model_input = ME.SparseTensor(
-                    feats, coordinates=coords, device=_device, requires_grad=False
-                )
-                if _config.STRUCTURE.use_joint_angles:
-                    joint_angles = [o['joint_angles'] for o in others]
-                    joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
-                    model_input = (model_input, joint_angles)
-                out = model(model_input)
+                if _config.STRUCTURE.backbone == 'pointnet2':
+                    model_input = torch.cat((coords, feats), dim=-1)
+
+                    if _config.DATA.use_point_normals and not _config.DATA.use_coordinates_as_features:
+                        coords_normal = normalize_points(coords)
+                        model_input = torch.cat((model_input, coords_normal), dim=-1)
+
+                    model_input = model_input.transpose(2, 1)
+                    out = model(model_input)[0]
+                else:
+                    model_input = ME.SparseTensor(feats, coordinates=coords, device=_device)
+
+                    if _config.STRUCTURE.use_joint_angles:
+                        joint_angles = [o['joint_angles'] for o in others]
+                        joint_angles = torch.cat(joint_angles, dim=0).to(device=_device)
+                        model_input = (model_input, joint_angles)
+                    out = model(model_input)
+
                 loss = criterion(poses, out, x=model_input)
 
                 poses[:, :3] *= _position_quantization_size
@@ -228,12 +253,28 @@ def main():
         torch.cuda.manual_seed_all(_config.GENERAL.seed)
         torch.cuda.empty_cache()
 
-    if _config()["STRUCTURE"].get("encode_only", False):
-        from model.robotnet_encode import RobotNetEncode as RobotNet
-    else:
-        from model.robotnet import RobotNet
+    confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
 
-    from data.alivev2 import AliveV2Dataset, collate
+    if _config.STRUCTURE.backbone == 'pointnet2':
+        if _config()["STRUCTURE"].get("encode_only", False):
+            from model.pointnet2 import PointNet2MSGEncoder
+            model = PointNet2MSGEncoder(10 if confidence_enabled else 7)
+        else:
+            from model.pointnet2 import PointNet2SSG
+
+            in_channels = 6 if _config.DATA.use_coordinates_as_features else 9
+            model = PointNet2SSG(10 if confidence_enabled else 7, in_channels=in_channels)
+
+        from data.alivev2_dense import AliveV2DenseDataset as AliveV2Dataset
+        from data.alivev2_dense import collate
+    else:
+        if _config()["STRUCTURE"].get("encode_only", False):
+            from model.robotnet_encode import RobotNetEncode as RobotNet
+        else:
+            from model.robotnet import RobotNet
+        model = RobotNet(in_channels=3, out_channels=10 if confidence_enabled else 7, D=3)
+
+        from data.alivev2 import AliveV2Dataset, collate
 
     criterion = get_criterion(
         device=_device,
@@ -241,8 +282,6 @@ def main():
         reduction=_config()['TRAIN'].get('loss_reduction', 'mean')
     )
 
-    confidence_enabled = _config()['STRUCTURE'].get('compute_confidence', False)
-    model = RobotNet(in_channels=3, out_channels=10 if confidence_enabled else 7, D=3)
     _logger.info(f"Model: {str(model)}")
 
     if _config.TRAIN.optim == "Adam":

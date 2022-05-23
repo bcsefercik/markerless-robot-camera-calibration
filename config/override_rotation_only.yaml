@@ -1,21 +1,31 @@
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp47.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp47'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp47_pt2msg_rot_uniform.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp47_pt2msg_rot_uniform'
 
 GENERAL:
-  save_freq: 8
+  save_freq: 2
 
 DATA:
-  # batch_size: 32
-  # workers: 4
-  batch_size: 2
-  workers: 0
+  batch_size: 64
+  workers: 4
+  # batch_size: 2
+  # workers: 0
   data_type: 'ee_seg'
+
+  num_of_dense_input_points: 4096
+  load_cache_at_start: true
+  pointcloud_sampling_method: uniform  # farthest, uniform, null
+
+  use_coordinates_as_features: true
+  use_point_normals: true
+
+  loss_reduction: "sum"
+
 
   scale: 200
 
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_splits.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json'
 
@@ -38,7 +48,8 @@ DATA:
   move_ee_to_origin: false
 
 STRUCTURE:
-  backbone: 'minkunet'
+  # backbone: 'minkunet'
+  backbone: 'pointnet2'
   encode_only: true
 
   compute_confidence: false
@@ -46,7 +57,7 @@ STRUCTURE:
   disable_orientation: false
 
 TRAIN:
-  loss_type: "shape_match"
+  loss_type: "pose"
 
 TEST:
   batch_size: 2
