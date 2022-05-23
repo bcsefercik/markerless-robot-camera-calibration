@@ -108,3 +108,82 @@ def select_closest_points_to_line(points, lp1, lp2, count=0, cutoff=0.008):
     final_idx = dists_args_sorted[:count][cutoff_mask]
 
     return dists[final_idx], final_idx
+
+
+def get_affine_transformation(inp, out):
+    inp_len = len(inp)
+    B = np.vstack([np.transpose(inp), np.ones(inp_len)])
+    D = 1.0 / np.linalg.det(B)
+
+    def entry(r, d):
+        return np.linalg.det(np.delete(np.vstack([r, B]), (d + 1), axis=0))
+
+    M = [[(-1) ** i * D * entry(R, i) for i in range(inp_len)] for R in np.transpose(out)]
+    A, t = np.hsplit(np.array(M), [inp_len - 1])
+    t = np.transpose(t)[0]
+
+    return A, t
+
+
+def get_rigid_transform_3D(reference, target):
+    A = reference.T
+    B = target.T
+
+    assert A.shape == B.shape
+
+    num_rows, num_cols = A.shape
+    if num_rows != 3:
+        raise Exception(f"matrix A is not 3xN, it is {num_rows}x{num_cols}")
+
+    num_rows, num_cols = B.shape
+    if num_rows != 3:
+        raise Exception(f"matrix B is not 3xN, it is {num_rows}x{num_cols}")
+
+    # find mean column wise
+    centroid_A = np.mean(A, axis=1)
+    centroid_B = np.mean(B, axis=1)
+
+    # ensure centroids are 3x1
+    centroid_A = centroid_A.reshape(-1, 1)
+    centroid_B = centroid_B.reshape(-1, 1)
+
+    # subtract mean
+    Am = A - centroid_A
+    Bm = B - centroid_B
+
+    H = Am @ np.transpose(Bm)
+
+    # sanity check
+    #if linalg.matrix_rank(H) < 3:
+    #    raise ValueError("rank of H = {}, expecting 3".format(linalg.matrix_rank(H)))
+
+    # find rotation
+    U, S, Vt = np.linalg.svd(H)
+    R = Vt.T @ U.T
+
+    # special reflection case
+    if np.linalg.det(R) < 0:
+        print("det(R) < R, reflection detected!, correcting for it ...")
+        Vt[2,:] *= -1
+        R = Vt.T @ U.T
+
+    t = -R @ centroid_A + centroid_B
+
+    return R, t.reshape(-1)
+
+
+if __name__ == '__main__':
+    inp = [[1, 1, 2], [2, 3, 0], [3, 2, -2], [-2, 2, 3]]  # <- points
+    out = [[0, 2, 1], [1, 2, 2], [-2, -1, 6], [4, 1, -3]]  # <- mapped to
+    # calculations
+
+    A, t = get_affine_transformation(inp, out)
+    # output
+    print("Affine transformation matrix:\n", A)
+    print("Affine transformation translation vector:\n", t)
+    # unittests
+    print("TESTING:")
+    for p, P in zip(np.array(inp), np.array(out)):
+        image_p = np.dot(A, p) + t
+        result = "[OK]" if np.allclose(image_p, P) else "[ERROR]"
+        print(p, " mapped to: ", image_p, " ; expected: ", P, result)
