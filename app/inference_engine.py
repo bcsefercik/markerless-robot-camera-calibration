@@ -121,6 +121,9 @@ class InferenceEngine:
             [ 0.00241113, -0.04262756,  0.11564558]
        ])
 
+    def check_sanity(self, data: PointCloudDTO, result: ResultDTO):
+        return True
+
     def predict(self, data: PointCloudDTO):
         with torch.no_grad():
             rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
@@ -190,6 +193,8 @@ class InferenceEngine:
                 result_dto.key_points_pose = np.concatenate((kp_translation, kp_q))
 
             result_dto.key_points = list(zip(kp_classes, kp_coords))
+
+            result_dto.is_confident = self.check_sanity(data, result_dto)
 
             return result_dto
 

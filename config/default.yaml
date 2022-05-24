@@ -115,7 +115,7 @@ TEST:
 INFERENCE:
   data_source: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json
 
-  ee_point_counts_threshold: 500
+  ee_point_counts_threshold: 512
 
   INPUT:
     roi: {}

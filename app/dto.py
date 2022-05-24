@@ -20,6 +20,7 @@ class ResultDTO:
     base_pose: np.array = None
     key_points: list((int, np.array)) = None
     key_points_pose: np.array = None
+    is_confident: bool = False
     timestamp: datetime = None
     confidence: float = None
     id: str = None
