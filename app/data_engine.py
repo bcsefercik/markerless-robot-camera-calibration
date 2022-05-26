@@ -1,3 +1,4 @@
+import time
 import ipdb
 
 import os
@@ -49,6 +50,7 @@ class PickleDataEngine(DataEngineInterface):
         self.data_pool = cycle(self.data[split])
 
     def get(self) -> PointCloudDTO:
+        # time.sleep(0.1)
         data_ins = next(self.data_pool)
         # data_ins = self.data['test'][63]
         data, _ = file_utils.load_alive_file(data_ins['filepath'])

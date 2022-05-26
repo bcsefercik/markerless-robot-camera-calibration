@@ -122,6 +122,13 @@ class InferenceEngine:
        ])
 
     def check_sanity(self, data: PointCloudDTO, result: ResultDTO):
+        num_of_ee_points = (result.segmentation == 2).sum()
+        if num_of_ee_points < _config.INFERENCE.SANITY.min_num_of_ee_points:
+            print("fail min # points")
+            return False
+
+
+        # ipdb.set_trace()
         return True
 
     def predict(self, data: PointCloudDTO):
@@ -294,11 +301,13 @@ class InferenceEngine:
             rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
 
         if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
+            if len(points) < _config.INFERENCE.num_of_dense_input_points:
+                return [], []
             if _config.INFERENCE.KEY_POINTS.pointcloud_sampling_method == 'uniform':
-                sample_idx = np.random.choice(len(points), _config.DATA.num_of_dense_input_points, replace=False)
+                sample_idx = np.random.choice(len(points), _config.INFERENCE.num_of_dense_input_points, replace=False)
             else:
                 sample_idx = get_farthest_point_sample_idx(
-                    points.cpu().numpy(), _config.DATA.num_of_dense_input_points
+                    points.cpu().numpy(), _config.INFERENCE.num_of_dense_input_points
                 )
             inp = torch.cat(
                 (points[sample_idx], rgb[sample_idx]),
