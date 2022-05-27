@@ -1,3 +1,5 @@
+import ipdb
+
 import os
 import sys
 
@@ -23,7 +25,7 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
 class TestApp:
-    def __init__(self, data_source) -> None:
+    def __init__(self, data_source=_config.INFERENCE.data_source) -> None:
         if os.path.isfile(str(data_source)):
             self._data_source = data_engine.PickleDataEngine(data_source)
         else:
@@ -34,3 +36,6 @@ class TestApp:
         self._inference_engine = InferenceEngine()
 
 
+if __name__ == "__main__":
+    app = TestApp()
+    ipdb.set_trace()

@@ -24,3 +24,12 @@ class ResultDTO:
     timestamp: datetime = None
     confidence: float = None
     id: str = None
+
+
+@dataclass
+class RawDTO:
+    points: np.array
+    rgb: np.array
+    pose: np.array
+    segmentation: np.array
+    other: dict = None

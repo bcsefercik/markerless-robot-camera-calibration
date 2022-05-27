@@ -1,17 +1,20 @@
-import time
 import ipdb
 
 import os
 import sys
 import abc
 import json
+import time
 from itertools import cycle
 from datetime import datetime
 
+import numpy as np
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
+from utils.data import get_ee_idx
 
-from dto import PointCloudDTO
+from dto import PointCloudDTO, RawDTO
 
 
 class DataEngineInterface(metaclass=abc.ABCMeta):
@@ -62,6 +65,54 @@ class PickleDataEngine(DataEngineInterface):
             points, rgb, _, _, _ = data
 
         return PointCloudDTO(points=points, rgb=rgb, timestamp=datetime.utcnow())
+
+    def get_raw(self) -> RawDTO:
+        data_ins = next(self.data_pool)
+        data, _ = file_utils.load_alive_file(data_ins['filepath'])
+
+        if isinstance(data, dict):
+            points = data['points']
+            rgb = data['rgb']
+            labels = data['labels']
+            pose = data['pose']
+        else:
+            points, rgb, labels, _, pose = data
+
+        points = points.astype(np.float32)
+        rgb = rgb.astype(np.float32)
+        labels = labels.astype(np.float32)
+        pose = np.array(pose, dtype=np.float32)  # xyzw
+        pose = np.insert(pose[:6], 3, pose[-1])  # WXYZ
+
+        other = {
+            "filename": data_ins['filepath']
+        }
+
+        arm_idx = np.where(labels == 1)[0]
+        ee_idx = get_ee_idx(
+            points,
+            pose,
+            ee_dim={
+                'min_z': -0,
+                'max_z': 0.13,
+                'min_x': -0.04,
+                'max_x': 0.04,
+                'min_y': -0.13,
+                'max_y': 0.13
+            },  # leave big margin for bbox since we remove non arm points
+            arm_idx=arm_idx,
+            switch_w=False
+        )
+
+        labels[ee_idx] = 2
+
+        return RawDTO(
+            points,
+            rgb,
+            pose,
+            labels,
+            other=other
+        )
 
     def run(self):
         return None

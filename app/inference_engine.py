@@ -141,42 +141,14 @@ class InferenceEngine:
                 seg_points = data.points
                 seg_origin_offset = np.array([0.0, 0.0, 0.0])
 
-            seg_rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
-            seg_points = torch.from_numpy(seg_points).to(dtype=torch.float32)
-
-            seg_in_field = ME.TensorField(
-                features=seg_rgb,
-                coordinates=ME.utils.batched_coordinates(
-                    [seg_points * _config.INFERENCE.SEGMENTATION.scale],
-                    dtype=torch.float32,
-                ),
-                quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
-                minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
-                device=_device,
-            )
-            seg_input = seg_in_field.sparse()
-            seg_output = self._segmentation_model(seg_input)
-            seg_out_field = seg_output.slice(seg_in_field)
-
-            seg_results, seg_conf = out_utils.get_segmentations_from_tensor_field(
-                seg_out_field
-            )
-            ee_mask = seg_results == 2
-            ee_idx = np.where(seg_results == 2)[0]
-            seg_results[ee_idx] = 1  # initially, set all ee pred to arm
+            seg_results = self.predict_segmentation(seg_points, rgb)
 
             result_dto = ResultDTO(segmentation=seg_results)
 
-            if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
-                return result_dto
+            ee_idx = np.where(seg_results == 2)[0]
 
-            ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
-            result_dto.segmentation[
-                ee_idx[ee_idx_inside]
-            ] = 2  # set ee classes within largest linkage cluster
-
-            ee_raw_points = data.points[ee_idx[ee_idx_inside]]  # no origin offset
-            ee_raw_rgb = rgb[ee_idx[ee_idx_inside]]
+            ee_raw_points = data.points[ee_idx]  # no origin offset
+            ee_raw_rgb = rgb[ee_idx]
             ee_rgb = torch.from_numpy(ee_raw_rgb).to(dtype=torch.float32)
 
             # TODO: run rot and trans in parallel!
@@ -193,17 +165,58 @@ class InferenceEngine:
 
             # Key Points estimation
             kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_rgb)
-
-            if len(kp_classes) > 3:
-                kp_rot_mat, kp_translation = get_rigid_transform_3D(self.reference_key_points[kp_classes], kp_coords)
-                kp_q = get_q_from_matrix(kp_rot_mat)
-                result_dto.key_points_pose = np.concatenate((kp_translation, kp_q))
-
             result_dto.key_points = list(zip(kp_classes, kp_coords))
+
+            result_dto.key_points_pose = self.predict_pose_from_kp(kp_coords, kp_classes)
 
             result_dto.is_confident = self.check_sanity(data, result_dto)
 
             return result_dto
+
+    def predict_pose_from_kp(self, kp_coords, kp_classes):
+        if len(kp_classes) < 4:
+            return None
+
+        kp_rot_mat, kp_translation = get_rigid_transform_3D(
+            self.reference_key_points[kp_classes],
+            kp_coords
+        )
+        kp_q = get_q_from_matrix(kp_rot_mat)
+
+    def predict_segmentation(self, points, rgb):
+        seg_rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
+        seg_points = torch.from_numpy(points).to(dtype=torch.float32)
+
+        seg_in_field = ME.TensorField(
+            features=seg_rgb,
+            coordinates=ME.utils.batched_coordinates(
+                [seg_points * _config.INFERENCE.SEGMENTATION.scale],
+                dtype=torch.float32,
+            ),
+            quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
+            minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
+            device=_device,
+        )
+        seg_input = seg_in_field.sparse()
+        seg_output = self._segmentation_model(seg_input)
+        seg_out_field = seg_output.slice(seg_in_field)
+
+        seg_results, seg_conf = out_utils.get_segmentations_from_tensor_field(
+            seg_out_field
+        )
+        ee_mask = seg_results == 2
+        ee_idx = np.where(seg_results == 2)[0]
+        seg_results[ee_idx] = 1  # initially, set all ee pred to arm
+
+        if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
+            return result_dto
+
+        ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
+        seg_results[
+            ee_idx[ee_idx_inside]
+        ] = 2  # set ee classes within largest linkage cluster
+
+        return seg_results
 
     def predict_rotation(self, ee_raw_points, ee_rgb):
         with torch.no_grad():
