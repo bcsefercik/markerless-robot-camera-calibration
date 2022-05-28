@@ -2,6 +2,8 @@ import ipdb
 
 import os
 import sys
+import json
+from collections import defaultdict
 
 import torch
 import numpy as np
@@ -11,12 +13,7 @@ import MinkowskiEngine as ME
 
 
 from utils import config, logger, preprocess, utils, metrics
-from utils.visualization import (
-    get_frame_from_pose,
-    generate_colors,
-    create_coordinate_frame,
-    generate_key_point_shapes,
-)
+from utils.data import get_6_key_points
 
 import data_engine
 from inference_engine import InferenceEngine
@@ -34,10 +31,11 @@ class TestApp:
 
         self._inference_engine = InferenceEngine()
 
-        self.latest_results = dict()
+        self.instance_results = defaultdict(dict)
+        self.clear_results()
 
     def clear_results(self):
-        self.latest_results = {"segmentation": {"instances": dict(), "overall": dict()}}
+        self.instance_results = defaultdict(dict)
 
     def run_tests(self):
         self.clear_results()
@@ -48,6 +46,7 @@ class TestApp:
                 data_key = (
                     f"{data.other['position']}/{data.other['filepath'].split('/')[-1]}"
                 )
+                self.instance_results[data_key]['position'] = data.other['position']
 
                 if data is None:
                     break
@@ -58,13 +57,14 @@ class TestApp:
 
                 if _config.TEST.SEGMENTATION.evaluate:
                     seg_results = self._inference_engine.predict_segmentation(
-                        data.points, data.rgb
+                        data.points, rgb
                     )
                     segmentation_metrics = metrics.compute_segmentation_metrics(
                         data.segmentation,
                         seg_results,
                         classes=_config.INFERENCE.SEGMENTATION.classes,
                     )
+                    self.instance_results[data_key]['segmentation'] = segmentation_metrics
 
                 ee_idx = np.where(seg_results == 2)[0]
                 ee_raw_points = data.points[ee_idx]  # no origin offset
@@ -80,25 +80,36 @@ class TestApp:
 
                 nn_pose = np.concatenate((pos_result, rot_result))
 
-                kp_coords, kp_classes, kp_probs = self._inference_engine.predict_key_points(
-                    ee_raw_points, ee_raw_rgb
-                )
-                kp_pose = self._inference_engine.predict_pose_from_kp(
-                    kp_coords, kp_classes
-                )
+                nn_pose_metrics = metrics.compute_pose_metrics(data.pose, nn_pose)
 
-                (
-                    nn_dist_position,
-                    nn_angle_diff,
-                ) = metrics.compute_pose_metrics(data.pose, nn_pose)
+                nn_dist_position = nn_pose_metrics['dist_position']
+                nn_angle_diff = nn_pose_metrics['angle_diff']
 
-                if kp_pose is not None:
-                    (
-                        kp_dist_position,
-                        kp_angle_diff,
-                    ) = metrics.compute_pose_metrics(data.pose, kp_pose)
-                print('-------')
-                # ipdb.set_trace()
+                self.instance_results[data_key]['dist_position'] = {'nn': nn_dist_position}
+                self.instance_results[data_key]['angle_diff'] = {'nn': nn_angle_diff}
+
+                kp_gt_coords, kp_gt_idx = get_6_key_points(ee_raw_points, data.pose, switch_w=False)
+                kp_coords, kp_classes, kp_confs = self._inference_engine.predict_key_points(
+                    ee_raw_points, ee_raw_rgb,
+                )
+                mean_kp_error = metrics.compute_kp_error(kp_gt_coords, kp_coords, kp_classes)
+                self.instance_results[data_key]['mean_kp_error'] = mean_kp_error
+
+                if len(kp_classes) > 3:
+                    kp_pose = self._inference_engine.predict_pose_from_kp(
+                        kp_coords, kp_classes
+                    )
+                    kp_pose_metrics = metrics.compute_pose_metrics(data.pose, kp_pose)
+
+                    kp_dist_position = kp_pose_metrics['dist_position']
+                    kp_angle_diff = kp_pose_metrics['angle_diff']
+
+                    self.instance_results[data_key]['dist_position']['kp'] = kp_dist_position
+                    self.instance_results[data_key]['angle_diff']['kp'] = kp_angle_diff
+
+                print('---------')
+
+                ipdb.set_trace()
 
 
 if __name__ == "__main__":

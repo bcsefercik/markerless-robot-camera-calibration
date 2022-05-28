@@ -64,30 +64,38 @@ def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['backgro
         recall = tp / (tp + fn)
 
         results["class_results"][cn] = {
-            "precision": round(precision, 4),
-            "recall": round(recall, 4)
+            "precision": precision,
+            "recall": recall
         }
 
         precisions.append(precision)
         recalls.append(recall)
 
-    results["accuracy"] = round(sum(gt == pred) / len(gt), 4)
-    results["precision"] = round(statistics.mean(precisions), 4)
-    results["recall"] = round(statistics.mean(recalls), 4)
+    results["accuracy"] = sum(gt == pred) / len(gt)
+    results["precision"] = statistics.mean(precisions)
+    results["recall"] = statistics.mean(recalls)
 
     return results
 
 
 def compute_pose_metrics(gt: np.array, pred: np.array):
-    dist_position = np.linalg.norm(gt[:3] - pred[:3])
+    results = dict()
+
+    results['dist_position'] = np.linalg.norm(gt[:3] - pred[:3])
 
     gt_rot = gt[3:] / np.linalg.norm(gt[3:])
     pred_rot = pred[3:] / np.linalg.norm(pred[3:])
     q_mul = qmul_np(gt_rot, qconj_np(pred_rot))
     angle_diff = np.abs(2 * np.arctan2(np.linalg.norm(q_mul[1:]), q_mul[0]))
-    angle_diff = min(angle_diff, 2 * np.pi - angle_diff)  # exact same result with calculation in compute_pose_dist()
+    results['angle_diff'] = min(angle_diff, 2 * np.pi - angle_diff)  # exact same result with calculation in compute_pose_dist()
 
     # angle_diff_old = torch.acos(2 * (torch.sum(torch.from_numpy(gt[3:] * pred[3:]).view(1, -1), dim=1) ** 2) - 1)[0].item()
-    # print(dist_position, angle_diff, angle_diff_old)
+    # print(results['dist_position'], results['angle_diff'], angle_diff_old)
 
-    return dist_position, angle_diff
+    return results
+
+
+def compute_kp_error(gt_coords, kp_coords, kp_classes):
+    gt_coords_selected = gt_coords[kp_classes]
+
+    return np.linalg.norm(gt_coords_selected - kp_coords, axis=1).mean()

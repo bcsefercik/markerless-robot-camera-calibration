@@ -157,7 +157,7 @@ class InferenceEngine:
             result_dto.ee_pose[:3] = pos_result
 
             # Key Points estimation
-            kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_raw_rgb)
+            kp_coords, kp_classes, kp_probs = self.predict_key_points(ee_raw_points, ee_raw_rgb)
             result_dto.key_points = list(zip(kp_classes, kp_coords))
 
             result_dto.key_points_pose = self.predict_pose_from_kp(kp_coords, kp_classes)
@@ -294,7 +294,7 @@ class InferenceEngine:
 
         return pos_result, pos_origin_offset
 
-    def predict_key_points(self, raw_points, rgb):
+    def predict_key_points(self, raw_points, rgb, conf_th=None):
         points = np.array(raw_points, copy=True)
 
         if _config.INFERENCE.KEY_POINTS.center_at_origin:
@@ -330,7 +330,7 @@ class InferenceEngine:
 
             out = self._key_points_model(inp)[0].view( _config.DATA.num_of_dense_input_points, -1)
             kp_idx, kp_classes, probs = out_utils.get_key_point_predictions(
-                out, conf_th=_config.INFERENCE.KEY_POINTS.conf_threshold
+                out, conf_th=conf_th or _config.INFERENCE.KEY_POINTS.conf_threshold
             )
             kp_idx = sample_idx[kp_idx]
 
