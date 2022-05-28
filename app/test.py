@@ -145,10 +145,10 @@ class TestApp:
         self.export_to_xslx()
 
     def _put_values_for_col(self, sheet, col_id, start_row, values):
-        sheet.cell(row=start_row, column=col_id).value = statistics.mean(values)
-        sheet.cell(row=start_row + 1, column=col_id).value = min(values)
-        sheet.cell(row=start_row + 2, column=col_id).value = max(values)
-        sheet.cell(row=start_row + 3, column=col_id).value = statistics.median(values)
+        sheet.cell(row=start_row, column=col_id).value = statistics.mean(values) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 1, column=col_id).value = min(values) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 2, column=col_id).value = max(values) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 3, column=col_id).value = statistics.median(values) if len(values) > 0 else "N/A"
 
     def _create_excel_cells(self, sheet, title, results, start_cell="A-1"):
 
@@ -158,9 +158,9 @@ class TestApp:
         row = int(start_cell[1])
 
         sheet.merge_cells(f'{chr(ord(col) - 1)}{row}:{chr(ord(col) - 1)}{row + 6}')
-        sheet.cell(row=1, column=1).value = title
-        sheet.cell(row=1, column=1).font = Font(bold=True)
-        sheet.cell(row=1, column=1).alignment = Alignment(horizontal="center", vertical="center", textRotation=90)
+        sheet.cell(row=row, column=1).value = title
+        sheet.cell(row=row, column=1).font = Font(bold=True)
+        sheet.cell(row=row, column=1).alignment = Alignment(horizontal="center", vertical="center", textRotation=90)
 
         sheet.merge_cells(f'{col}{row}:{col}{row+2}')
         sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 2)}{row + 1}')
@@ -227,12 +227,20 @@ class TestApp:
         wb = openpyxl.Workbook()
         sheet = wb.active
 
-        self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-1")
+        sheet.merge_cells(f'B1:O1')
+        sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'
+        sheet.cell(row=1, column=2).value = json.dumps(_config())
+
+        self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
+
+        for i, (pk, prs) in enumerate(self.position_results.items()):
+            self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{2 + (i + 1) * 8}")
 
         wb.save(_config.TEST.output)
 
 
 if __name__ == "__main__":
     app = TestApp()
+    app.export_to_xslx()
     app.run_tests()
     # ipdb.set_trace()
