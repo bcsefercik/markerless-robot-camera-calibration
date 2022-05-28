@@ -2,6 +2,7 @@
 *.ply
 *.pth
 *.out
+*.xlsx*
 .vscode/
 exp/
 log/

@@ -163,7 +163,7 @@ def get_rigid_transform_3D(reference, target):
 
     # special reflection case
     if np.linalg.det(R) < 0:
-        print("det(R) < R, reflection detected!, correcting for it ...")
+        # print("det(R) < R, reflection detected!, correcting for it ...")
         Vt[2,:] *= -1
         R = Vt.T @ U.T
 

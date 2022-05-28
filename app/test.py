@@ -1,3 +1,4 @@
+import statistics
 import ipdb
 
 import os
@@ -42,19 +43,13 @@ class TestApp:
     def clear_results(self):
         self.instance_results = defaultdict(dict)
         self.position_results = defaultdict(dict)
-        self.overall_results = dict()
+        self.overall_results = defaultdict(list)
 
     def run_tests(self):
         self.clear_results()
-        iii = 0
+
         with torch.no_grad():
             while True:
-                data = self._data_source.get_raw()
-
-                # TODO : remove
-                data = self._data_source.get_raw()
-                data = self._data_source.get_raw()
-                data = self._data_source.get_raw()
                 data = self._data_source.get_raw()
 
                 if data is None:
@@ -123,11 +118,6 @@ class TestApp:
 
                 print(data_key)
 
-                iii += 1
-
-                if iii > 4:
-                    break
-
         position_results_raw = defaultdict(list)
         for ir in self.instance_results.values():
             position_results_raw[ir['position']].append(ir)
@@ -135,9 +125,9 @@ class TestApp:
         for pos, irs in position_results_raw.items():
             self.position_results[pos]['mean_kp_error'] = [ir['mean_kp_error'] for ir in irs]
             self.position_results[pos]['angle_diff_nn'] = [ir['angle_diff']['nn'] for ir in irs]
-            self.position_results[pos]['angle_diff_kp'] = [ir['angle_diff']['kp'] for ir in irs]
+            self.position_results[pos]['angle_diff_kp'] = [ir['angle_diff']['kp'] for ir in irs if 'kp' in ir['dist_position']]
             self.position_results[pos]['dist_position_nn'] = [ir['dist_position']['nn'] for ir in irs]
-            self.position_results[pos]['dist_position_kp'] = [ir['dist_position']['kp'] for ir in irs]
+            self.position_results[pos]['dist_position_kp'] = [ir['dist_position']['kp'] for ir in irs if 'kp' in ir['dist_position']]
 
             if _config.TEST.SEGMENTATION.evaluate:
                 self.position_results[pos]['segmentation_accuracy'] = [ir['segmentation']['accuracy'] for ir in irs]
@@ -148,12 +138,19 @@ class TestApp:
                     self.position_results[pos][f'segmentation_{cls}_precision'] = [ir['segmentation']['class_results'][cls]['precision'] for ir in irs]
                     self.position_results[pos][f'segmentation_{cls}_recall'] = [ir['segmentation']['class_results'][cls]['recall'] for ir in irs]
 
-
-        ipdb.set_trace()
+        for prs in self.position_results.values():
+            for k in prs:
+                self.overall_results[k].append(statistics.mean(prs[k]))
 
         self.export_to_xslx()
 
-    def _create_excel_cells(self, sheet, title, start_cell="A-1"):
+    def _put_values_for_col(self, sheet, col_id, start_row, values):
+        sheet.cell(row=start_row, column=col_id).value = statistics.mean(values)
+        sheet.cell(row=start_row + 1, column=col_id).value = min(values)
+        sheet.cell(row=start_row + 2, column=col_id).value = max(values)
+        sheet.cell(row=start_row + 3, column=col_id).value = statistics.median(values)
+
+    def _create_excel_cells(self, sheet, title, results, start_cell="A-1"):
 
         start_cell = start_cell.split('-')
         col = start_cell[0].upper()
@@ -186,41 +183,56 @@ class TestApp:
 
         sheet.cell(row=row, column=col_id+1).value = 'Translation (Euler Dist - m)'
         sheet.cell(row=row+2, column=col_id+1).value = 'Network'
-        sheet.cell(row=row+2, column=col_id+2).value = 'From Key Points'
+        self._put_values_for_col(sheet, col_id + 1, row + 3, results['dist_position_nn'])
+        sheet.cell(row=row + 2, column=col_id + 2).value = 'From Key Points'
+        self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_kp'])
+
 
         sheet.cell(row=row, column=col_id+3).value = 'Rotation (Angle Diff - rad)'
-        sheet.cell(row=row+2, column=col_id+3).value = 'Network'
-        sheet.cell(row=row+2, column=col_id+4).value = 'From Key Points'
+        sheet.cell(row=row + 2, column=col_id + 3).value = 'Network'
+        self._put_values_for_col(sheet, col_id + 3, row + 3, results['angle_diff_nn'])
+        sheet.cell(row=row+2, column=col_id + 4).value = 'From Key Points'
+        self._put_values_for_col(sheet, col_id + 4, row + 3, results['angle_diff_kp'])
 
         sheet.cell(row=row, column=col_id+5).value = 'Key Points'
         sheet.cell(row=row+2, column=col_id+5).value = 'Distance Error (m)'
+        self._put_values_for_col(sheet, col_id + 5, row + 3, results['mean_kp_error'])
 
-        sheet.cell(row=row, column=col_id+6).value = 'Segmentation'
-        sheet.cell(row=row+1, column=col_id+6).value = 'All'
-        sheet.cell(row=row+2, column=col_id+6).value = 'Accuracy'
-        sheet.cell(row=row+2, column=col_id+7).value = 'Precision'
-        sheet.cell(row=row+2, column=col_id+8).value = 'Recall'
-        sheet.cell(row=row+1, column=col_id+9).value = 'End Effector'
-        sheet.cell(row=row+2, column=col_id+9).value = 'Precision'
-        sheet.cell(row=row+2, column=col_id+10).value = 'Recall'
-        sheet.cell(row=row+1, column=col_id+11).value = 'Arm'
-        sheet.cell(row=row+2, column=col_id+11).value = 'Precision'
-        sheet.cell(row=row+2, column=col_id+12).value = 'Recall'
-        sheet.cell(row=row+1, column=col_id+13).value = 'Background'
-        sheet.cell(row=row+2, column=col_id+13).value = 'Precision'
-        sheet.cell(row=row+2, column=col_id+14).value = 'Recall'
+        if _config.TEST.SEGMENTATION.evaluate:
+            sheet.cell(row=row, column=col_id+6).value = 'Segmentation'
+            sheet.cell(row=row+1, column=col_id+6).value = 'All'
+            sheet.cell(row=row+2, column=col_id+6).value = 'Accuracy'
+            self._put_values_for_col(sheet, col_id + 6, row + 3, results['segmentation_accuracy'])
+            sheet.cell(row=row+2, column=col_id+7).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 7, row + 3, results['segmentation_precision'])
+            sheet.cell(row=row+2, column=col_id+8).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 8, row + 3, results['segmentation_recall'])
+            sheet.cell(row=row+1, column=col_id+9).value = 'End Effector'
+            sheet.cell(row=row+2, column=col_id+9).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 9, row + 3, results['segmentation_ee_precision'])
+            sheet.cell(row=row+2, column=col_id+10).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 10, row + 3, results['segmentation_ee_recall'])
+            sheet.cell(row=row+1, column=col_id+11).value = 'Arm'
+            sheet.cell(row=row+2, column=col_id+11).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 11, row + 3, results['segmentation_arm_precision'])
+            sheet.cell(row=row+2, column=col_id+12).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 12, row + 3, results['segmentation_arm_recall'])
+            sheet.cell(row=row+1, column=col_id+13).value = 'Background'
+            sheet.cell(row=row+2, column=col_id+13).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 13, row + 3, results['segmentation_background_precision'])
+            sheet.cell(row=row+2, column=col_id+14).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 14, row + 3, results['segmentation_background_recall'])
 
     def export_to_xslx(self):
         wb = openpyxl.Workbook()
         sheet = wb.active
 
+        self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-1")
 
-        self._create_excel_cells(sheet, "OVERALL", start_cell="B-1")
-
-        wb.save('merge.xlsx')
+        wb.save(_config.TEST.output)
 
 
 if __name__ == "__main__":
     app = TestApp()
     app.run_tests()
-    ipdb.set_trace()
+    # ipdb.set_trace()
