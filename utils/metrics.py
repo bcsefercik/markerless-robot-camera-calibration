@@ -1,5 +1,8 @@
+import statistics
+from unittest import result
 import torch
 import torch.nn.functional as F
+import numpy as np
 import ipdb
 
 EPS = 1e-7
@@ -36,3 +39,38 @@ def compute_pose_dist(gt, pred, position_voxelization=1):
         )
 
         return dist, dist_position, dist_orientation, angle_diff
+
+
+def compute_segmentation_metrics(gt, pred, classes=['background', 'arm', 'ee']):
+    results = {
+        "class_results": dict(),
+    }
+
+    precisions = list()
+    recalls = list()
+
+    for ci, cn in enumerate(classes):
+        gt_idx = set(np.where(gt == ci)[0])
+        pred_idx = set(np.where(pred == ci)[0])
+
+        tp_idx = gt_idx & pred_idx
+        tp = len(tp_idx)
+        fn = len(gt_idx - tp_idx)
+        fp = len(pred_idx - tp_idx)
+
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+
+        results["class_results"][cn] = {
+            "precision": round(precision, 4),
+            "recall": round(recall, 4)
+        }
+
+        precisions.append(precision)
+        recalls.append(recall)
+
+    results["accuracy"] = round(sum(gt == pred) / len(gt), 4)
+    results["precision"] = round(statistics.mean(precisions), 4)
+    results["recall"] = round(statistics.mean(recalls), 4)
+
+    return results

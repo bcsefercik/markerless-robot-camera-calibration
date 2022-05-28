@@ -135,36 +135,29 @@ class InferenceEngine:
         with torch.no_grad():
             rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
 
-            if _config.INFERENCE.SEGMENTATION.center_at_origin:
-                seg_points, seg_origin_offset = preprocess.center_at_origin(data.points)
-            else:
-                seg_points = data.points
-                seg_origin_offset = np.array([0.0, 0.0, 0.0])
-
-            seg_results = self.predict_segmentation(seg_points, rgb)
+            seg_results = self.predict_segmentation(data.points, rgb)
 
             result_dto = ResultDTO(segmentation=seg_results)
 
             ee_idx = np.where(seg_results == 2)[0]
 
             ee_raw_points = data.points[ee_idx]  # no origin offset
-            ee_raw_rgb = rgb[ee_idx]
-            ee_rgb = torch.from_numpy(ee_raw_rgb).to(dtype=torch.float32)
+            ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
 
             # TODO: run rot and trans in parallel!
 
             # Rotation estimation
-            rot_result = self.predict_rotation(ee_raw_points, ee_rgb)
+            rot_result = self.predict_rotation(ee_raw_points, ee_raw_rgb)
             result_dto.ee_pose[3:] = rot_result
 
             # Translation estimation
             pos_result, _ = self.predict_translation(
-                ee_raw_points, ee_rgb, q=rot_result
+                ee_raw_points, ee_raw_rgb, q=rot_result
             )
             result_dto.ee_pose[:3] = pos_result
 
             # Key Points estimation
-            kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_rgb)
+            kp_coords, kp_classes = self.predict_key_points(ee_raw_points, ee_raw_rgb)
             result_dto.key_points = list(zip(kp_classes, kp_coords))
 
             result_dto.key_points_pose = self.predict_pose_from_kp(kp_coords, kp_classes)
@@ -183,7 +176,15 @@ class InferenceEngine:
         )
         kp_q = get_q_from_matrix(kp_rot_mat)
 
+        return np.concatenate((kp_translation, kp_q))
+
     def predict_segmentation(self, points, rgb):
+        if _config.INFERENCE.SEGMENTATION.center_at_origin:
+            seg_points, seg_origin_offset = preprocess.center_at_origin(points)
+        else:
+            seg_points = points
+            seg_origin_offset = np.array([0.0, 0.0, 0.0])
+
         seg_rgb = torch.from_numpy(rgb).to(dtype=torch.float32)
         seg_points = torch.from_numpy(points).to(dtype=torch.float32)
 

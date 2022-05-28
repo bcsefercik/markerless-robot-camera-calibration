@@ -173,7 +173,9 @@ def get_rigid_transform_3D(reference, target):
 
 
 def get_q_from_matrix(rot_mat):
-    return Rotation.from_matrix(rot_mat).as_quat()
+    rot = Rotation.from_matrix(rot_mat).as_quat()
+    rot = np.insert(rot[:3], 0, rot[-1])
+    return rot  # w, x, y, z
 
 
 if __name__ == '__main__':

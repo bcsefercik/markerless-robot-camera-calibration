@@ -45,12 +45,12 @@ class DataEngineInterface(metaclass=abc.ABCMeta):
 
 
 class PickleDataEngine(DataEngineInterface):
-    def __init__(self, data_path, split='test') -> None:
+    def __init__(self, data_path, split='test', cyclic=True) -> None:
         self.data = {split: []}
         with open(data_path, 'r') as fp:
             self.data.update(json.load(fp))
         self.data[split].sort(key=lambda x: (x['position'], int(x['filepath'].split("/")[-1].split(".")[0])))
-        self.data_pool = cycle(self.data[split])
+        self.data_pool = cycle(self.data[split]) if cyclic else iter(self.data[split])
 
     def get(self) -> PointCloudDTO:
         # time.sleep(0.1)
@@ -67,7 +67,10 @@ class PickleDataEngine(DataEngineInterface):
         return PointCloudDTO(points=points, rgb=rgb, timestamp=datetime.utcnow())
 
     def get_raw(self) -> RawDTO:
-        data_ins = next(self.data_pool)
+        try:
+            data_ins = next(self.data_pool)
+        except StopIteration:
+            return None
         data, _ = file_utils.load_alive_file(data_ins['filepath'])
 
         if isinstance(data, dict):
@@ -80,12 +83,13 @@ class PickleDataEngine(DataEngineInterface):
 
         points = points.astype(np.float32)
         rgb = rgb.astype(np.float32)
-        labels = labels.astype(np.float32)
+        labels = labels.astype(np.int)
         pose = np.array(pose, dtype=np.float32)  # xyzw
         pose = np.insert(pose[:6], 3, pose[-1])  # WXYZ
 
         other = {
-            "filename": data_ins['filepath']
+            "filepath": data_ins['filepath'],
+            "position": data_ins['position']
         }
 
         arm_idx = np.where(labels == 1)[0]

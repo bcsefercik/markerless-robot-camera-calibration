@@ -1,10 +1,12 @@
 MODE: 'inference'
 
-DATA:
-  batch_size: 2
+TEST:
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
 
-  folder: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2'
-  file_names: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json'
+  output: test_results.txt
+
+  SEGMENTATION:
+    evaluate: true
 
 INFERENCE:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json

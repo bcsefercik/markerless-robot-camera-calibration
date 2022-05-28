@@ -275,7 +275,7 @@ class MainApp:
             self.ee_frame = None
             if self._toggle_pred.is_on:
                 if result.key_points_pose is not None:
-                    self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=True)
+                    self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=False)
             else:
                 if np.absolute(result.ee_pose).sum() > 1e-3:
                     self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
