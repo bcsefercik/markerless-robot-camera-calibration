@@ -33,17 +33,28 @@ class TestApp:
 
         self._inference_engine = InferenceEngine()
 
-        self.instance_results = defaultdict(dict)
+        self.instance_results = None
+        self.position_results = None
+        self.overall_results = None
+
         self.clear_results()
 
     def clear_results(self):
         self.instance_results = defaultdict(dict)
+        self.position_results = defaultdict(dict)
+        self.overall_results = dict()
 
     def run_tests(self):
         self.clear_results()
         iii = 0
         with torch.no_grad():
             while True:
+                data = self._data_source.get_raw()
+
+                # TODO : remove
+                data = self._data_source.get_raw()
+                data = self._data_source.get_raw()
+                data = self._data_source.get_raw()
                 data = self._data_source.get_raw()
 
                 if data is None:
@@ -114,10 +125,33 @@ class TestApp:
 
                 iii += 1
 
-                if iii > 16:
+                if iii > 4:
                     break
-        self.export_to_xslx()
+
+        position_results_raw = defaultdict(list)
+        for ir in self.instance_results.values():
+            position_results_raw[ir['position']].append(ir)
+
+        for pos, irs in position_results_raw.items():
+            self.position_results[pos]['mean_kp_error'] = [ir['mean_kp_error'] for ir in irs]
+            self.position_results[pos]['angle_diff_nn'] = [ir['angle_diff']['nn'] for ir in irs]
+            self.position_results[pos]['angle_diff_kp'] = [ir['angle_diff']['kp'] for ir in irs]
+            self.position_results[pos]['dist_position_nn'] = [ir['dist_position']['nn'] for ir in irs]
+            self.position_results[pos]['dist_position_kp'] = [ir['dist_position']['kp'] for ir in irs]
+
+            if _config.TEST.SEGMENTATION.evaluate:
+                self.position_results[pos]['segmentation_accuracy'] = [ir['segmentation']['accuracy'] for ir in irs]
+                self.position_results[pos]['segmentation_precision'] = [ir['segmentation']['precision'] for ir in irs]
+                self.position_results[pos]['segmentation_recall'] = [ir['segmentation']['recall'] for ir in irs]
+
+                for cls in _config.INFERENCE.SEGMENTATION.classes:
+                    self.position_results[pos][f'segmentation_{cls}_precision'] = [ir['segmentation']['class_results'][cls]['precision'] for ir in irs]
+                    self.position_results[pos][f'segmentation_{cls}_recall'] = [ir['segmentation']['class_results'][cls]['recall'] for ir in irs]
+
+
         ipdb.set_trace()
+
+        self.export_to_xslx()
 
     def _create_excel_cells(self, sheet, title, start_cell="A-1"):
 
