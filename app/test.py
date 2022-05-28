@@ -15,7 +15,7 @@ from utils.visualization import (
     get_frame_from_pose,
     generate_colors,
     create_coordinate_frame,
-    generate_key_point_shapes
+    generate_key_point_shapes,
 )
 
 import data_engine
@@ -37,12 +37,7 @@ class TestApp:
         self.latest_results = dict()
 
     def clear_results(self):
-        self.latest_results = {
-            'segmentation': {
-                'instances': dict(),
-                'overall': dict()
-            }
-        }
+        self.latest_results = {"segmentation": {"instances": dict(), "overall": dict()}}
 
     def run_tests(self):
         self.clear_results()
@@ -50,7 +45,9 @@ class TestApp:
         with torch.no_grad():
             while True:
                 data = self._data_source.get_raw()
-                data_key = f"{data.other['position']}/{data.other['filepath'].split('/')[-1]}"
+                data_key = (
+                    f"{data.other['position']}/{data.other['filepath'].split('/')[-1]}"
+                )
 
                 if data is None:
                     break
@@ -60,11 +57,13 @@ class TestApp:
                 seg_results = data.segmentation
 
                 if _config.TEST.SEGMENTATION.evaluate:
-                    seg_results = self._inference_engine.predict_segmentation(data.points, data.rgb)
+                    seg_results = self._inference_engine.predict_segmentation(
+                        data.points, data.rgb
+                    )
                     segmentation_metrics = metrics.compute_segmentation_metrics(
                         data.segmentation,
                         seg_results,
-                        classes=_config.INFERENCE.SEGMENTATION.classes
+                        classes=_config.INFERENCE.SEGMENTATION.classes,
                     )
 
                 ee_idx = np.where(seg_results == 2)[0]
@@ -72,10 +71,34 @@ class TestApp:
                 ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
 
                 rot_result = self._inference_engine.predict_rotation(
-                    ee_raw_points,
-                    ee_raw_rgb
+                    ee_raw_points, ee_raw_rgb
                 )
-                ipdb.set_trace()
+
+                pos_result, _ = self._inference_engine.predict_translation(
+                    ee_raw_points, ee_raw_rgb, q=rot_result
+                )
+
+                nn_pose = np.concatenate((pos_result, rot_result))
+
+                kp_coords, kp_classes, kp_probs = self._inference_engine.predict_key_points(
+                    ee_raw_points, ee_raw_rgb
+                )
+                kp_pose = self._inference_engine.predict_pose_from_kp(
+                    kp_coords, kp_classes
+                )
+
+                (
+                    nn_dist_position,
+                    nn_angle_diff,
+                ) = metrics.compute_pose_metrics(data.pose, nn_pose)
+
+                if kp_pose is not None:
+                    (
+                        kp_dist_position,
+                        kp_angle_diff,
+                    ) = metrics.compute_pose_metrics(data.pose, kp_pose)
+                print('-------')
+                # ipdb.set_trace()
 
 
 if __name__ == "__main__":

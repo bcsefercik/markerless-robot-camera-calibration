@@ -6,7 +6,7 @@ TEST:
   output: test_results.txt
 
   SEGMENTATION:
-    evaluate: true
+    evaluate: false
 
 INFERENCE:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json

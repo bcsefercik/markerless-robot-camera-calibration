@@ -3,6 +3,8 @@ from unittest import result
 import torch
 import torch.nn.functional as F
 import numpy as np
+
+from utils.quaternion import qmul_np, qconj_np
 import ipdb
 
 EPS = 1e-7
@@ -41,7 +43,7 @@ def compute_pose_dist(gt, pred, position_voxelization=1):
         return dist, dist_position, dist_orientation, angle_diff
 
 
-def compute_segmentation_metrics(gt, pred, classes=['background', 'arm', 'ee']):
+def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['background', 'arm', 'ee']):
     results = {
         "class_results": dict(),
     }
@@ -74,3 +76,18 @@ def compute_segmentation_metrics(gt, pred, classes=['background', 'arm', 'ee']):
     results["recall"] = round(statistics.mean(recalls), 4)
 
     return results
+
+
+def compute_pose_metrics(gt: np.array, pred: np.array):
+    dist_position = np.linalg.norm(gt[:3] - pred[:3])
+
+    gt_rot = gt[3:] / np.linalg.norm(gt[3:])
+    pred_rot = pred[3:] / np.linalg.norm(pred[3:])
+    q_mul = qmul_np(gt_rot, qconj_np(pred_rot))
+    angle_diff = np.abs(2 * np.arctan2(np.linalg.norm(q_mul[1:]), q_mul[0]))
+    angle_diff = min(angle_diff, 2 * np.pi - angle_diff)  # exact same result with calculation in compute_pose_dist()
+
+    # angle_diff_old = torch.acos(2 * (torch.sum(torch.from_numpy(gt[3:] * pred[3:]).view(1, -1), dim=1) ** 2) - 1)[0].item()
+    # print(dist_position, angle_diff, angle_diff_old)
+
+    return dist_position, angle_diff

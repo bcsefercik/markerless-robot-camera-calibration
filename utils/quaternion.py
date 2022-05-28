@@ -4,7 +4,7 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 #
-
+import ipdb
 import torch
 import numpy as np
 
@@ -98,9 +98,13 @@ def qeuler(q, order, epsilon=0):
 
 # Numpy-backed implementations
 
+def qconj_np(q: np.array, switch_w=False):
+    # TODO: implement for switch_w true
+    return q * np.array([1, -1, -1, -1])
+
 def qmul_np(q, r):
-    q = torch.from_numpy(q).contiguous()
-    r = torch.from_numpy(r).contiguous()
+    q = torch.from_numpy(q).double().contiguous()
+    r = torch.from_numpy(r).double().contiguous()
     return qmul(q, r).numpy()
 
 def qrot_np(q, v):

@@ -354,4 +354,4 @@ class InferenceEngine:
 
         kp_coords = raw_points[kp_idx]
 
-        return kp_coords, kp_classes
+        return kp_coords, kp_classes, probs
