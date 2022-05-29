@@ -101,6 +101,8 @@ TRAIN:
   kp_use_probabilities: true
 
 TEST:
+  seed: 1
+
   batch_size: 2
   split: test
   workers: 2
@@ -111,6 +113,13 @@ TEST:
 
   rotation_results: null
   translation_results: null
+
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+
+  output: test_results.xlsx
+
+  SEGMENTATION:
+    evaluate: true
 
 INFERENCE:
   data_source: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json

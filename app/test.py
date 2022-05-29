@@ -1,9 +1,10 @@
-import statistics
 import ipdb
 
 import os
 import sys
 import json
+import random
+import statistics
 from collections import defaultdict
 
 import torch
@@ -145,13 +146,12 @@ class TestApp:
         self.export_to_xslx()
 
     def _put_values_for_col(self, sheet, col_id, start_row, values):
-        sheet.cell(row=start_row, column=col_id).value = statistics.mean(values) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 1, column=col_id).value = min(values) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 2, column=col_id).value = max(values) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 3, column=col_id).value = statistics.median(values) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row, column=col_id).value = round(statistics.mean(values), 4) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 1, column=col_id).value = round(min(values), 4) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 2, column=col_id).value = round(max(values), 4) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 3, column=col_id).value = round(statistics.median(values), 4) if len(values) > 0 else "N/A"
 
     def _create_excel_cells(self, sheet, title, results, start_cell="A-1"):
-
         start_cell = start_cell.split('-')
         col = start_cell[0].upper()
         col_id = ord(col) - ord('A') + 1
@@ -172,9 +172,7 @@ class TestApp:
         sheet.merge_cells(f'{chr(ord(col) + 11)}{row + 1}:{chr(ord(col) + 12)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 13)}{row + 1}:{chr(ord(col) + 14)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + 14)}{row + 7}')
-        double = Side(border_style="double", color="000000")
         sheet.cell(row=row+7, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
-
 
         sheet.cell(row=row+3, column=col_id).value = 'Avg'
         sheet.cell(row=row+4, column=col_id).value = 'Min'
@@ -186,7 +184,6 @@ class TestApp:
         self._put_values_for_col(sheet, col_id + 1, row + 3, results['dist_position_nn'])
         sheet.cell(row=row + 2, column=col_id + 2).value = 'From Key Points'
         self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_kp'])
-
 
         sheet.cell(row=row, column=col_id+3).value = 'Rotation (Angle Diff - rad)'
         sheet.cell(row=row + 2, column=col_id + 3).value = 'Network'
@@ -232,6 +229,9 @@ class TestApp:
         sheet.cell(row=1, column=2).value = json.dumps(_config())
 
         self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
+        for row in range(2, 9):
+            for col in range(1, 17):
+                sheet.cell(row=row, column=col).fill = PatternFill("solid", fgColor="F8BBD0")
 
         for i, (pk, prs) in enumerate(self.position_results.items()):
             self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{2 + (i + 1) * 8}")
@@ -240,6 +240,10 @@ class TestApp:
 
 
 if __name__ == "__main__":
+    random.seed(_config.TEST.seed)
+    np.random.seed(_config.TEST.seed)
+    torch.manual_seed(_config.TEST.seed)
+
     app = TestApp()
     app.export_to_xslx()
     app.run_tests()

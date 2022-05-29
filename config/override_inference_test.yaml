@@ -3,10 +3,10 @@ MODE: 'inference'
 TEST:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
 
-  output: test_results_gt_segmentation.xlsx
+  output: test_results.xlsx
 
   SEGMENTATION:
-    evaluate: false
+    evaluate: true
 
 INFERENCE:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
