@@ -61,7 +61,6 @@ class AliveV2DenseDataset(AliveV2Dataset):
             )
 
         points, pose, other = self.conduct_post_point_ops(points, pose, other)
-
         feats = normalize_points(points) if _config.DATA.use_coordinates_as_features else rgb
 
         return points, feats, labels, pose, other

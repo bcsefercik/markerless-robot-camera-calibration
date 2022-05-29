@@ -61,6 +61,9 @@ DATA:
   augmentation: []  # select from: [elastic, noise, transform, flip, gravity]
   augmentation_probability: 0.2
 
+  roi: null  # example: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
+  roi_offset: 0.13  # in meters
+
 
 STRUCTURE:
   m: 32 # 16 or 32

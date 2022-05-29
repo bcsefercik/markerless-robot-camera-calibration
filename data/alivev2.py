@@ -17,7 +17,7 @@ from utils import file_utils, logger, config
 from utils.data import get_ee_idx, get_roi_mask, get_ee_cross_section_idx, get_key_points, get_6_key_points, collect_closest_points
 from utils.preprocess import center_at_origin
 from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
-
+from utils import augmentation as aug
 
 _config = config.Config()
 _logger = logger.Logger().get()
@@ -56,7 +56,6 @@ class AliveV2Dataset(Dataset):
         self.file_names = file_names
         self.load_file_names()
 
-        self.ee_segmentation_enabled = _config()["DATA"].get('ee_segmentation_enabled', False)
         self.ee_idx = [None] * len(self.file_names)
 
         self.key_points = [None] * len(self.file_names)
@@ -131,7 +130,7 @@ class AliveV2Dataset(Dataset):
 
         arm_idx = np.where(labels == 1)[0]
 
-        if self.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
+        if _config.DATA.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
             if self.ee_idx[i] is None:
                 self.ee_idx[i] = get_ee_idx(
                     points,
@@ -260,6 +259,14 @@ class AliveV2Dataset(Dataset):
 
         if _config.DATA.keypoints_enabled:
             labels = self.load_key_points(i, points, pose, labels)
+
+        if self.augment:  # TODO: add augmentation for pose
+            points = aug.augment_segmentation(
+                points,
+                scale=_config.DATA.scale,
+                probability=_config.DATA.augmentation_probability,
+                **{k: True for k in _config.DATA.augmentation}
+            )
 
         points, pose, other = self.conduct_post_point_ops(points, pose, other)
 

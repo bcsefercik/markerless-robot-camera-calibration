@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp36_seg_origin_allarmee_s200.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_origin_allarmee_s200'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp49_seg_origin_aug_s100.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp49_seg_origin_aug_s100'
 
 GENERAL:
   save_freq: 2
@@ -12,9 +12,9 @@ DATA:
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
 
   workers: 4
-  batch_size: 3
+  batch_size: 5
 
-  scale: 200 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 100 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean
@@ -22,9 +22,7 @@ DATA:
 
   classes: 3  # 0: bg, 1: robot arm, 2: end-effector
   ignore_label: -100
-  pose_dim: 7
 
-  test_split: 'test'
   data_type: null  #'seg'  # ['seg', 'gt_seg', null]
 
   ee_segmentation_enabled: true
@@ -34,10 +32,10 @@ DATA:
   position_eligibility_enabled: true
   orientation_eligibility_enabled: true
 
-  # roi:  ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev2_limits.json',
-  #         '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_limits.json']
-  # # roi: ['/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_limits.json']
-  # roi_offset: 0.13  # m
+  augmentation: [elastic, noise, transform, flip, gravity]
+  augmentation_probability: 0.2
+
+  keypoints_enabled: false
 
 STRUCTURE:
   m: 32 # 16 or 32
