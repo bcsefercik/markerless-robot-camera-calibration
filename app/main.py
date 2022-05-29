@@ -170,6 +170,15 @@ class MainApp:
         self.logo_panel.add_child(self.logo_rgb_widget)
         self.window.add_child(self.logo_panel)
 
+        self.notification_panel = gui.Horiz(
+            0.5 * em, gui.Margins(left=margin, right=margin, top=0.68 * em, bottom=margin)
+        )
+        self._notification_label = gui.Label("Please, move the end effector to a more visible position!")
+        self._notification_label.text_color = gui.Color(1, 1, 1, 1)
+        self._notification_label.font_id = 1
+        self.notification_panel.add_child(self._notification_label)
+        self.window.add_child(self.notification_panel)
+
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
 
@@ -190,6 +199,15 @@ class MainApp:
             panel_width,
             contentRect.height,
         )
+        self.notification_panel.frame = gui.Rect(
+            self.widget3d.frame.get_left(),
+            contentRect.y,
+            contentRect.width - panel_width,
+            46,
+        )
+        self.notification_panel.background_color = gui.Color(0.9, 0.3, 0.3, 0.96)
+        self.notification_panel.visible = False
+
         logo_panel_height = 46
         logo_panel_width = 159
         self.logo_panel.frame = gui.Rect(
@@ -258,40 +276,44 @@ class MainApp:
         # the scene or any part of the UI.
 
         def update(data, result):
-            # print(result)
-            if self._seg_event.is_set():
-                rgb = self._seg_colors[result.segmentation]
-            else:
-                rgb = data.rgb
+            try:
+                self.notification_panel.visible = not result.is_confident
 
-            self.pcd.points = o3d.utility.Vector3dVector(data.points)
-            self.pcd.colors = o3d.utility.Vector3dVector(rgb)
-            # self.pcd.rotate(self.rot_mat)
+                # print(result)
+                if self._seg_event.is_set():
+                    rgb = self._seg_colors[result.segmentation]
+                else:
+                    rgb = data.rgb
+                    self.pcd.points = o3d.utility.Vector3dVector(data.points)
+                    self.pcd.colors = o3d.utility.Vector3dVector(rgb)
+                # self.pcd.rotate(self.rot_mat)
 
-            self.widget3d.scene.remove_geometry("pcd")
-            self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
+                self.widget3d.scene.remove_geometry("pcd")
+                self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
 
-            self.widget3d.scene.remove_geometry("ee_frame")
-            self.ee_frame = None
-            if self._toggle_pred.is_on:
-                if result.key_points_pose is not None:
-                    self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=False)
-            else:
-                if np.absolute(result.ee_pose).sum() > 1e-3:
-                    self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
+                self.widget3d.scene.remove_geometry("ee_frame")
+                self.ee_frame = None
+                if self._toggle_pred.is_on:
+                    if result.key_points_pose is not None:
+                        self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=False)
+                else:
+                    if np.absolute(result.ee_pose).sum() > 1e-3:
+                        self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
 
-            if self.ee_frame is not None:
-                self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
-                self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
+                if self.ee_frame is not None:
+                    self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
+                    self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
 
-            self.widget3d.scene.remove_geometry("key_points")
-            if result.key_points is not None and len(result.key_points) > 0:
-                self.widget3d.scene.add_geometry(
-                    "key_points",
-                    generate_key_point_shapes(result.key_points, radius=0.008),
-                    self.lit
-                )
-                self.widget3d.scene.show_geometry("key_points", self._kp_check.checked)
+                self.widget3d.scene.remove_geometry("key_points")
+                if result.key_points is not None and len(result.key_points) > 0:
+                    self.widget3d.scene.add_geometry(
+                        "key_points",
+                        generate_key_point_shapes(result.key_points, radius=0.008),
+                        self.lit
+                    )
+                    self.widget3d.scene.show_geometry("key_points", self._kp_check.checked)
+            except:
+                _logger.exception("GUI update failed.")
 
         while not self.stop_event.is_set():
             data = self._data_source.get()
@@ -310,9 +332,11 @@ class MainApp:
             time.sleep(0.05)
 
 
+
 def main():
     app = o3d.visualization.gui.Application.instance
     app.initialize()
+    app.add_font(gui.FontDescription(style=gui.FontStyle.BOLD_ITALIC, point_size=22))
 
     win = MainApp(_config.INFERENCE.data_source)
 

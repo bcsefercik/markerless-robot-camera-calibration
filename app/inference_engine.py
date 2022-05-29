@@ -3,6 +3,7 @@ import concurrent.futures
 import json
 import time
 import ipdb
+import math
 
 import os
 import sys
@@ -19,6 +20,7 @@ from utils import config, logger, utils, preprocess
 from utils import output as out_utils
 from utils.transformation import get_q_from_matrix, get_quaternion_rotation_matrix, get_rigid_transform_3D
 from utils.data import get_farthest_point_sample_idx
+from utils.data import get_6_key_points as get_gt_6_key_points
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
 from model.robotnet_segmentation import RobotNetSegmentation
@@ -119,14 +121,48 @@ class InferenceEngine:
             [ 0.02079032, -0.09790908,  0.05609143],
             [-0.00185802,  0.04654205,  0.11564558],
             [ 0.00241113, -0.04262756,  0.11564558]
-       ])
+        ])
+        self.ee_min_width = abs(self.reference_key_points[0][1] - self.reference_key_points[1][1]) - 0.02  # cm
+        self.ee_min_height = abs(self.reference_key_points[0][2] - self.reference_key_points[2][2]) - 0.01  # cm
 
     def check_sanity(self, data: PointCloudDTO, result: ResultDTO):
         num_of_ee_points = (result.segmentation == 2).sum()
         if num_of_ee_points < _config.INFERENCE.SANITY.min_num_of_ee_points:
-            print("fail min # points")
+            # print("fail min # points")
             return False
 
+        ee_raw_points = data.points[result.segmentation == 2]
+
+        gt_kp_coords, gt_kp_classes = get_gt_6_key_points(
+            ee_raw_points,
+            result.ee_pose,
+            switch_w=False,
+            euclidean_threshold=0.04
+        )
+        if any(gt_kp_classes[:4] < 0):
+            # get_gt_6_key_points get corners of ee, if we can't find reasonable corners, then fail
+            # print('fail dim check')
+            return False
+        # ipdb.set_trace()
+
+        # rot_mat = get_quaternion_rotation_matrix(
+        #     result.ee_pose[3:], switch_w=False
+        # )  # switch_w=False in inference
+        # ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape(
+        #     (-1, 3)
+        # )
+
+        # ee_points_min = ee_points.min(axis=0)
+        # ee_points_max = ee_points.max(axis=0)
+        # ee_width = abs(ee_points_min[1] - ee_points_max[1])
+        # ee_height = abs(ee_points_min[2] - ee_points_max[2])
+
+        # if ee_width < self.ee_min_width or ee_height < self.ee_min_height:
+        #     print('fail dims')
+        #     return False
+
+        # TODO: implement kp sanity check
+        # TODO: implement surface area check
 
         # ipdb.set_trace()
         return True
@@ -138,6 +174,9 @@ class InferenceEngine:
             seg_results = self.predict_segmentation(data.points, rgb)
 
             result_dto = ResultDTO(segmentation=seg_results)
+
+            if seg_results is None:
+                return result_dto
 
             ee_idx = np.where(seg_results == 2)[0]
 
@@ -210,7 +249,7 @@ class InferenceEngine:
         seg_results[ee_idx] = 1  # initially, set all ee pred to arm
 
         if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
-            return result_dto
+            return None
 
         ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
         seg_results[
@@ -316,7 +355,7 @@ class InferenceEngine:
 
         if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
             if len(points) < _config.INFERENCE.num_of_dense_input_points:
-                return [], []
+                return [], [], []
             if _config.INFERENCE.KEY_POINTS.pointcloud_sampling_method == 'uniform':
                 sample_idx = np.random.choice(len(points), _config.INFERENCE.num_of_dense_input_points, replace=False)
             else:
