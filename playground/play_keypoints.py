@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import collect_closest_points, get_6_key_points, get_ee_cross_section_idx, get_ee_idx, get_key_points, get_roi_mask
 from utils.visualization import create_coordinate_frame, generate_colors, generate_key_point_shapes, get_key_point_colors
-from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
+from utils.transformation import get_quaternion_rotation_matrix, get_rigid_transform_3D, get_affine_transformation
 from utils.preprocess import center_at_origin
 from utils import augmentation as aug
 
@@ -47,6 +47,9 @@ if __name__ == "__main__":
         pose = data['pose']
     else:
         points, rgb, labels, _, pose = data
+        points = np.array(points, dtype=np.float32)
+        rgb = np.array(rgb, dtype=np.float32)
+        pose = np.array(pose, dtype=np.float32)
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
@@ -55,10 +58,11 @@ if __name__ == "__main__":
     print('# of points:', len(rgb))
     print('# of arm points:', len(arm_idx))
     # rgb[arm_idx] = np.zeros_like(rgb[arm_idx]) + np.array([0.3, 0.3, 0.3])
-    points = points[arm_idx]
-    rgb = rgb[arm_idx]
-    labels = [arm_idx]
-    arm_idx = np.arange(len(arm_idx))
+    # points = points[arm_idx]
+    # rgb = rgb[arm_idx]
+    # labels = [arm_idx]
+    # arm_idx = np.arange(len(arm_idx))
+
 
     pcd = o3d.geometry.PointCloud()
 
@@ -70,7 +74,7 @@ if __name__ == "__main__":
     # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
     ee_frame = create_coordinate_frame(pose, switch_w=True)
 
-    key_points_colors =  get_key_point_colors()
+    key_points_colors = get_key_point_colors()
 
     # ee_points = points - pose[:3]
     # ee_rgb = rgb
@@ -151,6 +155,10 @@ if __name__ == "__main__":
     ref_line_set.points = o3d.utility.Vector3dVector(ref_line_points)
     ref_line_set.lines = o3d.utility.Vector2iVector(ref_line_segments)
     ref_line_set.colors = o3d.utility.Vector3dVector(ref_line_colors)
+
+    R, t = get_rigid_transform_3D(ref_key_points_lean, key_points_lean)
+
+    ipdb.set_trace()
 
     # # reverse the transformation above
     # new_ee_points_reverse = np.array(new_ee_points, copy=True)

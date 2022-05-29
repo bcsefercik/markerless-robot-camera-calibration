@@ -20,8 +20,10 @@ def base_at_origin(points: np.array):
 def normalize_colors(rgb_input: np.array, is_color_in_range_0_255: bool = False):
     rgb = np.array(rgb_input, copy=True)
 
+    is_color_in_range_0_255 = is_color_in_range_0_255 or rgb.max() > 2
+
     if is_color_in_range_0_255:
-        rgb /= 255
+        rgb /= 255.0
 
     if rgb.min() < 0:
         # WRONG approach, tries to get rid of trouble from data prep code.

@@ -1,8 +1,13 @@
+import ipdb
+
 import math
 
 import numpy as np
+import open3d as o3d
 import scipy
 from scipy.stats import special_ortho_group
+
+from utils.preprocess import normalize_colors
 
 
 # Elastic distortion
@@ -26,6 +31,19 @@ def distort_elastic(x, gran, mag):
         return np.hstack([i(x_)[:, None] for i in interp])
 
     return x + g(x) * mag
+
+
+def change_background(rgb, labels, img_path):
+    img = np.asarray(o3d.io.read_image(img_path), dtype=np.float32).reshape((-1, 3))
+    img = normalize_colors(img) + 0.5
+    pixel_count = img.shape[0]
+    bg_count = sum(labels == 0)
+
+    img_selection = np.random.choice(pixel_count, bg_count, replace=True)
+
+    rgb[labels == 0] = img[img_selection]
+
+    return rgb
 
 
 def add_noise(x, sigma=0.0016, clip=0.005):
@@ -71,6 +89,39 @@ def augment(
 
     if elastic and np.random.rand() < probability:
         points = distort_elastic(points, 1, 4)
+
+    if noise and np.random.rand() < probability:
+        points = add_noise(points)
+
+    if transform and np.random.rand() < probability:
+        points = transform_random(points)
+
+    if flip and np.random.rand() < probability:
+        points = flip_random(points)
+
+    if gravity and np.random.rand() < probability:
+        points = rotate_along_gravity(points)
+
+    return points
+
+
+def augment_segmentation(
+    points,
+    scale=200,
+    probability=0.2,
+    copy=False,
+    elastic=False,
+    noise=False,
+    transform=False,
+    flip=False,
+    gravity=False
+):
+    points = np.array(points, copy=copy)
+
+    if elastic and np.random.rand() < probability:
+        points = distort_elastic(points, 6 * scale // 50, 40 * scale / 50)
+        points = distort_elastic(points, 20 * scale // 50, 160 * scale / 50)
+
 
     if noise and np.random.rand() < probability:
         points = add_noise(points)
