@@ -124,6 +124,9 @@ TEST:
   SEGMENTATION:
     evaluate: true
 
+  KEY_POINTS:
+    error_margin: 0.05  # in meters
+
 INFERENCE:
   data_source: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json
 

@@ -21,6 +21,8 @@ from utils.data import get_6_key_points
 
 import data_engine
 from inference_engine import InferenceEngine
+from dto import ResultDTO, RawDTO
+
 
 _config = config.Config()
 _logger = logger.Logger().get()
@@ -51,7 +53,7 @@ class TestApp:
 
         with torch.no_grad():
             while True:
-                data = self._data_source.get_raw()
+                data: RawDTO = self._data_source.get_raw()
 
                 if data is None:
                     break
@@ -76,6 +78,8 @@ class TestApp:
                     )
                     self.instance_results[data_key]['segmentation'] = segmentation_metrics
 
+                result_dto = ResultDTO(segmentation=seg_results)
+
                 ee_idx = np.where(seg_results == 2)[0]
                 ee_raw_points = data.points[ee_idx]  # no origin offset
                 ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
@@ -89,6 +93,8 @@ class TestApp:
                 )
 
                 nn_pose = np.concatenate((pos_result, rot_result))
+
+                result_dto.ee_pose = nn_pose
 
                 nn_pose_metrics = metrics.compute_pose_metrics(data.pose, nn_pose)
 
@@ -105,6 +111,8 @@ class TestApp:
                 mean_kp_error = metrics.compute_kp_error(kp_gt_coords, kp_coords, kp_classes)
                 self.instance_results[data_key]['mean_kp_error'] = mean_kp_error
 
+                result_dto.key_points = list(zip(kp_classes, kp_coords))
+
                 if len(kp_classes) > 3:
                     kp_pose = self._inference_engine.predict_pose_from_kp(
                         kp_coords, kp_classes
@@ -117,7 +125,17 @@ class TestApp:
                     self.instance_results[data_key]['dist_position']['kp'] = kp_dist_position
                     self.instance_results[data_key]['angle_diff']['kp'] = kp_angle_diff
 
-                print(data_key)
+                    result_dto.key_points_pose = kp_pose
+
+                is_confident = self._inference_engine.check_sanity(
+                    data.to_point_cloud_dto(),
+                    result_dto,
+                    kp_error_margin=_config.TEST.KEY_POINTS.error_margin
+                )
+                if _config.TEST.ignore_unconfident and not is_confident:
+                    self.instance_results.pop(data_key)
+
+                _logger.info(f'{data_key}, ignored: {not is_confident}')
 
         position_results_raw = defaultdict(list)
         for ir in self.instance_results.values():
@@ -141,7 +159,8 @@ class TestApp:
 
         for prs in self.position_results.values():
             for k in prs:
-                self.overall_results[k].append(statistics.mean(prs[k]))
+                if len(prs[k]) > 0:
+                    self.overall_results[k].append(statistics.mean(prs[k]))
 
         self.export_to_xslx()
 

@@ -19,7 +19,7 @@ class ResultDTO:
     ee_pose: np.array = np.zeros(7, dtype=np.float)
     base_pose: np.array = None
     key_points: list((int, np.array)) = None
-    key_points_pose: np.array = None
+    key_points_pose: np.array = np.zeros(7, dtype=np.float)
     is_confident: bool = False
     timestamp: datetime = None
     confidence: float = None
@@ -33,3 +33,6 @@ class RawDTO:
     pose: np.array
     segmentation: np.array
     other: dict = None
+
+    def to_point_cloud_dto(self) -> PointCloudDTO:
+        return PointCloudDTO(self.points, self.rgb, datetime.utcnow())
