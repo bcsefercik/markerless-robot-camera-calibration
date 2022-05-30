@@ -280,7 +280,7 @@ class MainApp:
                 self.notification_panel.visible = not result.is_confident
 
                 # print(result)
-                if self._seg_event.is_set():
+                if self._seg_event.is_set() and result.segmentation is not None:
                     rgb = self._seg_colors[result.segmentation]
                 else:
                     rgb = data.rgb
