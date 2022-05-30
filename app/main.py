@@ -279,13 +279,14 @@ class MainApp:
             try:
                 self.notification_panel.visible = not result.is_confident
 
-                # print(result)
                 if self._seg_event.is_set() and result.segmentation is not None:
                     rgb = self._seg_colors[result.segmentation]
                 else:
                     rgb = data.rgb
-                    self.pcd.points = o3d.utility.Vector3dVector(data.points)
-                    self.pcd.colors = o3d.utility.Vector3dVector(rgb)
+
+                self.pcd.points = o3d.utility.Vector3dVector(data.points)
+                self.pcd.colors = o3d.utility.Vector3dVector(rgb)
+
                 # self.pcd.rotate(self.rot_mat)
 
                 self.widget3d.scene.remove_geometry("pcd")
