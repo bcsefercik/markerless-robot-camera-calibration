@@ -16,7 +16,7 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data.alivev2 import AliveV2Dataset, collate_tupled
-from utils import config, logger, utils, preprocess
+from utils import config, logger, utils, preprocess, metrics
 from utils import output as out_utils
 from utils.transformation import get_q_from_matrix, get_quaternion_rotation_matrix, get_rigid_transform_3D
 from utils.data import get_farthest_point_sample_idx
@@ -125,25 +125,34 @@ class InferenceEngine:
         self.ee_min_width = abs(self.reference_key_points[0][1] - self.reference_key_points[1][1]) - 0.02  # cm
         self.ee_min_height = abs(self.reference_key_points[0][2] - self.reference_key_points[2][2]) - 0.01  # cm
 
-    def check_sanity(self, data: PointCloudDTO, result: ResultDTO):
+    def check_sanity(self, data: PointCloudDTO, result: ResultDTO, kp_error_margin=_config.INFERENCE.KEY_POINTS.error_margin):
         num_of_ee_points = (result.segmentation == 2).sum()
         if num_of_ee_points < _config.INFERENCE.SANITY.min_num_of_ee_points:
-            # print("fail min # points")
+            _logger.warning("fail min # points")
             return False
 
         ee_raw_points = data.points[result.segmentation == 2]
 
-        gt_kp_coords, gt_kp_classes = get_gt_6_key_points(
+        kp_gt_coords, kp_gt_classes = get_gt_6_key_points(
             ee_raw_points,
             result.ee_pose,
             switch_w=False,
             euclidean_threshold=0.04
         )
-        if any(gt_kp_classes[:4] < 0):
+        if any(kp_gt_classes[:4] < 0):
             # get_gt_6_key_points get corners of ee, if we can't find reasonable corners, then fail
-            # print('fail dim check')
+            _logger.warning('fail dim check')
             return False
-        # ipdb.set_trace()
+
+        if len(result.key_points) > 0:
+            kp_pred_classes, kp_pred_coords = zip(*result.key_points)
+            kp_pred_classes = np.array(kp_pred_classes, dtype=np.int)
+            kp_pred_coords = np.array(kp_pred_coords, dtype=np.float32)
+            kp_error = metrics.compute_kp_error(kp_gt_coords, kp_pred_coords, kp_pred_classes)
+
+            if kp_error > kp_error_margin:
+                _logger.warning('fail kp error margin')
+                return False
 
         # rot_mat = get_quaternion_rotation_matrix(
         #     result.ee_pose[3:], switch_w=False

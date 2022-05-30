@@ -163,3 +163,4 @@ INFERENCE:
     conf_threshold: 0.99999
     use_coordinates_as_features: false
     num_of_keypoints: 6
+    error_margin: 0.05  # in meters
