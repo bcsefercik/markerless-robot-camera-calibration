@@ -186,6 +186,15 @@ def get_q_from_matrix(rot_mat):
     return rot  # w, x, y, z
 
 
+def get_pose_from_matrix(trans_mat):
+    translation = trans_mat[:3, 3]
+    rotation = get_q_from_matrix(np.array(trans_mat[:3, :3], copy=True))
+
+    pose = np.concatenate((translation, rotation))
+
+    return pose  # x,y,z qw, qx, qy, qz
+
+
 if __name__ == '__main__':
     inp = [[1, 1, 2], [2, 3, 0], [3, 2, -2], [-2, 2, 3]]  # <- points
     out = [[0, 2, 1], [1, 2, 2], [-2, -1, 6], [4, 1, -3]]  # <- mapped to

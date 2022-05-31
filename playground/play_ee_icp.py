@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_quaternion_rotation_matrix, get_transformation_matrix
+from utils.transformation import get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix
 from utils.preprocess import center_at_origin
 
 
@@ -63,7 +63,6 @@ if __name__ == "__main__":
     pcd_ee.points = o3d.utility.Vector3dVector(ee_points)
     pcd_ee.colors = o3d.utility.Vector3dVector(ee_rgb)
     # must do this for point to plane icp
-    # pcd_ee.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=5))
 
     new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
     new_ee_points, origin_offset = center_at_origin(new_ee_points)
@@ -90,8 +89,10 @@ if __name__ == "__main__":
     pcd_cad_mask = (pcd_cad_points[:, 0] > 0.0) * (pcd_cad_points[:, 2] > -0.0)
     pcd_cad.points = o3d.utility.Vector3dVector(pcd_cad_points[pcd_cad_mask])
     pcd_cad.normals = o3d.utility.Vector3dVector(pcd_cad_normals[pcd_cad_mask])
-    # ipdb.set_trace()
 
+    pcd_ee.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
+    # pcd_cad.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
+    # ipdb.set_trace()
 
     pose_jiggled = pose + (np.random.rand(7) * 2 - 1) * 0.01
     trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
@@ -102,10 +103,20 @@ if __name__ == "__main__":
     mu, sigma = 0, 0.1
     source_noisy = apply_noise(pcd_cad, mu, sigma)
 
-    threshold = 0.2
+    threshold = 0.01
     loss = o3d.pipelines.registration.TukeyLoss(k=sigma)
 
     p2l = o3d.pipelines.registration.TransformationEstimationPointToPlane(loss)
+    # reg_p2l = o3d.pipelines.registration.registration_icp(
+    #     source_noisy, pcd_ee, threshold, trans_mat_jiggled,
+    #     p2l)  # DOESN'T WORK
+    # reg_p2l = o3d.pipelines.registration.registration_icp(
+    #     pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
+    #     p2l)
+    # reg_p2l = o3d.pipelines.registration.registration_icp(
+    #     pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
+    #     o3d.pipelines.registration.TransformationEstimationPointToPlane())
+
     reg_p2l = o3d.pipelines.registration.registration_icp(
         pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
         o3d.pipelines.registration.TransformationEstimationPointToPoint())
@@ -115,8 +126,12 @@ if __name__ == "__main__":
     # pcd_cad.transform(gt_trans_mat)
     # ipdb.set_trace()
 
+    pred_pose = get_pose_from_matrix(reg_p2l.transformation)
+
+    pred_frame = create_coordinate_frame(pred_pose, switch_w=False)
+
     o3d.visualization.draw_geometries(
-        [pcd_ee, pcd_cad, kinect_frame, ee_frame]
+        [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, ee_frame]
     )
 
