@@ -93,16 +93,16 @@ class TestApp:
                 )
 
                 nn_pose = np.concatenate((pos_result, rot_result))
-
                 result_dto.ee_pose = nn_pose
 
                 nn_pose_metrics = metrics.compute_pose_metrics(data.pose, nn_pose)
+                self.instance_results[data_key]['dist_position'] = {'nn': nn_pose_metrics['dist_position']}
+                self.instance_results[data_key]['angle_diff'] = {'nn': nn_pose_metrics['angle_diff']}
 
-                nn_dist_position = nn_pose_metrics['dist_position']
-                nn_angle_diff = nn_pose_metrics['angle_diff']
-
-                self.instance_results[data_key]['dist_position'] = {'nn': nn_dist_position}
-                self.instance_results[data_key]['angle_diff'] = {'nn': nn_angle_diff}
+                nn_pose_icp = self._inference_engine.match_icp(ee_raw_points, nn_pose)
+                nn_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, nn_pose_icp)
+                self.instance_results[data_key]['dist_position']['nn_icp'] = nn_pose_icp_metrics['dist_position']
+                self.instance_results[data_key]['angle_diff']['nn_icp'] = nn_pose_icp_metrics['angle_diff']
 
                 kp_gt_coords, kp_gt_idx = get_6_key_points(ee_raw_points, data.pose, switch_w=False)
                 kp_coords, kp_classes, kp_confs = self._inference_engine.predict_key_points(
@@ -117,15 +117,16 @@ class TestApp:
                     kp_pose = self._inference_engine.predict_pose_from_kp(
                         kp_coords, kp_classes
                     )
+                    result_dto.key_points_pose = kp_pose
                     kp_pose_metrics = metrics.compute_pose_metrics(data.pose, kp_pose)
 
-                    kp_dist_position = kp_pose_metrics['dist_position']
-                    kp_angle_diff = kp_pose_metrics['angle_diff']
+                    self.instance_results[data_key]['dist_position']['kp'] = kp_pose_metrics['dist_position']
+                    self.instance_results[data_key]['angle_diff']['kp'] = kp_pose_metrics['angle_diff']
 
-                    self.instance_results[data_key]['dist_position']['kp'] = kp_dist_position
-                    self.instance_results[data_key]['angle_diff']['kp'] = kp_angle_diff
-
-                    result_dto.key_points_pose = kp_pose
+                    kp_pose_icp = self._inference_engine.match_icp(ee_raw_points, kp_pose)
+                    kp_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, kp_pose_icp)
+                    self.instance_results[data_key]['dist_position']['kp_icp'] = kp_pose_icp_metrics['dist_position']
+                    self.instance_results[data_key]['angle_diff']['kp_icp'] = kp_pose_icp_metrics['angle_diff']
 
                 is_confident = self._inference_engine.check_sanity(
                     data.to_point_cloud_dto(),
@@ -135,7 +136,7 @@ class TestApp:
                 if _config.TEST.ignore_unconfident and not is_confident:
                     self.instance_results.pop(data_key)
 
-                _logger.info(f'{data_key}, ignored: {not is_confident}')
+                _logger.info(f'{data_key}{"" if is_confident else ", ignored"}')
 
         position_results_raw = defaultdict(list)
         for ir in self.instance_results.values():
@@ -143,10 +144,16 @@ class TestApp:
 
         for pos, irs in position_results_raw.items():
             self.position_results[pos]['mean_kp_error'] = [ir['mean_kp_error'] for ir in irs]
+
             self.position_results[pos]['angle_diff_nn'] = [ir['angle_diff']['nn'] for ir in irs]
+            self.position_results[pos]['angle_diff_nn_icp'] = [ir['angle_diff']['nn_icp'] for ir in irs]
             self.position_results[pos]['angle_diff_kp'] = [ir['angle_diff']['kp'] for ir in irs if 'kp' in ir['dist_position']]
+            self.position_results[pos]['angle_diff_kp_icp'] = [ir['angle_diff']['kp_icp'] for ir in irs if 'kp' in ir['dist_position']]
+
             self.position_results[pos]['dist_position_nn'] = [ir['dist_position']['nn'] for ir in irs]
+            self.position_results[pos]['dist_position_nn_icp'] = [ir['dist_position']['nn_icp'] for ir in irs]
             self.position_results[pos]['dist_position_kp'] = [ir['dist_position']['kp'] for ir in irs if 'kp' in ir['dist_position']]
+            self.position_results[pos]['dist_position_kp_icp'] = [ir['dist_position']['kp_icp'] for ir in irs if 'kp' in ir['dist_position']]
 
             if _config.TEST.SEGMENTATION.evaluate:
                 self.position_results[pos]['segmentation_accuracy'] = [ir['segmentation']['accuracy'] for ir in irs]
@@ -182,15 +189,15 @@ class TestApp:
         sheet.cell(row=row, column=1).alignment = Alignment(horizontal="center", vertical="center", textRotation=90)
 
         sheet.merge_cells(f'{col}{row}:{col}{row+2}')
-        sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 2)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 3)}{row}:{chr(ord(col) + 4)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 5)}{row}:{chr(ord(col) + 5)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 6)}{row}:{chr(ord(col) + 14)}{row}')
-        sheet.merge_cells(f'{chr(ord(col) + 6)}{row + 1}:{chr(ord(col) + 8)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 9)}{row + 1}:{chr(ord(col) + 10)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 11)}{row + 1}:{chr(ord(col) + 12)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 4)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 5)}{row}:{chr(ord(col) + 8)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 9)}{row}:{chr(ord(col) + 9)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 10)}{row}:{chr(ord(col) + 17)}{row}')
+        sheet.merge_cells(f'{chr(ord(col) + 10)}{row + 1}:{chr(ord(col) + 12)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 13)}{row + 1}:{chr(ord(col) + 14)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + 14)}{row + 7}')
+        sheet.merge_cells(f'{chr(ord(col) + 15)}{row + 1}:{chr(ord(col) + 16)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 17)}{row + 1}:{chr(ord(col) + 18)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + 18)}{row + 7}')
         sheet.cell(row=row+7, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
 
         sheet.cell(row=row+3, column=col_id).value = 'Avg'
@@ -198,46 +205,54 @@ class TestApp:
         sheet.cell(row=row+5, column=col_id).value = 'Max'
         sheet.cell(row=row+6, column=col_id).value = 'Med'
 
-        sheet.cell(row=row, column=col_id+1).value = 'Translation (Euler Dist - m)'
-        sheet.cell(row=row+2, column=col_id+1).value = 'Network'
+        sheet.cell(row=row, column=col_id + 1).value = 'Translation (Euler Dist - m)'
+        sheet.cell(row=row+2, column=col_id + 1).value = 'NN'
         self._put_values_for_col(sheet, col_id + 1, row + 3, results['dist_position_nn'])
-        sheet.cell(row=row + 2, column=col_id + 2).value = 'From Key Points'
-        self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_kp'])
+        sheet.cell(row=row+2, column=col_id + 2).value = 'NN + ICP'
+        self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_nn_icp'])
+        sheet.cell(row=row + 2, column=col_id + 3).value = 'KP'
+        self._put_values_for_col(sheet, col_id + 3, row + 3, results['dist_position_kp'])
+        sheet.cell(row=row + 2, column=col_id + 4).value = 'KP + ICP'
+        self._put_values_for_col(sheet, col_id + 4, row + 3, results['dist_position_kp_icp'])
 
-        sheet.cell(row=row, column=col_id+3).value = 'Rotation (Angle Diff - rad)'
-        sheet.cell(row=row + 2, column=col_id + 3).value = 'Network'
-        self._put_values_for_col(sheet, col_id + 3, row + 3, results['angle_diff_nn'])
-        sheet.cell(row=row+2, column=col_id + 4).value = 'From Key Points'
-        self._put_values_for_col(sheet, col_id + 4, row + 3, results['angle_diff_kp'])
+        sheet.cell(row=row, column=col_id + 5).value = 'Rotation (Angle Diff - rad)'
+        sheet.cell(row=row + 2, column=col_id + 5).value = 'NN'
+        self._put_values_for_col(sheet, col_id + 5, row + 3, results['angle_diff_nn'])
+        sheet.cell(row=row + 2, column=col_id + 6).value = 'NN + ICP'
+        self._put_values_for_col(sheet, col_id + 6, row + 3, results['angle_diff_nn_icp'])
+        sheet.cell(row=row+2, column=col_id + 7).value = 'KP'
+        self._put_values_for_col(sheet, col_id + 7, row + 3, results['angle_diff_kp'])
+        sheet.cell(row=row+2, column=col_id + 8).value = 'KP + ICP'
+        self._put_values_for_col(sheet, col_id + 8, row + 3, results['angle_diff_kp_icp'])
 
-        sheet.cell(row=row, column=col_id+5).value = 'Key Points'
-        sheet.cell(row=row+2, column=col_id+5).value = 'Distance Error (m)'
-        self._put_values_for_col(sheet, col_id + 5, row + 3, results['mean_kp_error'])
+        sheet.cell(row=row, column=col_id + 9).value = 'Key Points'
+        sheet.cell(row=row+2, column=col_id + 9).value = 'Distance Error (m)'
+        self._put_values_for_col(sheet, col_id + 9, row + 3, results['mean_kp_error'])
 
         if _config.TEST.SEGMENTATION.evaluate:
-            sheet.cell(row=row, column=col_id+6).value = 'Segmentation'
-            sheet.cell(row=row+1, column=col_id+6).value = 'All'
-            sheet.cell(row=row+2, column=col_id+6).value = 'Accuracy'
-            self._put_values_for_col(sheet, col_id + 6, row + 3, results['segmentation_accuracy'])
-            sheet.cell(row=row+2, column=col_id+7).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 7, row + 3, results['segmentation_precision'])
-            sheet.cell(row=row+2, column=col_id+8).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 8, row + 3, results['segmentation_recall'])
-            sheet.cell(row=row+1, column=col_id+9).value = 'End Effector'
-            sheet.cell(row=row+2, column=col_id+9).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 9, row + 3, results['segmentation_ee_precision'])
-            sheet.cell(row=row+2, column=col_id+10).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 10, row + 3, results['segmentation_ee_recall'])
-            sheet.cell(row=row+1, column=col_id+11).value = 'Arm'
-            sheet.cell(row=row+2, column=col_id+11).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 11, row + 3, results['segmentation_arm_precision'])
-            sheet.cell(row=row+2, column=col_id+12).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 12, row + 3, results['segmentation_arm_recall'])
-            sheet.cell(row=row+1, column=col_id+13).value = 'Background'
-            sheet.cell(row=row+2, column=col_id+13).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 13, row + 3, results['segmentation_background_precision'])
-            sheet.cell(row=row+2, column=col_id+14).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 14, row + 3, results['segmentation_background_recall'])
+            sheet.cell(row=row, column=col_id + 10).value = 'Segmentation'
+            sheet.cell(row=row+1, column=col_id + 10).value = 'All'
+            sheet.cell(row=row+2, column=col_id + 10).value = 'Accuracy'
+            self._put_values_for_col(sheet, col_id + 10, row + 3, results['segmentation_accuracy'])
+            sheet.cell(row=row+2, column=col_id + 11).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 11, row + 3, results['segmentation_precision'])
+            sheet.cell(row=row+2, column=col_id + 12).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 12, row + 3, results['segmentation_recall'])
+            sheet.cell(row=row+1, column=col_id + 13).value = 'End Effector'
+            sheet.cell(row=row+2, column=col_id + 13).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 13, row + 3, results['segmentation_ee_precision'])
+            sheet.cell(row=row+2, column=col_id + 14).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 14, row + 3, results['segmentation_ee_recall'])
+            sheet.cell(row=row+1, column=col_id + 15).value = 'Arm'
+            sheet.cell(row=row+2, column=col_id + 15).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 15, row + 3, results['segmentation_arm_precision'])
+            sheet.cell(row=row+2, column=col_id + 16).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 16, row + 3, results['segmentation_arm_recall'])
+            sheet.cell(row=row+1, column=col_id + 17).value = 'Background'
+            sheet.cell(row=row+2, column=col_id + 17).value = 'Precision'
+            self._put_values_for_col(sheet, col_id + 17, row + 3, results['segmentation_background_precision'])
+            sheet.cell(row=row+2, column=col_id + 18).value = 'Recall'
+            self._put_values_for_col(sheet, col_id + 18, row + 3, results['segmentation_background_recall'])
 
     def export_to_xslx(self):
         wb = openpyxl.Workbook()
@@ -247,10 +262,18 @@ class TestApp:
         sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'
         sheet.cell(row=1, column=2).value = json.dumps(_config())
 
+        border = Border(
+            left=Side(border_style='thin', color="AAAAAA"),
+            right=Side(border_style='thin', color="AAAAAA"),
+            top=Side(border_style='thin', color="AAAAAA"),
+            bottom=Side(border_style='thin', color="AAAAAA")
+        )
+
         self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
         for row in range(2, 9):
-            for col in range(1, 17):
-                sheet.cell(row=row, column=col).fill = PatternFill("solid", fgColor="F8BBD0")
+            for col in range(1, 21):
+                sheet.cell(row=row, column=col).fill = PatternFill("solid", fgColor="FFECB3")
+                sheet.cell(row=row, column=col).border = border
 
         for i, (pk, prs) in enumerate(self.position_results.items()):
             self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{2 + (i + 1) * 8}")

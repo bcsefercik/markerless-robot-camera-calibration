@@ -124,10 +124,12 @@ class InferenceEngine:
         self._key_points_model.eval()
 
         # CAD to PCD, ICP inits
+        # self._cad_mesh = o3d.io.read_triangle_mesh(
+        #     os.path.join(BASE_PATH, "hand_files", "hand.obj")
+        # )
         self._cad_mesh = o3d.io.read_triangle_mesh(
-            os.path.join(BASE_PATH, "hand_files", "hand.obj")
+            os.path.join(BASE_PATH, "hand_files", "hand_notblender.obj")  # seems to work better
         )
-        # self._cad_mesh = o3d.io.read_triangle_mesh(os.path.join(BASE_PATH, "hand_files", "hand_notblender.obj"))
         self._cad_pcd = self._cad_mesh.sample_points_uniformly(
             number_of_points=16384
         )  # has normal since converted from mesh
@@ -148,7 +150,9 @@ class InferenceEngine:
         self._icp_method = (
             o3d.pipelines.registration.TransformationEstimationPointToPoint()
         )
-        self._icp_normal_search_param = o3d.geometry.KDTreeSearchParamHybrid(radius=0.02, max_nn=30)
+        self._icp_normal_search_param = o3d.geometry.KDTreeSearchParamHybrid(
+            radius=0.02, max_nn=30
+        )
 
         self.reference_key_points = np.array(
             [
@@ -286,7 +290,9 @@ class InferenceEngine:
 
             if _config.INFERENCE.icp_enabled:
                 result_dto.ee_pose = self.match_icp(ee_raw_points, result_dto.ee_pose)
-                result_dto.key_points_pose = self.match_icp(ee_raw_points, result_dto.key_points_pose)
+                result_dto.key_points_pose = self.match_icp(
+                    ee_raw_points, result_dto.key_points_pose
+                )
 
             return result_dto
 
