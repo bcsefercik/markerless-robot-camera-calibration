@@ -6,7 +6,7 @@
 .vscode/
 exp/
 log/
-jobs/
+jobs/out/
 dataset/
 scripts/download-scannet.py
 
