@@ -7,10 +7,12 @@ DATA:
   file_names: '/home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json'
 
 INFERENCE:
-  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
-  data_source: null
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  # data_source: null
   ee_point_counts_threshold: 512
   num_of_dense_input_points: 2048
+
+  icp_enabled: true
 
   SANITY:  # TODO: add this to default.yaml
     min_num_of_ee_points: 4096

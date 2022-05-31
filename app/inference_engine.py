@@ -11,14 +11,23 @@ import sys
 import torch
 from torch.utils.data import DataLoader
 import numpy as np
+import open3d as o3d
 
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(os.path.dirname(BASE_PATH))
 
 from data.alivev2 import AliveV2Dataset, collate_tupled
 from utils import config, logger, utils, preprocess, metrics
 from utils import output as out_utils
-from utils.transformation import get_q_from_matrix, get_quaternion_rotation_matrix, get_rigid_transform_3D
+from utils.transformation import (
+    get_q_from_matrix,
+    get_quaternion_rotation_matrix,
+    get_rigid_transform_3D,
+    get_transformation_matrix,
+    get_pose_from_matrix,
+)
 from utils.data import get_farthest_point_sample_idx
 from utils.data import get_6_key_points as get_gt_6_key_points
 from model.backbone import minkunet
@@ -114,18 +123,77 @@ class InferenceEngine:
         )
         self._key_points_model.eval()
 
-        self.reference_key_points = np.array([
-            [ 0.01982731,  0.08085986,  0.00321919],
-            [ 0.02171595, -0.08986182,  0.00388430],
-            [ 0.01288678,  0.09103118,  0.06127814],
-            [ 0.02079032, -0.09790908,  0.05609143],
-            [-0.00185802,  0.04654205,  0.11564558],
-            [ 0.00241113, -0.04262756,  0.11564558]
-        ])
-        self.ee_min_width = abs(self.reference_key_points[0][1] - self.reference_key_points[1][1]) - 0.02  # cm
-        self.ee_min_height = abs(self.reference_key_points[0][2] - self.reference_key_points[2][2]) - 0.01  # cm
+        # CAD to PCD, ICP inits
+        self._cad_mesh = o3d.io.read_triangle_mesh(
+            os.path.join(BASE_PATH, "hand_files", "hand.obj")
+        )
+        # self._cad_mesh = o3d.io.read_triangle_mesh(os.path.join(BASE_PATH, "hand_files", "hand_notblender.obj"))
+        self._cad_pcd = self._cad_mesh.sample_points_uniformly(
+            number_of_points=16384
+        )  # has normal since converted from mesh
+        self._cad_pcd = self._cad_mesh.sample_points_poisson_disk(
+            number_of_points=8192, pcl=self._cad_pcd
+        )
+        _pcd_cad_points = np.asarray(self._cad_pcd.points)
+        _pcd_cad_normals = np.asarray(self._cad_pcd.normals)
+        _pcd_cad_mask = _pcd_cad_points[:, 0] > 0.0  # * (pcd_cad_points[:, 2] > -0.0)
+        self._cad_pcd.points = o3d.utility.Vector3dVector(
+            _pcd_cad_points[_pcd_cad_mask]
+        )
+        self._cad_pcd.normals = o3d.utility.Vector3dVector(
+            _pcd_cad_normals[_pcd_cad_mask]
+        )
+        self._ee_pcd = o3d.geometry.PointCloud()
+        self._icp_threshold = 0.1
+        self._icp_method = (
+            o3d.pipelines.registration.TransformationEstimationPointToPoint()
+        )
+        self._icp_normal_search_param = o3d.geometry.KDTreeSearchParamHybrid(radius=0.02, max_nn=30)
 
-    def check_sanity(self, data: PointCloudDTO, result: ResultDTO, kp_error_margin=_config.INFERENCE.KEY_POINTS.error_margin):
+        self.reference_key_points = np.array(
+            [
+                [0.01982731, 0.08085986, 0.00321919],
+                [0.02171595, -0.08986182, 0.00388430],
+                [0.01288678, 0.09103118, 0.06127814],
+                [0.02079032, -0.09790908, 0.05609143],
+                [-0.00185802, 0.04654205, 0.11564558],
+                [0.00241113, -0.04262756, 0.11564558],
+            ]
+        )
+        self.ee_min_width = (
+            abs(self.reference_key_points[0][1] - self.reference_key_points[1][1])
+            - 0.02
+        )  # cm
+        self.ee_min_height = (
+            abs(self.reference_key_points[0][2] - self.reference_key_points[2][2])
+            - 0.01
+        )  # cm
+
+    def match_icp(self, ee_points, pose_initial):
+        if ee_points is None or pose_initial is None:
+            return pose_initial
+
+        trans_mat_initial = get_transformation_matrix(pose_initial, switch_w=False)
+
+        self._ee_pcd.points = o3d.utility.Vector3dVector(ee_points)
+        self._ee_pcd.estimate_normals(search_param=self._icp_normal_search_param)
+
+        reg_p2l = o3d.pipelines.registration.registration_icp(
+            self._cad_pcd,
+            self._ee_pcd,
+            self._icp_threshold,
+            trans_mat_initial,
+            self._icp_method,
+        )
+
+        return get_pose_from_matrix(reg_p2l.transformation)
+
+    def check_sanity(
+        self,
+        data: PointCloudDTO,
+        result: ResultDTO,
+        kp_error_margin=_config.INFERENCE.KEY_POINTS.error_margin,
+    ):
         num_of_ee_points = (result.segmentation == 2).sum()
         if num_of_ee_points < _config.INFERENCE.SANITY.min_num_of_ee_points:
             _logger.warning("fail min # points")
@@ -134,24 +202,23 @@ class InferenceEngine:
         ee_raw_points = data.points[result.segmentation == 2]
 
         kp_gt_coords, kp_gt_classes = get_gt_6_key_points(
-            ee_raw_points,
-            result.ee_pose,
-            switch_w=False,
-            euclidean_threshold=0.04
+            ee_raw_points, result.ee_pose, switch_w=False, euclidean_threshold=0.04
         )
         if any(kp_gt_classes[:4] < 0):
             # get_gt_6_key_points get corners of ee, if we can't find reasonable corners, then fail
-            _logger.warning('fail dim check')
+            _logger.warning("fail dim check")
             return False
 
         if len(result.key_points) > 0:
             kp_pred_classes, kp_pred_coords = zip(*result.key_points)
             kp_pred_classes = np.array(kp_pred_classes, dtype=np.int)
             kp_pred_coords = np.array(kp_pred_coords, dtype=np.float32)
-            kp_error = metrics.compute_kp_error(kp_gt_coords, kp_pred_coords, kp_pred_classes)
+            kp_error = metrics.compute_kp_error(
+                kp_gt_coords, kp_pred_coords, kp_pred_classes
+            )
 
             if kp_error > kp_error_margin:
-                _logger.warning('fail kp error margin')
+                _logger.warning("fail kp error margin")
                 return False
 
         # rot_mat = get_quaternion_rotation_matrix(
@@ -202,15 +269,24 @@ class InferenceEngine:
             pos_result, _ = self.predict_translation(
                 ee_raw_points, ee_raw_rgb, q=rot_result
             )
+
             result_dto.ee_pose[:3] = pos_result
 
             # Key Points estimation
-            kp_coords, kp_classes, kp_probs = self.predict_key_points(ee_raw_points, ee_raw_rgb)
+            kp_coords, kp_classes, kp_probs = self.predict_key_points(
+                ee_raw_points, ee_raw_rgb
+            )
             result_dto.key_points = list(zip(kp_classes, kp_coords))
 
-            result_dto.key_points_pose = self.predict_pose_from_kp(kp_coords, kp_classes)
+            result_dto.key_points_pose = self.predict_pose_from_kp(
+                kp_coords, kp_classes
+            )
 
             result_dto.is_confident = self.check_sanity(data, result_dto)
+
+            if _config.INFERENCE.icp_enabled:
+                result_dto.ee_pose = self.match_icp(ee_raw_points, result_dto.ee_pose)
+                result_dto.key_points_pose = self.match_icp(ee_raw_points, result_dto.key_points_pose)
 
             return result_dto
 
@@ -219,8 +295,7 @@ class InferenceEngine:
             return None
 
         kp_rot_mat, kp_translation = get_rigid_transform_3D(
-            self.reference_key_points[kp_classes],
-            kp_coords
+            self.reference_key_points[kp_classes], kp_coords
         )
         kp_q = get_q_from_matrix(kp_rot_mat)
 
@@ -365,18 +440,26 @@ class InferenceEngine:
         if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
             if len(points) < _config.INFERENCE.num_of_dense_input_points:
                 return [], [], []
-            if _config.INFERENCE.KEY_POINTS.pointcloud_sampling_method == 'uniform':
-                sample_idx = np.random.choice(len(points), _config.INFERENCE.num_of_dense_input_points, replace=False)
+            if _config.INFERENCE.KEY_POINTS.pointcloud_sampling_method == "uniform":
+                sample_idx = np.random.choice(
+                    len(points),
+                    _config.INFERENCE.num_of_dense_input_points,
+                    replace=False,
+                )
             else:
                 sample_idx = get_farthest_point_sample_idx(
                     points.cpu().numpy(), _config.INFERENCE.num_of_dense_input_points
                 )
-            inp = torch.cat(
-                (points[sample_idx], rgb[sample_idx]),
-                dim=-1
-            ).view(1, _config.DATA.num_of_dense_input_points, -1).transpose(2, 1).to(device=_device)
+            inp = (
+                torch.cat((points[sample_idx], rgb[sample_idx]), dim=-1)
+                .view(1, _config.DATA.num_of_dense_input_points, -1)
+                .transpose(2, 1)
+                .to(device=_device)
+            )
 
-            out = self._key_points_model(inp)[0].view( _config.DATA.num_of_dense_input_points, -1)
+            out = self._key_points_model(inp)[0].view(
+                _config.DATA.num_of_dense_input_points, -1
+            )
             kp_idx, kp_classes, probs = out_utils.get_key_point_predictions(
                 out, conf_th=conf_th or _config.INFERENCE.KEY_POINTS.conf_threshold
             )
