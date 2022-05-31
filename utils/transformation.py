@@ -51,6 +51,14 @@ def get_quaternion_rotation_matrix(Q_init, switch_w=True):
     return rot_matrix
 
 
+def get_transformation_matrix(pose, switch_w=False):
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
+    trans_mat = np.concatenate((rot_mat, pose[:3].reshape((3,1))), axis=1)
+    trans_mat = np.concatenate((trans_mat, np.array([[0, 0, 0, 1]])), axis=0)
+
+    return trans_mat
+
+
 def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:  # Input: WXYZ
     """
     Taken from: https://github.com/facebookresearch/pytorch3d/blob/main/pytorch3d/transforms/rotation_conversions.py

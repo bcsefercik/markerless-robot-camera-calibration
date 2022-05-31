@@ -1,3 +1,5 @@
+import ipdb
+
 import sys
 import os
 import copy
@@ -9,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
+from utils.transformation import get_quaternion_rotation_matrix, get_transformation_matrix
 from utils.preprocess import center_at_origin
 
 
@@ -30,6 +32,7 @@ if __name__ == "__main__":
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
+    gt_trans_mat = get_transformation_matrix(pose, switch_w=True)  # switch_w=False in dataloader
 
     arm_idx = labels == 1
 
@@ -44,10 +47,25 @@ if __name__ == "__main__":
     ee_frame = create_coordinate_frame(pose, switch_w=True)
 
     ee_idx = get_ee_idx(points, pose, switch_w=True) # switch_w=False in dataloader
+    rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
+    ee_points = points[ee_idx]
+    ee_rgb = rgb[ee_idx] * 0
 
-    pcd.points = o3d.utility.Vector3dVector(points)
-    pcd.colors = o3d.utility.Vector3dVector(rgb)
+    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points, origin_offset = center_at_origin(new_ee_points)
+    new_ee_pose_pos = new_ee_points[-1]
+    new_ee_points = new_ee_points[:-1]
+
+    points_show = np.concatenate((points, new_ee_points), axis=0)
+    rgb_show = np.concatenate((rgb, ee_rgb), axis=0)
+
+    pcd.points = o3d.utility.Vector3dVector(points_show)
+    pcd.colors = o3d.utility.Vector3dVector(rgb_show)
+
+    textured_mesh = o3d.io.read_triangle_mesh("../others/hand_files/hand.obj")
+    pcd_cad = textured_mesh.sample_points_uniformly(number_of_points=8192)
+    pcd_cad = textured_mesh.sample_points_poisson_disk(number_of_points=4096, pcl=pcd_cad)
 
     o3d.visualization.draw_geometries(
-        [pcd, kinect_frame, ee_frame]
+        [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
     )
