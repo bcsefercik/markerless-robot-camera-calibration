@@ -15,6 +15,8 @@ from utils.transformation import get_pose_from_matrix, get_quaternion_rotation_m
 from utils.preprocess import center_at_origin
 
 
+SCALE = 1
+
 def apply_noise(pcd, mu, sigma):
     noisy_pcd = copy.deepcopy(pcd)
     points = np.asarray(noisy_pcd.points)
@@ -36,6 +38,8 @@ if __name__ == "__main__":
         points = np.array(points, dtype=np.float32)
         rgb = np.array(rgb, dtype=np.float32)
         pose = np.array(pose, dtype=np.float32)
+
+    # pose[:3] = pose[:3] * SCALE
 
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
@@ -68,7 +72,7 @@ if __name__ == "__main__":
         # }
     ) # switch_w=False in dataloader
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
-    ee_points = points[ee_idx]
+    ee_points = points[ee_idx] * SCALE
     ee_rgb = rgb[ee_idx] * 0
 
     pcd_ee = o3d.geometry.PointCloud()
@@ -97,28 +101,29 @@ if __name__ == "__main__":
     pcd_cad = textured_mesh.sample_points_uniformly(number_of_points=8192*2)  # has normal since converted from mesh
     pcd_cad = textured_mesh.sample_points_poisson_disk(number_of_points=4096*2, pcl=pcd_cad)
 
-    pcd_cad_points = np.asarray(pcd_cad.points)
+    pcd_cad_points = np.asarray(pcd_cad.points) * SCALE
     pcd_cad_colors = np.asarray(pcd_cad.colors)
     pcd_cad_normals = np.asarray(pcd_cad.normals)
-    pcd_cad_mask = (pcd_cad_points[:, 0] > 0.0) * (pcd_cad_points[:, 2] > -0.0)
+    pcd_cad_mask = (pcd_cad_points[:, 0] > 0.0) # * (pcd_cad_points[:, 2] > -0.0)
     pcd_cad.points = o3d.utility.Vector3dVector(pcd_cad_points[pcd_cad_mask])
     pcd_cad.colors = o3d.utility.Vector3dVector(pcd_cad_colors[pcd_cad_mask])
     pcd_cad.normals = o3d.utility.Vector3dVector(pcd_cad_normals[pcd_cad_mask])
 
-    pcd_ee.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
-    pcd_cad.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
+    pcd_ee.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=30))
+    pcd_cad.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=30))
     # ipdb.set_trace()
 
-    pose_jiggled = pose + (np.random.rand(7) * 2 - 1) * 0.01
+    jiggle = (np.random.rand(7) * 2 - 1) * 0.1
+    pose_jiggled = pose + jiggle
     trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
-
+    print(jiggle)
     # pcd_cad.transform(trans_mat_jiggled)
 
 
     mu, sigma = 0, 0.1
     source_noisy = apply_noise(pcd_cad, mu, sigma)
 
-    threshold = 0.01
+    threshold = 0.1
     loss = o3d.pipelines.registration.TukeyLoss(k=sigma)
 
     p2l = o3d.pipelines.registration.TransformationEstimationPointToPlane(loss)
@@ -136,6 +141,10 @@ if __name__ == "__main__":
         pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
         o3d.pipelines.registration.TransformationEstimationPointToPoint())
 
+    print(reg_p2l)
+    print("Transformation is:")
+    print(reg_p2l.transformation, "\n")
+
     pcd_cad.transform(reg_p2l.transformation)
     # textured_mesh.transform(reg_p2l.transformation)
     # pcd_cad.transform(trans_mat_jiggled)
@@ -147,7 +156,8 @@ if __name__ == "__main__":
     pred_frame = create_coordinate_frame(pred_pose, switch_w=False)
 
     o3d.visualization.draw_geometries(
-        [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame, textured_mesh]
+        [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
+        # [pcd, pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame, textured_mesh]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, ee_frame]
