@@ -126,6 +126,8 @@ if __name__ == "__main__":
     pcd.points = o3d.utility.Vector3dVector(points_show)
     pcd.colors = o3d.utility.Vector3dVector(rgb)
 
+    ipdb.set_trace()
+
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(
         # [pcd, kinect_frame, ee_frame]
