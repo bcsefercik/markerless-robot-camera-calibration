@@ -116,7 +116,7 @@ if __name__ == "__main__":
     # ee_pos_magic_reverse_pose = new_ee_pose_pos.tolist() + [0] * 4
     ee_magic_frame = create_coordinate_frame(ee_pos_magic_reverse_pose, switch_w=False)
 
-    ipdb.set_trace()
+    # ipdb.set_trace()
     points_show = np.concatenate((points, new_ee_points, new_ee_points_reverse), axis=0)
     rgb = np.concatenate((rgb, ee_rgb, ee_reverse_rgb), axis=0)
     # points_show = new_ee_points
