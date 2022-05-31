@@ -56,16 +56,29 @@ if __name__ == "__main__":
     new_ee_pose_pos = new_ee_points[-1]
     new_ee_points = new_ee_points[:-1]
 
-    points_show = np.concatenate((points, new_ee_points), axis=0)
-    rgb_show = np.concatenate((rgb, ee_rgb), axis=0)
+    # points_show = np.concatenate((points, new_ee_points), axis=0)
+    # rgb_show = np.concatenate((rgb, ee_rgb), axis=0)
+
+    points_show = points
+    rgb_show = rgb
 
     pcd.points = o3d.utility.Vector3dVector(points_show)
     pcd.colors = o3d.utility.Vector3dVector(rgb_show)
 
     textured_mesh = o3d.io.read_triangle_mesh("../others/hand_files/hand.obj")
-    pcd_cad = textured_mesh.sample_points_uniformly(number_of_points=8192)
+    pcd_cad = textured_mesh.sample_points_uniformly(number_of_points=8192)  # it has normal since converted from mesh
     pcd_cad = textured_mesh.sample_points_poisson_disk(number_of_points=4096, pcl=pcd_cad)
 
+    pose_jiggled = pose + (np.random.rand(7) * 2 - 1) * 0.04
+    trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
+
+    # pcd_cad.transform(trans_mat_jiggled)
+
+    # must do this for point to plane icp
+    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+
+    # ipdb.set_trace()
+
     o3d.visualization.draw_geometries(
-        [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
+        [pcd, pcd_cad, kinect_frame, ee_frame]
     )
