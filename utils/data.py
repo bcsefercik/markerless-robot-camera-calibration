@@ -78,15 +78,17 @@ def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-50
 
 
 def get_ee_idx(points, pose, switch_w=True, ee_dim=None, arm_idx=None):  # in training switch_w = False
-    if not isinstance(ee_dim, dict):
-        ee_dim = {
-            'min_z': -0,
-            'max_z': 0.12,
-            'min_x': -0.03,
-            'max_x': 0.03,
-            'min_y': -0.11,
-            'max_y': 0.11
-        }
+    ee_dim_init = {
+        'min_z': -0,
+        'max_z': 0.12,
+        'min_x': -0.03,
+        'max_x': 0.03,
+        'min_y': -0.11,
+        'max_y': 0.11
+    }
+    if isinstance(ee_dim, dict):
+        ee_dim_init.update(ee_dim)
+    ee_dim = ee_dim_init
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
     ee_points = points - pose[:3]

@@ -54,7 +54,19 @@ if __name__ == "__main__":
     # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
     ee_frame = create_coordinate_frame(pose, switch_w=True)
 
-    ee_idx = get_ee_idx(points, pose, switch_w=True) # switch_w=False in dataloader
+    ee_idx = get_ee_idx(
+        points,
+        pose,
+        switch_w=True,
+        # ee_dim={
+        #     'min_z': -0.15,
+        #     'max_z': 0.12,
+        #     'min_x': -0.1,
+        #     'max_x': 0.1,
+        #     'min_y': -0.11,
+        #     'max_y': 0.11
+        # }
+    ) # switch_w=False in dataloader
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
     ee_points = points[ee_idx]
     ee_rgb = rgb[ee_idx] * 0
@@ -79,19 +91,22 @@ if __name__ == "__main__":
     pcd.colors = o3d.utility.Vector3dVector(rgb_show)
 
     textured_mesh = o3d.io.read_triangle_mesh("../others/hand_files/hand.obj")
+    textured_mesh.paint_uniform_color([1, 0.01, 0])
     # textured_mesh = o3d.io.read_triangle_mesh("../others/hand_files/hand_notblender.obj")
 
     pcd_cad = textured_mesh.sample_points_uniformly(number_of_points=8192*2)  # has normal since converted from mesh
     pcd_cad = textured_mesh.sample_points_poisson_disk(number_of_points=4096*2, pcl=pcd_cad)
 
     pcd_cad_points = np.asarray(pcd_cad.points)
+    pcd_cad_colors = np.asarray(pcd_cad.colors)
     pcd_cad_normals = np.asarray(pcd_cad.normals)
     pcd_cad_mask = (pcd_cad_points[:, 0] > 0.0) * (pcd_cad_points[:, 2] > -0.0)
     pcd_cad.points = o3d.utility.Vector3dVector(pcd_cad_points[pcd_cad_mask])
+    pcd_cad.colors = o3d.utility.Vector3dVector(pcd_cad_colors[pcd_cad_mask])
     pcd_cad.normals = o3d.utility.Vector3dVector(pcd_cad_normals[pcd_cad_mask])
 
     pcd_ee.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
-    # pcd_cad.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
+    pcd_cad.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=4))
     # ipdb.set_trace()
 
     pose_jiggled = pose + (np.random.rand(7) * 2 - 1) * 0.01
@@ -122,6 +137,7 @@ if __name__ == "__main__":
         o3d.pipelines.registration.TransformationEstimationPointToPoint())
 
     pcd_cad.transform(reg_p2l.transformation)
+    # textured_mesh.transform(reg_p2l.transformation)
     # pcd_cad.transform(trans_mat_jiggled)
     # pcd_cad.transform(gt_trans_mat)
     # ipdb.set_trace()
@@ -131,7 +147,9 @@ if __name__ == "__main__":
     pred_frame = create_coordinate_frame(pred_pose, switch_w=False)
 
     o3d.visualization.draw_geometries(
-        [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame]
+        [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame, textured_mesh]
+        # [pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]
+        # [pcd_ee, pcd_cad, kinect_frame, ee_frame, pred_frame, textured_mesh]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, ee_frame]
     )
 
