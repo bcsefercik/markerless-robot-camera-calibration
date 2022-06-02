@@ -21,14 +21,18 @@ from utils.preprocess import center_at_origin
 
 
 if __name__ == "__main__":
+    data, semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
-    (
-        points,
-        rgb,
-        labels,
-        instance_label,
-        pose,
-    ), semantic_pred = file_utils.load_alive_file(sys.argv[1])
+    if isinstance(data, dict):
+        points = data['points']
+        rgb = data['rgb']
+        labels = data['labels']
+        pose = data['pose']
+    else:
+        points, rgb, labels, _, pose = data
+        points = np.array(points, dtype=np.float32)
+        rgb = np.array(rgb, dtype=np.float32)
+        pose = np.array(pose, dtype=np.float32)
 
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
@@ -130,8 +134,8 @@ if __name__ == "__main__":
 
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(
-        # [pcd, kinect_frame, ee_frame]
+        [pcd, kinect_frame, ee_frame]
         # [pcd, kinect_frame]
-        [pcd, ee_magic_frame, ee_frame]
+        # [pcd, ee_magic_frame, ee_frame]
         # [pcd]
     )
