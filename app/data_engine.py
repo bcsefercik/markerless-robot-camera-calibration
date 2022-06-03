@@ -13,6 +13,7 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_idx
+from utils.transformation import switch_w
 
 from dto import PointCloudDTO, RawDTO
 
@@ -45,78 +46,88 @@ class DataEngineInterface(metaclass=abc.ABCMeta):
 
 
 class PickleDataEngine(DataEngineInterface):
-    def __init__(self, data_path, split='test', cyclic=True) -> None:
+    def __init__(self, data_path, split="test", cyclic=True) -> None:
         self.data = {split: []}
-        with open(data_path, 'r') as fp:
+        with open(data_path, "r") as fp:
             self.data.update(json.load(fp))
-        self.data[split].sort(key=lambda x: (x['position'], int(x['filepath'].split("/")[-1].split(".")[0])))
+        self.data[split].sort(
+            key=lambda x: (
+                x["position"],
+                int(x["filepath"].split("/")[-1].split(".")[0]),
+            )
+        )
         self.data_pool = cycle(self.data[split]) if cyclic else iter(self.data[split])
 
     def get(self) -> PointCloudDTO:
         # time.sleep(0.1)
         data_ins = next(self.data_pool)
         # data_ins = self.data['test'][63]
-        data, _ = file_utils.load_alive_file(data_ins['filepath'])
+        data, _ = file_utils.load_alive_file(data_ins["filepath"])
 
+        ee2base_pose = None
         if isinstance(data, dict):
-            points = data['points']
-            rgb = data['rgb']
+            points = data["points"]
+            rgb = data["rgb"]
+            ee2base_pose = data.get("robot2ee_pose")
         else:
             points, rgb, _, _, _ = data
 
-        return PointCloudDTO(points=points, rgb=rgb, timestamp=datetime.utcnow())
+        if ee2base_pose is not None:
+            ee2base_pose = switch_w(ee2base_pose)  # WXYZ
+
+        return PointCloudDTO(
+            points=points,
+            rgb=rgb,
+            ee2base_pose=ee2base_pose,
+            timestamp=datetime.utcnow(),
+        )
 
     def get_raw(self) -> RawDTO:
         try:
             data_ins = next(self.data_pool)
         except StopIteration:
             return None
-        data, _ = file_utils.load_alive_file(data_ins['filepath'])
+        data, _ = file_utils.load_alive_file(data_ins["filepath"])
 
+        ee2base_pose = None
         if isinstance(data, dict):
-            points = data['points']
-            rgb = data['rgb']
-            labels = data['labels']
-            pose = data['pose']
+            points = data["points"]
+            rgb = data["rgb"]
+            labels = data["labels"]
+            pose = data["pose"]
+            ee2base_pose = data.get("robot2ee_pose")
         else:
             points, rgb, labels, _, pose = data
 
         points = points.astype(np.float32)
         rgb = rgb.astype(np.float32)
         labels = labels.astype(np.int)
-        pose = np.array(pose, dtype=np.float32)  # xyzw
-        pose = np.insert(pose[:6], 3, pose[-1])  # WXYZ
+        pose = switch_w(pose)  # WXYZ
 
-        other = {
-            "filepath": data_ins['filepath'],
-            "position": data_ins['position']
-        }
+        if ee2base_pose is not None:
+            ee2base_pose = switch_w(ee2base_pose)  # WXYZ
+
+        other = {"filepath": data_ins["filepath"], "position": data_ins["position"]}
 
         arm_idx = np.where(labels == 1)[0]
         ee_idx = get_ee_idx(
             points,
             pose,
             ee_dim={
-                'min_z': -0,
-                'max_z': 0.13,
-                'min_x': -0.04,
-                'max_x': 0.04,
-                'min_y': -0.13,
-                'max_y': 0.13
+                "min_z": -0,
+                "max_z": 0.13,
+                "min_x": -0.04,
+                "max_x": 0.04,
+                "min_y": -0.13,
+                "max_y": 0.13,
             },  # leave big margin for bbox since we remove non arm points
             arm_idx=arm_idx,
-            switch_w=False
+            switch_w=False,
         )
 
         labels[ee_idx] = 2
 
-        return RawDTO(
-            points,
-            rgb,
-            pose,
-            labels,
-            other=other
-        )
+        return RawDTO(points, rgb, pose, labels, ee2base_pose=ee2base_pose, other=other)
 
     def run(self):
         return None

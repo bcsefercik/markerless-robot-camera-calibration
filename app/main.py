@@ -83,8 +83,8 @@ class MainApp:
         # kinect_frame.rotate(self.rot_mat)
         self.widget3d.scene.add_geometry("kinect_frame", self.kinect_frame, self.lit)
 
-
         self.ee_frame = create_coordinate_frame([0, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
+        self.base_frame = create_coordinate_frame([-0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
         # self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
 
         self.calibrated_ee_frame = create_coordinate_frame(
@@ -293,17 +293,29 @@ class MainApp:
                 self.widget3d.scene.add_geometry("pcd", self.pcd, self.lit)
 
                 self.widget3d.scene.remove_geometry("ee_frame")
+                self.widget3d.scene.remove_geometry("base_frame")
                 self.ee_frame = None
+                self.base_frame = None
                 if self._toggle_pred.is_on:
                     if result.key_points_pose is not None:
                         self.ee_frame = create_coordinate_frame(result.key_points_pose, switch_w=False)
+
+                    if result.key_points_base_pose is not None:
+                        self.base_frame = create_coordinate_frame(result.key_points_base_pose, switch_w=False)
                 else:
-                    if np.absolute(result.ee_pose).sum() > 1e-3:
+                    if result.ee_pose is not None:
                         self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
+
+                    if result.base_pose is not None:
+                        self.base_frame = create_coordinate_frame(result.base_pose, switch_w=False)
 
                 if self.ee_frame is not None:
                     self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
                     self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
+
+                if self.base_frame is not None:
+                    self.widget3d.scene.add_geometry("base_frame", self.base_frame, self.lit)
+                    self.widget3d.scene.show_geometry("base_frame", self._instant_pred_check.checked)
 
                 self.widget3d.scene.remove_geometry("key_points")
                 if result.key_points is not None and len(result.key_points) > 0:

@@ -22,6 +22,7 @@ from data.alivev2 import AliveV2Dataset, collate_tupled
 from utils import config, logger, utils, preprocess, metrics, icp
 from utils import output as out_utils
 from utils.transformation import (
+    get_base2cam_pose,
     get_q_from_matrix,
     get_quaternion_rotation_matrix,
     get_rigid_transform_3D,
@@ -220,14 +221,13 @@ class InferenceEngine:
 
             # Rotation estimation
             rot_result = self.predict_rotation(ee_raw_points, ee_raw_rgb)
-            result_dto.ee_pose[3:] = rot_result
 
             # Translation estimation
             pos_result, _ = self.predict_translation(
                 ee_raw_points, ee_raw_rgb, q=rot_result
             )
 
-            result_dto.ee_pose[:3] = pos_result
+            result_dto.ee_pose = np.concatenate((pos_result, rot_result))
 
             # Key Points estimation
             kp_coords, kp_classes, kp_probs = self.predict_key_points(
@@ -243,9 +243,16 @@ class InferenceEngine:
 
             if _config.INFERENCE.icp_enabled:
                 result_dto.ee_pose = self.match_icp(ee_raw_points, result_dto.ee_pose)
+
                 result_dto.key_points_pose = self.match_icp(
                     ee_raw_points, result_dto.key_points_pose
                 )
+
+            if data.ee2base_pose is not None:
+                if result_dto.ee_pose is not None:
+                    result_dto.base_pose = get_base2cam_pose(result_dto.ee_pose, data.ee2base_pose)
+                if result_dto.key_points_pose is not None:
+                    result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
 
             return result_dto
 
