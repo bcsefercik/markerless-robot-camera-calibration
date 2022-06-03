@@ -43,7 +43,7 @@ if __name__ == "__main__":
         rgb = np.array(rgb, dtype=np.float32)
         pose = np.array(pose, dtype=np.float32)
 
-    pose_w_first = switch_w(robot2ee_pose)
+    pose_w_first = switch_w(pose)
 
     # 0.514, -0.887, 0.954), (-0.22849161094160622, 0.22759203767018255, 0.6575880614106856, 0.6808607710894938))
 
@@ -125,30 +125,13 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     jiggle = (np.random.rand(7) * 2 - 1) * 0.1
-    # pose_jiggled = pose + jiggle
-    pose_jiggled = pose
+    pose_jiggled = pose + jiggle
+    # pose_jiggled = pose
     trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
     print(jiggle)
     # pcd_cad.transform(trans_mat_jiggled)
 
-
-    mu, sigma = 0, 0.1
-    source_noisy = apply_noise(pcd_cad, mu, sigma)
-
     threshold = 0.1
-    loss = o3d.pipelines.registration.TukeyLoss(k=sigma)
-
-    p2l = o3d.pipelines.registration.TransformationEstimationPointToPlane(loss)
-    # reg_p2l = o3d.pipelines.registration.registration_icp(
-    #     source_noisy, pcd_ee, threshold, trans_mat_jiggled,
-    #     p2l)  # DOESN'T WORK
-    # reg_p2l = o3d.pipelines.registration.registration_icp(
-    #     pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
-    #     p2l)
-    # reg_p2l = o3d.pipelines.registration.registration_icp(
-    #     pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
-    #     o3d.pipelines.registration.TransformationEstimationPointToPlane())
-
     reg_p2l = o3d.pipelines.registration.registration_icp(
         pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
         o3d.pipelines.registration.TransformationEstimationPointToPoint())
@@ -181,15 +164,25 @@ if __name__ == "__main__":
     kinect2base_trans = ee_trans_mat @ robot2ee_trans_mat_inv
     kinect2base_pose = get_pose_from_matrix(kinect2base_trans)
     print(kinect2base_pose)
-    print("0.665 0.404 0.992 0.648 0.289 0.287 -0.644")
+    print("GT base2cam:", "0.665 0.404 0.992 0.648 0.289 0.287 -0.644")
     # 0.665 0.404 0.992 0.2886047700164364 0.2870696382610298 -0.643987771393059 0.6477484541152086
 
+    base2kinect_trans_gt = get_base2cam_matrix(pose_w_first, robot2ee_pose_w_first)
+    base2kinect_pose_gt = get_pose_from_matrix(base2kinect_trans_gt)
+    print("GT transformed base2cam:", base2kinect_pose_gt.tolist())
+
     base2kinect_trans = get_base2cam_matrix(pred_pose, robot2ee_pose_w_first)
+    base2kinect_pose = get_pose_from_matrix(base2kinect_trans)
+    print("PRED transformed base2cam:", base2kinect_pose.tolist())
+
+
+
     # base2kinect_trans = get_transformation_matrix(base2kinect_pose, switch_w=False)
     kinect_frame.transform(kinect2base_trans)
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
+        # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
         [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
