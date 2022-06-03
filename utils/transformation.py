@@ -59,6 +59,30 @@ def get_transformation_matrix(pose, switch_w=False):
     return trans_mat
 
 
+def get_transformation_matrix_inverse(trans_mat):
+    response = np.array(trans_mat, copy=True)
+
+    response[:3, :3] = trans_mat[:3, :3].T
+    response[:3, 3] = (-response[:3, :3]) @ trans_mat[:3, 3]
+
+    return response
+
+
+def get_q_from_matrix(rot_mat):
+    rot = Rotation.from_matrix(rot_mat).as_quat()
+    rot = np.insert(rot[:3], 0, rot[-1])
+    return rot  # w, x, y, z
+
+
+def get_pose_from_matrix(trans_mat):
+    translation = trans_mat[:3, 3]
+    rotation = get_q_from_matrix(np.array(trans_mat[:3, :3], copy=True))
+
+    pose = np.concatenate((translation, rotation))
+
+    return pose  # x,y,z qw, qx, qy, qz
+
+
 def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:  # Input: WXYZ
     """
     Taken from: https://github.com/facebookresearch/pytorch3d/blob/main/pytorch3d/transforms/rotation_conversions.py
@@ -178,21 +202,6 @@ def get_rigid_transform_3D(reference, target):
     t = -R @ centroid_A + centroid_B
 
     return R, t.reshape(-1)
-
-
-def get_q_from_matrix(rot_mat):
-    rot = Rotation.from_matrix(rot_mat).as_quat()
-    rot = np.insert(rot[:3], 0, rot[-1])
-    return rot  # w, x, y, z
-
-
-def get_pose_from_matrix(trans_mat):
-    translation = trans_mat[:3, 3]
-    rotation = get_q_from_matrix(np.array(trans_mat[:3, :3], copy=True))
-
-    pose = np.concatenate((translation, rotation))
-
-    return pose  # x,y,z qw, qx, qy, qz
 
 
 if __name__ == '__main__':
