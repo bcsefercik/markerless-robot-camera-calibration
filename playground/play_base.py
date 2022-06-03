@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix, get_transformation_matrix_inverse
+from utils.transformation import get_base2cam_matrix, get_base2cam_pose, get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix, get_transformation_matrix_inverse, switch_w
 from utils.preprocess import center_at_origin
 
 
@@ -29,17 +29,23 @@ if __name__ == "__main__":
     data, semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
     robot2ee_pose = None
+    robot2ee_pose_w_first = None
     if isinstance(data, dict):
         points = data['points']
         rgb = data['rgb']
         labels = data['labels']
         pose = data['pose']
         robot2ee_pose = data.get('robot2ee_pose')
+        robot2ee_pose_w_first = switch_w(robot2ee_pose)
     else:
         points, rgb, labels, _, pose = data
         points = np.array(points, dtype=np.float32)
         rgb = np.array(rgb, dtype=np.float32)
         pose = np.array(pose, dtype=np.float32)
+
+    pose_w_first = switch_w(robot2ee_pose)
+
+    # 0.514, -0.887, 0.954), (-0.22849161094160622, 0.22759203767018255, 0.6575880614106856, 0.6808607710894938))
 
     # pose[:3] = pose[:3] * SCALE
 
@@ -47,6 +53,9 @@ if __name__ == "__main__":
     ee_orientation = pose[3:].tolist()
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
     gt_trans_mat = get_transformation_matrix(pose, switch_w=True)  # switch_w=False in dataloader
+
+
+
 
     arm_idx = labels == 1
 
@@ -148,7 +157,7 @@ if __name__ == "__main__":
     print("Transformation is:")
     print(reg_p2l.transformation, "\n")
 
-    pcd_cad.transform(reg_p2l.transformation)
+    # pcd_cad.transform(reg_p2l.transformation)
     # textured_mesh.transform(reg_p2l.transformation)
     # textured_mesh.transform(trans_mat_jiggled)
     # pcd_cad.transform(trans_mat_jiggled)
@@ -172,13 +181,16 @@ if __name__ == "__main__":
     kinect2base_trans = ee_trans_mat @ robot2ee_trans_mat_inv
     kinect2base_pose = get_pose_from_matrix(kinect2base_trans)
     print(kinect2base_pose)
+    print("0.665 0.404 0.992 0.648 0.289 0.287 -0.644")
     # 0.665 0.404 0.992 0.2886047700164364 0.2870696382610298 -0.643987771393059 0.6477484541152086
 
+    base2kinect_trans = get_base2cam_matrix(pred_pose, robot2ee_pose_w_first)
+    # base2kinect_trans = get_transformation_matrix(base2kinect_pose, switch_w=False)
     kinect_frame.transform(kinect2base_trans)
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
-        [pcd, pcd_cad, kinect_frame, base_frame, textured_mesh]
+        [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]

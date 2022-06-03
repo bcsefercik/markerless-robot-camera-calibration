@@ -4,6 +4,15 @@ from scipy.spatial.transform import Rotation
 import ipdb
 
 
+def switch_w(pose):
+    '''
+    pose: x, y, z, qx, qy, qz, qw
+    return x, y, z qw, qx, qy, qz
+    '''
+
+    return np.insert(np.array(pose[:-1], copy=True), len(pose) - 4, pose[-1])
+
+
 def get_quaternion_rotation_matrix(Q_init, switch_w=True):
     """
     Covert a quaternion into a full three-dimensional rotation matrix.
@@ -219,3 +228,26 @@ if __name__ == '__main__':
         image_p = np.dot(A, p) + t
         result = "[OK]" if np.allclose(image_p, P) else "[ERROR]"
         print(p, " mapped to: ", image_p, " ; expected: ", P, result)
+
+
+def get_base2cam_matrix(ee2cam_pose, ee2robot_pose):
+    '''
+    Input elements: x, y, z, qw, qx, qy, qz
+    Output: 4x4 transformation matrix
+    '''
+    ee2cam_trans = get_transformation_matrix(ee2cam_pose, switch_w=False)
+    ee2robot_trans = get_transformation_matrix(ee2robot_pose, switch_w=False)
+
+    robot2ee_trans = get_transformation_matrix_inverse(ee2robot_trans)
+
+    robot2cam_trans = ee2cam_trans @ robot2ee_trans
+
+    return robot2cam_trans
+
+
+def get_base2cam_pose(ee2cam_pose, ee2robot_pose):
+    '''
+    Input elements: x, y, z, qw, qx, qy, qz
+    Output: x, y, z, qw, qx, qy, qz
+    '''
+    return get_pose_from_matrix(get_base2cam_matrix(ee2cam_pose, ee2robot_pose))
