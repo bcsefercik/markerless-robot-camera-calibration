@@ -19,7 +19,7 @@ BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(BASE_PATH))
 
 from data.alivev2 import AliveV2Dataset, collate_tupled
-from utils import config, logger, utils, preprocess, metrics
+from utils import config, logger, utils, preprocess, metrics, icp
 from utils import output as out_utils
 from utils.transformation import (
     get_q_from_matrix,
@@ -124,35 +124,7 @@ class InferenceEngine:
         self._key_points_model.eval()
 
         # CAD to PCD, ICP inits
-        # self._cad_mesh = o3d.io.read_triangle_mesh(
-        #     os.path.join(BASE_PATH, "hand_files", "hand.obj")
-        # )
-        self._cad_mesh = o3d.io.read_triangle_mesh(
-            os.path.join(BASE_PATH, "hand_files", "hand_notblender.obj")  # seems to work better
-        )
-        self._cad_pcd = self._cad_mesh.sample_points_uniformly(
-            number_of_points=16384
-        )  # has normal since converted from mesh
-        self._cad_pcd = self._cad_mesh.sample_points_poisson_disk(
-            number_of_points=8192, pcl=self._cad_pcd
-        )
-        _pcd_cad_points = np.asarray(self._cad_pcd.points)
-        _pcd_cad_normals = np.asarray(self._cad_pcd.normals)
-        _pcd_cad_mask = _pcd_cad_points[:, 0] > 0.0  # * (pcd_cad_points[:, 2] > -0.0)
-        self._cad_pcd.points = o3d.utility.Vector3dVector(
-            _pcd_cad_points[_pcd_cad_mask]
-        )
-        self._cad_pcd.normals = o3d.utility.Vector3dVector(
-            _pcd_cad_normals[_pcd_cad_mask]
-        )
-        self._ee_pcd = o3d.geometry.PointCloud()
-        self._icp_threshold = 0.1
-        self._icp_method = (
-            o3d.pipelines.registration.TransformationEstimationPointToPoint()
-        )
-        self._icp_normal_search_param = o3d.geometry.KDTreeSearchParamHybrid(
-            radius=0.02, max_nn=30
-        )
+        self.match_icp = icp.get_point2point_matcher()
 
         self.reference_key_points = np.array(
             [
@@ -172,25 +144,6 @@ class InferenceEngine:
             abs(self.reference_key_points[0][2] - self.reference_key_points[2][2])
             - 0.01
         )  # cm
-
-    def match_icp(self, ee_points, pose_initial):
-        if ee_points is None or pose_initial is None:
-            return pose_initial
-
-        trans_mat_initial = get_transformation_matrix(pose_initial, switch_w=False)
-
-        self._ee_pcd.points = o3d.utility.Vector3dVector(ee_points)
-        self._ee_pcd.estimate_normals(search_param=self._icp_normal_search_param)
-
-        reg_p2l = o3d.pipelines.registration.registration_icp(
-            self._cad_pcd,
-            self._ee_pcd,
-            self._icp_threshold,
-            trans_mat_initial,
-            self._icp_method,
-        )
-
-        return get_pose_from_matrix(reg_p2l.transformation)
 
     def check_sanity(
         self,

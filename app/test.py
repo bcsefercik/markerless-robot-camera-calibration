@@ -43,6 +43,10 @@ class TestApp:
 
         self.clear_results()
 
+        random.seed(_config.TEST.seed)
+        np.random.seed(_config.TEST.seed)
+        torch.manual_seed(_config.TEST.seed)
+
     def clear_results(self):
         self.instance_results = defaultdict(dict)
         self.position_results = defaultdict(dict)
@@ -51,6 +55,7 @@ class TestApp:
     def run_tests(self):
         self.clear_results()
 
+        # Make predictions
         with torch.no_grad():
             while True:
                 data: RawDTO = self._data_source.get_raw()
@@ -136,8 +141,10 @@ class TestApp:
                 if _config.TEST.ignore_unconfident and not is_confident:
                     self.instance_results.pop(data_key)
 
+                # ipdb.set_trace()
                 _logger.info(f'{data_key}{"" if is_confident else ", ignored"}')
 
+        # Print resultws to a spreadsheet.
         position_results_raw = defaultdict(list)
         for ir in self.instance_results.values():
             position_results_raw[ir['position']].append(ir)

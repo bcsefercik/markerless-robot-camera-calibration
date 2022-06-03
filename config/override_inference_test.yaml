@@ -2,8 +2,9 @@ MODE: 'inference'
 
 TEST:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/pred_test_splits.json
 
-  output: test_results_sanity_icp_notblender.xlsx
+  output: test_results_sanity_icp_notblender_ko.xlsx
 
   ignore_unconfident: true
 
@@ -14,8 +15,8 @@ TEST:
     error_margin: 0.04  # in meters
 
 INFERENCE:
-  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
-  # data_source: null
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  data_source: null
   ee_point_counts_threshold: 512
   num_of_dense_input_points: 2048
 
