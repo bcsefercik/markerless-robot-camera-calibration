@@ -12,6 +12,7 @@ class PointCloudDTO:
     ee2base_pose: np.array = None
     joint_angles: np.array = None
     id: str = None
+    gt_pose: np.array = None  # TODO: remove this
 
 
 @dataclass

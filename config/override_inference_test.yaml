@@ -1,12 +1,18 @@
 MODE: 'inference'
 
 TEST:
-  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v4_splits.json
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v4_splits_dummy.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/pred_test_splits.json
 
-  output: test_results_sanity_icp_notblender_ko.xlsx
+  output: test_results_alivev4_dummy.xlsx
 
   ignore_unconfident: true
+
+  # format: x, y, z, qw, qx, qy, qz
+  gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster
+  # gt_base_to_cam_pose: [0.6500, 0.3546, 0.9807, -0.0236, -0.0027, 0.9332, -0.3586]  # p1 computed from data
 
   SEGMENTATION:
     evaluate: true

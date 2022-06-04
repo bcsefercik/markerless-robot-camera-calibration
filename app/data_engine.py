@@ -65,12 +65,17 @@ class PickleDataEngine(DataEngineInterface):
         data, _ = file_utils.load_alive_file(data_ins["filepath"])
 
         ee2base_pose = None
+        gt_pose = None  # TODO: remove gt_pose
         if isinstance(data, dict):
             points = data["points"]
             rgb = data["rgb"]
+            gt_pose = data["pose"]  # TODO: remove gt_pose
             ee2base_pose = data.get("robot2ee_pose")
         else:
-            points, rgb, _, _, _ = data
+            points, rgb, _, _, gt_pose = data  # TODO: remove gt_pose
+
+        if gt_pose is not None:  # TODO: remove gt_pose
+            gt_pose = switch_w(gt_pose)  # WXYZ
 
         if ee2base_pose is not None:
             ee2base_pose = switch_w(ee2base_pose)  # WXYZ
@@ -80,6 +85,7 @@ class PickleDataEngine(DataEngineInterface):
             rgb=rgb,
             ee2base_pose=ee2base_pose,
             timestamp=datetime.utcnow(),
+            gt_pose=gt_pose  # TODO: remove this line
         )
 
     def get_raw(self) -> RawDTO:

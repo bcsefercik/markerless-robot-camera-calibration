@@ -254,6 +254,16 @@ class InferenceEngine:
                 if result_dto.key_points_pose is not None:
                     result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
 
+            # TODO: remove start
+            if data.ee2base_pose is not None and data.gt_pose is not None:
+                gt_base_pose = get_base2cam_pose(data.gt_pose, data.ee2base_pose)
+
+                simple = [f'{p:.4f}' for p in result_dto.base_pose.tolist()]
+                print("PR:", " ".join(simple))
+                simple = [f'{p:.4f}' for p in gt_base_pose.tolist()]
+                print("GT:", " ".join(simple))
+                print()
+            # TODO: remove end
             return result_dto
 
     def predict_pose_from_kp(self, kp_coords, kp_classes):
