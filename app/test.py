@@ -15,7 +15,7 @@ from openpyxl.styles import Alignment, Side, Border, Font, PatternFill
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MinkowskiEngine as ME
 
-
+from utils.transformation import get_base2cam_pose
 from utils import config, logger, preprocess, utils, metrics
 from utils.data import get_6_key_points
 
@@ -36,6 +36,8 @@ class TestApp:
         self._data_source = data_engine.PickleDataEngine(data_source, cyclic=False)
 
         self._inference_engine = InferenceEngine()
+
+        self._gt_base_to_cam_pose = np.array(_config.TEST.gt_base_to_cam_pose, dtype=np.float32)
 
         self.instance_results = None
         self.position_results = None
@@ -109,6 +111,15 @@ class TestApp:
                 self.instance_results[data_key]['dist_position']['nn_icp'] = nn_pose_icp_metrics['dist_position']
                 self.instance_results[data_key]['angle_diff']['nn_icp'] = nn_pose_icp_metrics['angle_diff']
 
+                result_dto.ee_pose = nn_pose_icp
+
+                result_dto.base_pose = get_base2cam_pose(result_dto.ee_pose, data.ee2base_pose)
+                base_pose_metrics = metrics.compute_pose_metrics(
+                    self._gt_base_to_cam_pose,
+                    result_dto.base_pose
+                )
+                ipdb.set_trace()
+
                 kp_gt_coords, kp_gt_idx = get_6_key_points(ee_raw_points, data.pose, switch_w=False)
                 kp_coords, kp_classes, kp_confs = self._inference_engine.predict_key_points(
                     ee_raw_points, ee_raw_rgb,
@@ -132,6 +143,10 @@ class TestApp:
                     kp_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, kp_pose_icp)
                     self.instance_results[data_key]['dist_position']['kp_icp'] = kp_pose_icp_metrics['dist_position']
                     self.instance_results[data_key]['angle_diff']['kp_icp'] = kp_pose_icp_metrics['angle_diff']
+
+                    result_dto.key_points_pose = kp_pose_icp
+
+                    result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
 
                 is_confident = self._inference_engine.check_sanity(
                     data.to_point_cloud_dto(),
@@ -200,6 +215,7 @@ class TestApp:
         sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 4)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 5)}{row}:{chr(ord(col) + 8)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 9)}{row}:{chr(ord(col) + 9)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 10)}{row}:{chr(ord(col) + 11)}{row + 1}')
 
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row}:{chr(ord(col) + seg_col_id - col_id + 8)}{row}')
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 2)}{row + 1}')
@@ -238,6 +254,13 @@ class TestApp:
         sheet.cell(row=row, column=col_id + 9).value = 'Key Points'
         sheet.cell(row=row+2, column=col_id + 9).value = 'Distance Error (m)'
         self._put_values_for_col(sheet, col_id + 9, row + 3, results['mean_kp_error'])
+
+        sheet.cell(row=row, column=col_id + 10).value = 'Base2Cam Errors\r\n(NN+ICP)'
+        sheet.cell(row=row, column=col_id + 10).alignment = Alignment(wrap_text=True)
+        sheet.cell(row=row+2, column=col_id + 10).value = 'Translation (m)'
+        # self._put_values_for_col(sheet, col_id + 10, row + 3, results['mean_kp_error'])
+        sheet.cell(row=row+2, column=col_id + 11).value = 'Rotation (rad)'
+        # self._put_values_for_col(sheet, col_id + 11, row + 3, results['mean_kp_error'])
 
         if _config.TEST.SEGMENTATION.evaluate:
             sheet.cell(row=row, column=seg_col_id).value = 'Segmentation'

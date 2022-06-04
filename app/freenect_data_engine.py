@@ -92,9 +92,11 @@ class FreenectDataEngine(DataEngineInterface):
             time.sleep(max(0, self.min_wait_time - duration))
 
     def _callback(self, data):
+        ipdb.set_trace()
         try:
             if not self.exit_event.is_set():
                 self.pc2_queue.put_nowait(data)
+
         except Full:
             pass
 

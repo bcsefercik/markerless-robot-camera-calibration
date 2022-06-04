@@ -251,3 +251,24 @@ def get_base2cam_pose(ee2cam_pose, ee2robot_pose):
     Output: x, y, z, qw, qx, qy, qz
     '''
     return get_pose_from_matrix(get_base2cam_matrix(ee2cam_pose, ee2robot_pose))
+
+
+def transform_pose2pose_matrix(pose1, pose2):
+    '''
+    Input elements: x, y, z, qw, qx, qy, qz
+    Output: 4x4 transformation matrix
+    '''
+    pose1_trans = get_transformation_matrix(pose1, switch_w=False)
+    pose2_trans = get_transformation_matrix(pose2, switch_w=False)
+
+    return pose1_trans @ pose2_trans
+
+
+def transform_pose2pose(pose1, pose2):
+    '''
+    Input elements: x, y, z, qw, qx, qy, qz
+    Output: x, y, z, qw, qx, qy, qz
+    '''
+    return get_pose_from_matrix(
+        transform_pose2pose_matrix(pose1, pose2)
+    )

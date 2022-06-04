@@ -251,6 +251,7 @@ class InferenceEngine:
             if data.ee2base_pose is not None:
                 if result_dto.ee_pose is not None:
                     result_dto.base_pose = get_base2cam_pose(result_dto.ee_pose, data.ee2base_pose)
+                    # result_dto.base_pose = np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])
                 if result_dto.key_points_pose is not None:
                     result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
 
