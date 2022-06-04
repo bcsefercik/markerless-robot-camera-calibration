@@ -1,3 +1,4 @@
+from calendar import c
 import ipdb
 
 import sys
@@ -11,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_base2cam_matrix, get_base2cam_pose, get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix, get_transformation_matrix_inverse, switch_w
+from utils.transformation import *
 from utils.preprocess import center_at_origin
 
 
@@ -128,7 +129,7 @@ if __name__ == "__main__":
     pose_jiggled = pose + jiggle
     # pose_jiggled = pose
     trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
-    print(jiggle)
+    # print(jiggle)
     # pcd_cad.transform(trans_mat_jiggled)
 
     threshold = 0.1
@@ -136,9 +137,9 @@ if __name__ == "__main__":
         pcd_cad, pcd_ee, threshold, trans_mat_jiggled,
         o3d.pipelines.registration.TransformationEstimationPointToPoint())
 
-    print(reg_p2l)
-    print("Transformation is:")
-    print(reg_p2l.transformation, "\n")
+    # print(reg_p2l)
+    # print("Transformation is:")
+    # print(reg_p2l.transformation, "\n")
 
     # pcd_cad.transform(reg_p2l.transformation)
     # textured_mesh.transform(reg_p2l.transformation)
@@ -151,10 +152,14 @@ if __name__ == "__main__":
     pred_frame = create_coordinate_frame(pred_pose, switch_w=False)
 
     robot2ee_trans_mat = get_transformation_matrix(robot2ee_pose, switch_w=True)
+    robot2ee_rot_mat = robot2ee_trans_mat[:3, :3]
     robot2ee_trans_mat_inv = get_transformation_matrix_inverse(robot2ee_trans_mat)
 
     # ee_trans_mat = gt_trans_mat
     ee_trans_mat = reg_p2l.transformation
+    ee_rot_mat = ee_trans_mat[:3, :3]
+    ee_q = get_q_from_matrix(ee_rot_mat)
+    ee_rot_mat_new = get_quaternion_rotation_matrix(ee_q, switch_w=False)
     ee_trans_mat_inv = get_transformation_matrix_inverse(ee_trans_mat)
 
     robot2ee_pose = get_pose_from_matrix(robot2ee_trans_mat)
@@ -163,27 +168,42 @@ if __name__ == "__main__":
 
     kinect2base_trans = ee_trans_mat @ robot2ee_trans_mat_inv
     kinect2base_pose = get_pose_from_matrix(kinect2base_trans)
-    print(kinect2base_pose)
-    print("GT base2cam:", "0.665 0.404 0.992 0.648 0.289 0.287 -0.644")
+    # print(kinect2base_pose)
+    # print("GT base2cam:", "[0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]")
     # 0.665 0.404 0.992 0.2886047700164364 0.2870696382610298 -0.643987771393059 0.6477484541152086
+
+    base2kinect_trans = get_base2cam_matrix(pred_pose, robot2ee_pose_w_first)
+    base2kinect_pose = get_pose_from_matrix(base2kinect_trans)
+    # print("PRED transformed base2cam:", base2kinect_pose.tolist())
 
     base2kinect_trans_gt = get_base2cam_matrix(pose_w_first, robot2ee_pose_w_first)
     base2kinect_pose_gt = get_pose_from_matrix(base2kinect_trans_gt)
     print("GT transformed base2cam:", base2kinect_pose_gt.tolist())
 
-    base2kinect_trans = get_base2cam_matrix(pred_pose, robot2ee_pose_w_first)
-    base2kinect_pose = get_pose_from_matrix(base2kinect_trans)
-    print("PRED transformed base2cam:", base2kinect_pose.tolist())
-
-
-
     # base2kinect_trans = get_transformation_matrix(base2kinect_pose, switch_w=False)
-    kinect_frame.transform(kinect2base_trans)
+    base_frame = create_coordinate_frame(base2kinect_pose_gt, switch_w=False)
+
+    # /camera_link /camera_rgb_optical_frame
+    optical_frame_to_cameralink_pose =  np.asarray([0.000, 0.000, -0.045, 0.500, 0.500, -0.500, 0.500])
+
+    cameralink_pose = base2kinect_pose_gt
+    cameralink_pose = transform_pose2pose(base2kinect_pose_gt, optical_frame_to_cameralink_pose)
+    print("camera_link pose:", cameralink_pose.tolist())
+    cameralink_frame = create_coordinate_frame(cameralink_pose, switch_w=False)
+    cameralink_frame_gt = create_coordinate_frame(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]), switch_w=False)
+    # kinect_frame.transform(get_transformation_matrix(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])))
+
+    pred_trans = get_pose_from_matrix(get_transformation_matrix_inverse(base2kinect_trans_gt) @ get_transformation_matrix(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])))
+
+    cameralink_pose = transform_pose2pose(base2kinect_pose_gt, pred_trans)
+    print("camera_link pose predco:", cameralink_pose.tolist())
+    cameralink_frame = create_coordinate_frame(cameralink_pose, switch_w=False)
+    print("pred transformer:", [round(a, 4) for a in pred_trans.tolist()])
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
-        [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
+        [pcd, pcd_cad, kinect_frame, cameralink_frame]
         # [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]

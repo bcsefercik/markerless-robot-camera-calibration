@@ -78,6 +78,7 @@ def get_transformation_matrix_inverse(trans_mat):
 
 
 def get_q_from_matrix(rot_mat):
+    rot_mat = np.array(rot_mat, copy=True)
     rot = Rotation.from_matrix(rot_mat).as_quat()
     rot = np.insert(rot[:3], 0, rot[-1])
     return rot  # w, x, y, z
