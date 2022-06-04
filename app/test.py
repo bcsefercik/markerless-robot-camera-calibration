@@ -188,6 +188,7 @@ class TestApp:
         start_cell = start_cell.split('-')
         col = start_cell[0].upper()
         col_id = ord(col) - ord('A') + 1
+        seg_col_id = col_id + 12
         row = int(start_cell[1])
 
         sheet.merge_cells(f'{chr(ord(col) - 1)}{row}:{chr(ord(col) - 1)}{row + 6}')
@@ -199,12 +200,14 @@ class TestApp:
         sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 4)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 5)}{row}:{chr(ord(col) + 8)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 9)}{row}:{chr(ord(col) + 9)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 10)}{row}:{chr(ord(col) + 17)}{row}')
-        sheet.merge_cells(f'{chr(ord(col) + 10)}{row + 1}:{chr(ord(col) + 12)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 13)}{row + 1}:{chr(ord(col) + 14)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 15)}{row + 1}:{chr(ord(col) + 16)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 17)}{row + 1}:{chr(ord(col) + 18)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + 18)}{row + 7}')
+
+        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row}:{chr(ord(col) + seg_col_id - col_id + 8)}{row}')
+        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 2)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 3)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 4)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 5)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 6)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 7)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 1}')
+
+        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 7}')
         sheet.cell(row=row+7, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
 
         sheet.cell(row=row+3, column=col_id).value = 'Avg'
@@ -237,29 +240,34 @@ class TestApp:
         self._put_values_for_col(sheet, col_id + 9, row + 3, results['mean_kp_error'])
 
         if _config.TEST.SEGMENTATION.evaluate:
-            sheet.cell(row=row, column=col_id + 10).value = 'Segmentation'
-            sheet.cell(row=row+1, column=col_id + 10).value = 'All'
-            sheet.cell(row=row+2, column=col_id + 10).value = 'Accuracy'
-            self._put_values_for_col(sheet, col_id + 10, row + 3, results['segmentation_accuracy'])
-            sheet.cell(row=row+2, column=col_id + 11).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 11, row + 3, results['segmentation_precision'])
-            sheet.cell(row=row+2, column=col_id + 12).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 12, row + 3, results['segmentation_recall'])
-            sheet.cell(row=row+1, column=col_id + 13).value = 'End Effector'
-            sheet.cell(row=row+2, column=col_id + 13).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 13, row + 3, results['segmentation_ee_precision'])
-            sheet.cell(row=row+2, column=col_id + 14).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 14, row + 3, results['segmentation_ee_recall'])
-            sheet.cell(row=row+1, column=col_id + 15).value = 'Arm'
-            sheet.cell(row=row+2, column=col_id + 15).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 15, row + 3, results['segmentation_arm_precision'])
-            sheet.cell(row=row+2, column=col_id + 16).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 16, row + 3, results['segmentation_arm_recall'])
-            sheet.cell(row=row+1, column=col_id + 17).value = 'Background'
-            sheet.cell(row=row+2, column=col_id + 17).value = 'Precision'
-            self._put_values_for_col(sheet, col_id + 17, row + 3, results['segmentation_background_precision'])
-            sheet.cell(row=row+2, column=col_id + 18).value = 'Recall'
-            self._put_values_for_col(sheet, col_id + 18, row + 3, results['segmentation_background_recall'])
+            sheet.cell(row=row, column=seg_col_id).value = 'Segmentation'
+            sheet.cell(row=row+1, column=seg_col_id).value = 'All'
+            sheet.cell(row=row+2, column=seg_col_id).value = 'Accuracy'
+            self._put_values_for_col(sheet, seg_col_id, row + 3, results['segmentation_accuracy'])
+            sheet.cell(row=row+2, column=seg_col_id + 1).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 1, row + 3, results['segmentation_precision'])
+            sheet.cell(row=row+2, column=seg_col_id + 2).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 2, row + 3, results['segmentation_recall'])
+            sheet.cell(row=row+1, column=seg_col_id + 3).value = 'End Effector'
+            sheet.cell(row=row+2, column=seg_col_id + 3).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 3, row + 3, results['segmentation_ee_precision'])
+            sheet.cell(row=row+2, column=seg_col_id + 4).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 4, row + 3, results['segmentation_ee_recall'])
+            sheet.cell(row=row+1, column=seg_col_id + 5).value = 'Arm'
+            sheet.cell(row=row+2, column=seg_col_id + 5).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 5, row + 3, results['segmentation_arm_precision'])
+            sheet.cell(row=row+2, column=seg_col_id + 6).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 6, row + 3, results['segmentation_arm_recall'])
+            sheet.cell(row=row+1, column=seg_col_id + 7).value = 'Background'
+            sheet.cell(row=row+2, column=seg_col_id + 7).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 7, row + 3, results['segmentation_background_precision'])
+            sheet.cell(row=row+2, column=seg_col_id + 8).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_background_recall'])
+
+        max_col_id = seg_col_id + 8
+        max_row_id = row + 6
+
+        return max_row_id, max_col_id
 
     def export_to_xslx(self):
         wb = openpyxl.Workbook()
@@ -276,9 +284,9 @@ class TestApp:
             bottom=Side(border_style='thin', color="AAAAAA")
         )
 
-        self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
-        for row in range(2, 9):
-            for col in range(1, 21):
+        max_row, max_col = self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
+        for row in range(2, max_row + 1):
+            for col in range(1, max_col + 1):
                 sheet.cell(row=row, column=col).fill = PatternFill("solid", fgColor="FFECB3")
                 sheet.cell(row=row, column=col).border = border
 
