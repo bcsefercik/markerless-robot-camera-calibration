@@ -28,6 +28,7 @@ from utils.transformation import (
     get_rigid_transform_3D,
     get_transformation_matrix,
     get_pose_from_matrix,
+    transform_pose2pose
 )
 from utils.data import get_farthest_point_sample_idx
 from utils.data import get_6_key_points as get_gt_6_key_points
@@ -146,6 +147,8 @@ class InferenceEngine:
             - 0.01
         )  # cm
 
+        self.camera_link_transformation_pose = np.array(_config.INFERENCE.camera_link_transformation_pose, dtype=np.float32)
+
     def check_sanity(
         self,
         data: PointCloudDTO,
@@ -251,13 +254,14 @@ class InferenceEngine:
             if data.ee2base_pose is not None:
                 if result_dto.ee_pose is not None:
                     result_dto.base_pose = get_base2cam_pose(result_dto.ee_pose, data.ee2base_pose)
-                    # result_dto.base_pose = np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])
+
                 if result_dto.key_points_pose is not None:
                     result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
 
             # TODO: remove start
             if data.ee2base_pose is not None and data.gt_pose is not None:
                 gt_base_pose = get_base2cam_pose(data.gt_pose, data.ee2base_pose)
+                gt_base_pose = transform_pose2pose(gt_base_pose, self.camera_link_transformation_pose)
 
                 simple = [f'{p:.4f}' for p in result_dto.base_pose.tolist()]
                 print("PR:", " ".join(simple))

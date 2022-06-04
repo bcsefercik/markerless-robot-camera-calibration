@@ -121,6 +121,10 @@ TEST:
 
   output: test_results.xlsx
 
+  ignore_unconfident: true
+
+  gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
+
   SEGMENTATION:
     evaluate: true
 
@@ -133,6 +137,9 @@ INFERENCE:
   ee_point_counts_threshold: 512
 
   icp_enabled: true
+
+  # camera_link_transformation_pose: [0.000, 0.000, -0.045, 0.500, 0.500, -0.500, 0.500]  # official
+  camera_link_transformation_pose: [0.0062, 0.0309, -0.0454, 0.4688, 0.4857, -0.507, 0.536]
 
   INPUT:
     roi: {}
