@@ -66,7 +66,8 @@ class TestApp:
         with open('predictions.pickle', 'rb') as fp:
             self.predictions = pickle.load(fp)
 
-        self._inference_engine.calibrate(self.predictions)
+        calibration = self._inference_engine.calibrate(self.predictions)
+        ipdb.set_trace()
         return
 
         # Make predictions
@@ -197,9 +198,10 @@ class TestApp:
                 # ipdb.set_trace()
                 _logger.info(f'{data_key}{"" if result_dto.is_confident else ", ignored"}')
 
-        with open('predictions.pickle', 'wb') as fp:
-            pickle.dump(self.predictions, fp, protocol=pickle.HIGHEST_PROTOCOL)
-        ipdb.set_trace()
+        # with open('predictions.pickle', 'wb') as fp:
+        #     pickle.dump(self.predictions, fp, protocol=pickle.HIGHEST_PROTOCOL)
+
+        calibration = self._inference_engine.calibrate(self.predictions)
 
         # Print resultws to a spreadsheet.
         position_results_raw = defaultdict(list)

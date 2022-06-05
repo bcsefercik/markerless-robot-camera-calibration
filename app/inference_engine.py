@@ -20,7 +20,7 @@ BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(BASE_PATH))
 
 from data.alivev2 import AliveV2Dataset, collate_tupled
-from utils import config, logger, utils, preprocess, metrics, icp
+from utils import config, logger, utils, preprocess, metrics, icp, calibration as calib_util
 from utils import output as out_utils
 from utils.transformation import (
     get_base2cam_pose,
@@ -155,25 +155,77 @@ class InferenceEngine:
 
     def calibrate(self, data: typing.Dict[str, typing.List[ResultDTO]]) -> CalibrationResultDTO:
         '''
-        data: Dict[str, typing.List[ResultDTO | TestResultDTO]]
+        data: Dict[str, List[ResultDTO] | List[TestResultDTO]]
         '''
+        # TODO: add kinect1 weights
         individual_calibrations = [self._calibrate_individual(v) for v in data.values()]
         individual_calibrations = [v for v in individual_calibrations if v is not None]
-        ipdb.set_trace()
 
-    def _calibrate_individual(self, data: typing.List[ResultDTO], confident_count=2) -> CalibrationResultDTO:
+        raw_calibration = self._calibrate_individual(individual_calibrations)
+        pose_camera_link_avg_stack = np.stack(
+            (
+                raw_calibration.base_pose_camera_link,
+                raw_calibration.key_points_base_pose_camera_link,
+                transform_pose2pose(raw_calibration.base_pose, self.camera_link_transformation_pose),
+                transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose)
+            ),
+            axis=0
+        )
+
+        pose_camera_link_avg = calib_util.compute_poses_average(pose_camera_link_avg_stack)
+        calibration = CalibrationResultDTO(pose_camera_link=pose_camera_link_avg)
+        calibration.load_from_test_result(raw_calibration)
+
+        return calibration
+
+    def _calibrate_individual(self, data: typing.List[ResultDTO], weights=None, confident_count=2) -> TestResultDTO:
         '''
-        data: Dict[str, typing.List[ResultDTO | TestResultDTO]]
+        data: List[ResultDTO] | List[TestResultDTO]
         '''
         confident_data = [d for d in data if d.is_confident]
         if len(confident_data) < confident_count:
             return None
 
+        if weights is not None:
+            weights = weights[np.array([d.is_confident for d in data], dtype=bool)]
+
+        result_dto = TestResultDTO(segmentation=None, is_confident=True)
+
         ee_poses = np.array([d.ee_pose for d in confident_data], dtype=np.float32)
+        ee_poses = calib_util.remove_pose_outliers(ee_poses)
+        result_dto.ee_pose = calib_util.compute_poses_average(ee_poses, weights=weights)
+
         base_poses = np.array([d.base_pose for d in confident_data], dtype=np.float32)
+        base_poses = calib_util.remove_pose_outliers(base_poses)
+        result_dto.base_pose = calib_util.compute_poses_average(base_poses, weights=weights)
 
-        ipdb.set_trace()
+        key_points_poses = np.array([d.key_points_pose for d in confident_data if d.key_points_pose is not None], dtype=np.float32)
+        key_points_poses = calib_util.remove_pose_outliers(key_points_poses)
+        result_dto.key_points_pose = calib_util.compute_poses_average(key_points_poses, weights=weights)
 
+        key_points_base_poses = np.array([d.key_points_base_pose for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
+        key_points_base_poses = calib_util.remove_pose_outliers(key_points_base_poses)
+        result_dto.key_points_base_pose = calib_util.compute_poses_average(key_points_base_poses, weights=weights)
+
+        base_poses_camera_link = None
+        key_points_base_poses_camera_link = None
+        if isinstance(confident_data[0], ResultDTO):
+            if self.camera_link_transformation_pose is not None:
+                base_poses_camera_link = np.array([transform_pose2pose(d.base_pose, self.camera_link_transformation_pose) for d in confident_data if d.base_pose is not None], dtype=np.float32)
+                key_points_base_poses_camera_link = np.array([transform_pose2pose(d.key_points_base_pose, self.camera_link_transformation_pose) for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
+        elif isinstance(confident_data[0], TestResultDTO):
+            base_poses_camera_link = np.array([d.base_pose_camera_link for d in confident_data], dtype=np.float32)
+            key_points_base_poses_camera_link = np.array([d.key_points_base_pose_camera_link for d in confident_data], dtype=np.float32)
+
+        if base_poses_camera_link is not None:
+            base_poses_camera_link = calib_util.remove_pose_outliers(base_poses_camera_link)
+            result_dto.base_pose_camera_link = calib_util.compute_poses_average(base_poses_camera_link, weights=weights)
+
+        if key_points_base_poses_camera_link is not None:
+            key_points_base_poses_camera_link = calib_util.remove_pose_outliers(key_points_base_poses_camera_link)
+            result_dto.key_points_base_pose_camera_link = calib_util.compute_poses_average(key_points_base_poses_camera_link, weights=weights)
+
+        return result_dto
 
     def check_sanity(
         self,

@@ -55,11 +55,16 @@ class TestResultDTO(ResultDTO):
 
 @dataclass
 class CalibrationResultDTO:
-    ee_pose: np.array = None
+    pose_camera_link: np.array
     base_pose: np.array = None  # NO camera_link transformation
     base_pose_camera_link: np.array = None
-    key_points_pose: np.array = None
     key_points_base_pose: np.array = None  # NO camera_link transformation
     key_points_base_pose_camera_link: np.array = None
     timestamp: datetime = None
     id: str = None
+
+    def load_from_test_result(self, tr: TestResultDTO):
+        self.base_pose = tr.base_pose
+        self.base_pose_camera_link = tr.base_pose_camera_link
+        self.key_points_base_pose = tr.key_points_base_pose
+        self.key_points_base_pose_camera_link = tr.key_points_base_pose_camera_link

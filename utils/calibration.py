@@ -60,13 +60,12 @@ def remove_pose_outliers(poses: np.array) -> np.array:
     return np.array(poses[np.logical_not(is_outlier), :], copy=True)
 
 
-
-# average_quaternions and average_quaternions_weighted are taken from:
+# compute_quaternions_average and compute_quaternions_weighted_average are taken from:
 # https://github.com/christophhagen/averaging-quaternions
 # Paper: https://ntrs.nasa.gov/citations/20070017872
 
 # Average multiple quaternions with specific weights
-def compute_quaternions_weighted_average(Q, w):
+def compute_quaternions_weighted_average(Q: np.array, w: np.array):
     '''
     Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
     The quaternions are arranged as (w,x,y,z), with w being the scalar
@@ -95,7 +94,7 @@ def compute_quaternions_weighted_average(Q, w):
     return np.real(eigenVectors[:, 0].A1)
 
 
-def compute_quaternions_average(Q):
+def compute_quaternions_average(Q: np.array):
     '''
     Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
     The quaternions are arranged as (w,x,y,z), with w being the scalar
@@ -105,7 +104,7 @@ def compute_quaternions_average(Q):
     return compute_quaternions_weighted_average(Q, np.ones(Q.shape[0]))
 
 
-def compute_translations_average(t, weights=None):
+def compute_translations_average(t: np.array, weights=None):
     if weights is None:
         weights = np.ones(len(t))
 
@@ -114,20 +113,22 @@ def compute_translations_average(t, weights=None):
     return np.sum(t * weights.reshape(-1, 1), axis=0) / weights_sum
 
 
-def compute_poses_average(poses, weights=None):
+def compute_poses_average(poses: np.array, weights=None):
     '''
     poses: Nx7; x, y, z, qw, qx, qy, qz
     weights: N
     '''
-
-    if weights is None or len(weights) != len(poses):
-        weights = np.ones(len(poses))
+    if poses is None or len(poses) == 0:
+        return poses
 
     if len(poses.shape) != 2:
         poses = np.array(poses.reshape(-1, 7), copy=True)
 
     if len(poses) == 1:
         return poses[0]
+
+    if weights is None or len(weights) != len(poses):
+        weights = np.ones(len(poses))
 
     pose_avg = np.zeros(7)
 
