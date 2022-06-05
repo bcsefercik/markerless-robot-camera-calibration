@@ -57,7 +57,8 @@ def remove_pose_outliers(poses: np.array) -> np.array:
     poses: Nx7 or Nx3
     '''
     is_outlier, _ = get_pose_outliers(poses)
-    return np.array(poses[np.logical_not(is_outlier), :], copy=True)
+    return poses
+    # return np.array(poses[np.logical_not(is_outlier), :], copy=True)
 
 
 # compute_quaternions_average and compute_quaternions_weighted_average are taken from:

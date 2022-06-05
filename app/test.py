@@ -19,11 +19,12 @@ import MinkowskiEngine as ME
 
 from utils.transformation import get_base2cam_pose, transform_pose2pose
 from utils import config, logger, preprocess, utils, metrics
+from utils import calibration as calib_util
 from utils.data import get_6_key_points
 
 import data_engine
 from inference_engine import InferenceEngine
-from dto import TestResultDTO, RawDTO
+from dto import TestResultDTO, RawDTO, CalibrationResultDTO
 
 
 _config = config.Config()
@@ -46,6 +47,7 @@ class TestApp:
         self.overall_results = None
 
         self.predictions: typing.Dict[str, typing.List[TestResultDTO]] = None
+        self.calibration: CalibrationResultDTO = None
 
         self.clear_results()
 
@@ -59,16 +61,10 @@ class TestApp:
         self.overall_results = defaultdict(list)
 
         self.predictions = defaultdict(list)
+        self.calibration = None
 
     def run_tests(self):
         self.clear_results()
-
-        with open('predictions.pickle', 'rb') as fp:
-            self.predictions = pickle.load(fp)
-
-        calibration = self._inference_engine.calibrate(self.predictions)
-        ipdb.set_trace()
-        return
 
         # Make predictions
         with torch.no_grad():
@@ -201,7 +197,10 @@ class TestApp:
         # with open('predictions.pickle', 'wb') as fp:
         #     pickle.dump(self.predictions, fp, protocol=pickle.HIGHEST_PROTOCOL)
 
-        calibration = self._inference_engine.calibrate(self.predictions)
+        # with open('predictions.pickle', 'rb') as fp:
+        #     self.predictions = pickle.load(fp)
+
+        self.calibration = self._inference_engine.calibrate(self.predictions)
 
         # Print resultws to a spreadsheet.
         position_results_raw = defaultdict(list)
@@ -240,6 +239,13 @@ class TestApp:
             for k in prs:
                 if len(prs[k]) > 0:
                     self.overall_results[k].append(statistics.mean(prs[k]))
+
+        self.overall_results["calibration_angle_diff"] = -100
+        self.overall_results["calibration_dist_position"] = -100
+        if self.calibration.pose_camera_link is not None:
+            calibration_metrics = metrics.compute_pose_metrics(self.calibration.pose_camera_link, self._gt_base_to_cam_pose)
+            self.overall_results["calibration_angle_diff"] = calibration_metrics["angle_diff"]
+            self.overall_results["calibration_dist_position"] = calibration_metrics["dist_position"]
 
         self.export_to_xslx()
 
@@ -346,10 +352,6 @@ class TestApp:
         wb = openpyxl.Workbook()
         sheet = wb.active
 
-        sheet.merge_cells(f'B1:O1')
-        sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'
-        sheet.cell(row=1, column=2).value = json.dumps(_config())
-
         border = Border(
             left=Side(border_style='thin', color="AAAAAA"),
             right=Side(border_style='thin', color="AAAAAA"),
@@ -357,14 +359,46 @@ class TestApp:
             bottom=Side(border_style='thin', color="AAAAAA")
         )
 
-        max_row, max_col = self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-2")
-        for row in range(2, max_row + 1):
+        max_row, max_col = self._create_excel_cells(sheet, "OVERALL", self.overall_results, start_cell="B-5")
+        for row in range(5, max_row + 1):
             for col in range(1, max_col + 1):
                 sheet.cell(row=row, column=col).fill = PatternFill("solid", fgColor="FFECB3")
                 sheet.cell(row=row, column=col).border = border
 
         for i, (pk, prs) in enumerate(self.position_results.items()):
-            self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{2 + (i + 1) * 8}")
+            self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{5 + (i + 1) * 8}")
+
+        sheet.merge_cells(f'B1:{chr(ord("A") + max_col - 1)}1')
+        sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'
+        sheet.cell(row=1, column=2).value = json.dumps(_config())
+
+        # Fill calibration data
+        sheet.merge_cells(f'A2:B3')
+        sheet.merge_cells(f'C2:D2')
+        sheet.merge_cells(f'C3:D3')
+        sheet.merge_cells(f'F2:H2')
+        sheet.merge_cells(f'F3:H3')
+        sheet.merge_cells(f'I2:{chr(ord("A") + max_col - 1)}2')
+        sheet.merge_cells(f'I3:{chr(ord("A") + max_col - 1)}3')
+
+        sheet.merge_cells(f'A4:{chr(ord("A") + max_col - 1)}4')
+        sheet.cell(row=4, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
+
+        sheet.cell(row=2, column=1).value = 'CALIBRATION'
+        sheet.cell(row=2, column=1).font = Font(bold=True)
+        sheet.cell(row=2, column=1).alignment = Alignment(horizontal="center", vertical="center")
+
+        sheet.cell(row=2, column=3).value = 'Translation Error (m):'
+        sheet.cell(row=3, column=3).value = 'Rotation Error (rad):'
+        sheet.cell(row=2, column=5).value = round(self.overall_results["calibration_dist_position"] or 0, 4) or "N/A"
+        sheet.cell(row=3, column=5).value = round(self.overall_results["calibration_angle_diff"] or 0, 4) or "N/A"
+
+        sheet.cell(row=2, column=6).value = 'GT Pose (x, y, z, qw, qx, qy, qz):'
+        sheet.cell(row=3, column=6).value = 'PRED Pose (x, y, z, qw, qx, qy, qz):'
+        sheet.cell(row=2, column=9).value = ', '.join([f'{a:.4f}' for a in  self._gt_base_to_cam_pose])
+        sheet.cell(row=3, column=9).value = 'N/A'
+        if self.calibration.pose_camera_link is not None:
+            sheet.cell(row=3, column=9).value = ', '.join([f'{a:.4f}' for a in  self.calibration.pose_camera_link])
 
         wb.save(_config.TEST.output)
 
@@ -375,6 +409,7 @@ if __name__ == "__main__":
     torch.manual_seed(_config.TEST.seed)
 
     app = TestApp()
-    app.export_to_xslx()
     app.run_tests()
+    # app.export_to_xslx()
+
     # ipdb.set_trace()
