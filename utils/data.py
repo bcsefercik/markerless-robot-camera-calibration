@@ -1,10 +1,7 @@
 import os
-from select import select
 import sys
-from webbrowser import get
 
 import numpy as np
-from scipy.special import erfcinv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.transformation import get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix, get_transformation_matrix_inverse, select_closest_points_to_line
@@ -340,12 +337,3 @@ def collect_closest_points(idx, points, euclidean_threshold=0.006):
     pcls_idx, p_idx = np.where(norms < euclidean_threshold)
 
     return pcls_idx, p_idx
-
-
-def rmoutliers(y: np.array):
-    sqrt_2 = np.sqrt(2)
-    erfcinv_15 = erfcinv(3/2)
-
-    is_outlier = np.abs(y) > (-3 / (sqrt_2 * erfcinv_15) * np.median(np.abs(y - np.median(y))))
-
-    return np.array(y[np.logical_not(is_outlier)], copy=True)
