@@ -79,6 +79,9 @@ def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['backgro
 
 
 def compute_pose_metrics(gt: np.array, pred: np.array):
+    '''
+    input: x, y, z, qw, qx, qy, qz
+    '''
     results = dict()
 
     results['dist_position'] = np.linalg.norm(gt[:3] - pred[:3])
