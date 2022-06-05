@@ -1,4 +1,5 @@
 from collections import defaultdict
+import typing
 import concurrent.futures
 import json
 import time
@@ -37,7 +38,7 @@ from model.robotnet_vote import RobotNetVote
 from model.robotnet_segmentation import RobotNetSegmentation
 from model.robotnet_encode import RobotNetEncode
 from model.robotnet import RobotNet
-from dto import ResultDTO, PointCloudDTO
+from dto import CalibrationResultDTO, ResultDTO, TestResultDTO, PointCloudDTO
 from model.pointnet2 import PointNet2SSG
 
 import MinkowskiEngine as ME
@@ -151,6 +152,28 @@ class InferenceEngine:
         self.camera_link_transformation_pose = _config.INFERENCE.camera_link_transformation_pose
         if self.camera_link_transformation_pose is not None:
             self.camera_link_transformation_pose = np.array(self.camera_link_transformation_pose, dtype=np.float32)
+
+    def calibrate(self, data: typing.Dict[str, typing.List[ResultDTO]]) -> CalibrationResultDTO:
+        '''
+        data: Dict[str, typing.List[ResultDTO | TestResultDTO]]
+        '''
+        individual_calibrations = [self._calibrate_individual(v) for v in data.values()]
+        individual_calibrations = [v for v in individual_calibrations if v is not None]
+        ipdb.set_trace()
+
+    def _calibrate_individual(self, data: typing.List[ResultDTO], confident_count=2) -> CalibrationResultDTO:
+        '''
+        data: Dict[str, typing.List[ResultDTO | TestResultDTO]]
+        '''
+        confident_data = [d for d in data if d.is_confident]
+        if len(confident_data) < confident_count:
+            return None
+
+        ee_poses = np.array([d.ee_pose for d in confident_data], dtype=np.float32)
+        base_poses = np.array([d.base_pose for d in confident_data], dtype=np.float32)
+
+        ipdb.set_trace()
+
 
     def check_sanity(
         self,

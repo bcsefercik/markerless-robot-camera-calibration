@@ -26,9 +26,13 @@ def remove_outliers(y: np.array):
 # Paper: https://ntrs.nasa.gov/citations/20070017872
 
 # Average multiple quaternions with specific weights
-# The weight vector w must be of the same length as the number of rows in the
-# quaternion maxtrix Q
 def average_quaternions_weighted(Q, w):
+    '''
+    Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
+    The quaternions are arranged as (w,x,y,z), with w being the scalar
+    The weight vector w must be of the same length as the number of rows in the
+    quaternion maxtrix Q
+    '''
     # Number of quaternions to average
     M = Q.shape[0]
     A = np.matlib.zeros(shape=(4, 4))
@@ -51,9 +55,11 @@ def average_quaternions_weighted(Q, w):
     return np.real(eigenVectors[:, 0].A1)
 
 
-# Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
-# The quaternions are arranged as (w,x,y,z), with w being the scalar
-# The result will be the average quaternion of the input. Note that the signs
-# of the output quaternion can be reversed, since q and -q describe the same orientation
 def average_quaternions(Q):
+    '''
+    Q is a Nx4 numpy matrix and contains the quaternions to average in the rows.
+    The quaternions are arranged as (w,x,y,z), with w being the scalar
+    The result will be the average quaternion of the input. Note that the signs
+    of the output quaternion can be reversed, since q and -q describe the same orientation
+    '''
     return average_quaternions_weighted(Q, np.ones(Q.shape[0]))

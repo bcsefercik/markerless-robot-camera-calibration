@@ -1,8 +1,10 @@
+import typing
 import ipdb
 
 import os
 import sys
 import json
+import pickle
 import random
 import statistics
 from collections import defaultdict
@@ -21,7 +23,7 @@ from utils.data import get_6_key_points
 
 import data_engine
 from inference_engine import InferenceEngine
-from dto import ResultDTO, RawDTO
+from dto import TestResultDTO, RawDTO
 
 
 _config = config.Config()
@@ -43,6 +45,8 @@ class TestApp:
         self.position_results = None
         self.overall_results = None
 
+        self.predictions: typing.Dict[str, typing.List[TestResultDTO]] = None
+
         self.clear_results()
 
         random.seed(_config.TEST.seed)
@@ -54,8 +58,16 @@ class TestApp:
         self.position_results = defaultdict(dict)
         self.overall_results = defaultdict(list)
 
+        self.predictions = defaultdict(list)
+
     def run_tests(self):
         self.clear_results()
+
+        with open('predictions.pickle', 'rb') as fp:
+            self.predictions = pickle.load(fp)
+
+        self._inference_engine.calibrate(self.predictions)
+        return
 
         # Make predictions
         with torch.no_grad():
@@ -85,7 +97,7 @@ class TestApp:
                     )
                     self.instance_results[data_key]['segmentation'] = segmentation_metrics
 
-                result_dto = ResultDTO(segmentation=seg_results)
+                result_dto = TestResultDTO(segmentation=seg_results)
 
                 ee_idx = np.where(seg_results == 2)[0]
                 ee_raw_points = data.points[ee_idx]  # no origin offset
@@ -114,10 +126,15 @@ class TestApp:
                 result_dto.ee_pose = nn_pose_icp
 
                 result_dto.base_pose = get_base2cam_pose(result_dto.ee_pose, data.ee2base_pose)
-                result_dto.base_pose = transform_pose2pose(result_dto.base_pose, self._inference_engine.camera_link_transformation_pose)
+
+                base_pose = np.array(result_dto.base_pose, copy=True)
+                if self._inference_engine.camera_link_transformation_pose is not None:
+                    base_pose = transform_pose2pose(base_pose, self._inference_engine.camera_link_transformation_pose)
+                    result_dto.base_pose_camera_link = base_pose
+
                 base_pose_metrics = metrics.compute_pose_metrics(
                     self._gt_base_to_cam_pose,
-                    result_dto.base_pose
+                    base_pose
                 )
                 self.instance_results[data_key]['base2cam'] = {
                     'dist_position': base_pose_metrics['dist_position'],
@@ -151,22 +168,38 @@ class TestApp:
                     result_dto.key_points_pose = kp_pose_icp
 
                     result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
-                    if
-                    result_dto.key_points_base_pose = transform_pose2pose(result_dto.key_points_base_pose, self._inference_engine.camera_link_transformation_pose)
 
-                    self.instance_results[data_key]['base2cam']['dist_position_kp'] = base_pose_metrics['dist_position']
-                    self.instance_results[data_key]['base2cam']['angle_diff_kp'] = base_pose_metrics['angle_diff']
+                    key_points_base_pose = np.array(result_dto.key_points_base_pose, copy=True)
 
-                is_confident = self._inference_engine.check_sanity(
+                    if self._inference_engine.camera_link_transformation_pose is not None:
+                        key_points_base_pose = transform_pose2pose(key_points_base_pose, self._inference_engine.camera_link_transformation_pose)
+                        result_dto.key_points_base_pose_camera_link = key_points_base_pose
+
+                    key_points_base_pose_metrics = metrics.compute_pose_metrics(
+                        self._gt_base_to_cam_pose,
+                        key_points_base_pose
+                    )
+                    self.instance_results[data_key]['base2cam']['dist_position_kp'] = key_points_base_pose_metrics['dist_position']
+                    self.instance_results[data_key]['base2cam']['angle_diff_kp'] = key_points_base_pose_metrics['angle_diff']
+
+                result_dto.is_confident = self._inference_engine.check_sanity(
                     data.to_point_cloud_dto(),
                     result_dto,
                     kp_error_margin=_config.TEST.KEY_POINTS.error_margin
                 )
-                if _config.TEST.ignore_unconfident and not is_confident:
+                if _config.TEST.ignore_unconfident and not result_dto.is_confident:
                     self.instance_results.pop(data_key)
 
+                result_dto.id = data_key
+
+                self.predictions[data.other['position']].append(result_dto)
+
                 # ipdb.set_trace()
-                _logger.info(f'{data_key}{"" if is_confident else ", ignored"}')
+                _logger.info(f'{data_key}{"" if result_dto.is_confident else ", ignored"}')
+
+        with open('predictions.pickle', 'wb') as fp:
+            pickle.dump(self.predictions, fp, protocol=pickle.HIGHEST_PROTOCOL)
+        ipdb.set_trace()
 
         # Print resultws to a spreadsheet.
         position_results_raw = defaultdict(list)

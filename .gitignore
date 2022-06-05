@@ -3,6 +3,7 @@
 *.pth
 *.out
 *.xlsx*
+*.pickle*
 .vscode/
 exp/
 log/

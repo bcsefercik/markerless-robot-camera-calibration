@@ -16,20 +16,6 @@ class PointCloudDTO:
 
 
 @dataclass
-class ResultDTO:
-    segmentation: np.array
-    ee_pose: np.array = None
-    base_pose: np.array = None
-    key_points: list((int, np.array)) = None
-    key_points_pose: np.array = None
-    key_points_base_pose: np.array = None
-    is_confident: bool = False
-    timestamp: datetime = None
-    confidence: float = None
-    id: str = None
-
-
-@dataclass
 class RawDTO:
     points: np.array
     rgb: np.array
@@ -45,3 +31,35 @@ class RawDTO:
             datetime.utcnow(),
             ee2base_pose=self.ee2base_pose
         )
+
+
+@dataclass
+class ResultDTO:
+    segmentation: np.array
+    ee_pose: np.array = None
+    base_pose: np.array = None  # NO camera_link transformation
+    key_points: list((int, np.array)) = None
+    key_points_pose: np.array = None
+    key_points_base_pose: np.array = None  # NO camera_link transformation
+    is_confident: bool = False
+    timestamp: datetime = None
+    confidence: float = None
+    id: str = None
+
+
+@dataclass
+class TestResultDTO(ResultDTO):
+    base_pose_camera_link: np.array = None
+    key_points_base_pose_camera_link: np.array = None
+
+
+@dataclass
+class CalibrationResultDTO:
+    ee_pose: np.array = None
+    base_pose: np.array = None  # NO camera_link transformation
+    base_pose_camera_link: np.array = None
+    key_points_pose: np.array = None
+    key_points_base_pose: np.array = None  # NO camera_link transformation
+    key_points_base_pose_camera_link: np.array = None
+    timestamp: datetime = None
+    id: str = None
