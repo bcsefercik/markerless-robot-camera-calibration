@@ -147,7 +147,10 @@ class InferenceEngine:
             - 0.01
         )  # cm
 
-        self.camera_link_transformation_pose = np.array(_config.INFERENCE.camera_link_transformation_pose, dtype=np.float32)
+        # /camera_rgb_optical_frame to /camera_link
+        self.camera_link_transformation_pose = _config.INFERENCE.camera_link_transformation_pose
+        if self.camera_link_transformation_pose is not None:
+            self.camera_link_transformation_pose = np.array(self.camera_link_transformation_pose, dtype=np.float32)
 
     def check_sanity(
         self,

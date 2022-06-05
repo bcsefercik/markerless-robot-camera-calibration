@@ -151,6 +151,7 @@ class TestApp:
                     result_dto.key_points_pose = kp_pose_icp
 
                     result_dto.key_points_base_pose = get_base2cam_pose(result_dto.key_points_pose, data.ee2base_pose)
+                    if
                     result_dto.key_points_base_pose = transform_pose2pose(result_dto.key_points_base_pose, self._inference_engine.camera_link_transformation_pose)
 
                     self.instance_results[data_key]['base2cam']['dist_position_kp'] = base_pose_metrics['dist_position']
