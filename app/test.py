@@ -49,6 +49,12 @@ class TestApp:
         self.predictions: typing.Dict[str, typing.List[TestResultDTO]] = None
         self.calibration: CalibrationResultDTO = None
 
+        self.unit_multipliers = [1, 1]
+        if _config.TEST.units[0] == "cm":
+            self.unit_multipliers[0] = 100
+        if _config.TEST.units[1] == "degree":
+            self.unit_multipliers[1] = 57.2958
+
         self.clear_results()
 
         random.seed(_config.TEST.seed)
@@ -268,12 +274,41 @@ class TestApp:
 
         self.export_to_xslx()
 
-    def _put_values_for_col(self, sheet, col_id, start_row, values):
-        sheet.cell(row=start_row, column=col_id).value = round(statistics.mean(values), 4) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 1, column=col_id).value = round(min(values), 4) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 2, column=col_id).value = round(max(values), 4) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 3, column=col_id).value = round(statistics.median(values), 4) if len(values) > 0 else "N/A"
-        sheet.cell(row=start_row + 4, column=col_id).value = round(statistics.stdev(values), 4) if len(values) > 1 else "N/A"
+    def _put_values_for_col(self, sheet, col_id, start_row, values, unit_type=0):
+        val = statistics.mean(values) if len(values) > 0 else "N/A"
+        if val != "N/A":
+            if unit_type < 2:
+                val *= self.unit_multipliers[unit_type]
+            val = round(val, 4)
+        sheet.cell(row=start_row, column=col_id).value =val
+
+        val = min(values) if len(values) > 0 else "N/A"
+        if val != "N/A":
+            if unit_type < 2:
+                val *= self.unit_multipliers[unit_type]
+            val = round(val, 4)
+        sheet.cell(row=start_row + 1, column=col_id).value = val
+
+        val = max(values) if len(values) > 0 else "N/A"
+        if val != "N/A":
+            if unit_type < 2:
+                val *= self.unit_multipliers[unit_type]
+            val = round(val, 4)
+        sheet.cell(row=start_row + 2, column=col_id).value = val
+
+        val = statistics.median(values) if len(values) > 0 else "N/A"
+        if val != "N/A":
+            if unit_type < 2:
+                val *= self.unit_multipliers[unit_type]
+            val = round(val, 4)
+        sheet.cell(row=start_row + 3, column=col_id).value = val
+
+        val = statistics.stdev(values) if len(values) > 1 else "N/A"
+        if val != "N/A":
+            if unit_type < 2:
+                val *= self.unit_multipliers[unit_type]
+            val = round(val, 4)
+        sheet.cell(row=start_row + 4, column=col_id).value = val
 
     def _create_excel_cells(self, sheet, title, results, start_cell="A-1"):
         start_cell = start_cell.split('-')
@@ -309,71 +344,71 @@ class TestApp:
         sheet.cell(row=row+6, column=col_id).value = 'Med'
         sheet.cell(row=row+7, column=col_id).value = 'Std'
 
-        sheet.cell(row=row, column=col_id + 1).value = 'Translation (Euler Dist - m)'
+        sheet.cell(row=row, column=col_id + 1).value = f'Translation (Euler Dist - {_config.TEST.units[0]})'
         sheet.cell(row=row+2, column=col_id + 1).value = 'NN'
-        self._put_values_for_col(sheet, col_id + 1, row + 3, results['dist_position_nn'])
+        self._put_values_for_col(sheet, col_id + 1, row + 3, results['dist_position_nn'], unit_type=0)
         sheet.cell(row=row+2, column=col_id + 2).value = 'NN + ICP'
-        self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_nn_icp'])
+        self._put_values_for_col(sheet, col_id + 2, row + 3, results['dist_position_nn_icp'], unit_type=0)
         sheet.cell(row=row + 2, column=col_id + 3).value = 'KP'
-        self._put_values_for_col(sheet, col_id + 3, row + 3, results['dist_position_kp'])
+        self._put_values_for_col(sheet, col_id + 3, row + 3, results['dist_position_kp'], unit_type=0)
         sheet.cell(row=row + 2, column=col_id + 4).value = 'KP + ICP'
-        self._put_values_for_col(sheet, col_id + 4, row + 3, results['dist_position_kp_icp'])
+        self._put_values_for_col(sheet, col_id + 4, row + 3, results['dist_position_kp_icp'], unit_type=0)
 
-        sheet.cell(row=row, column=col_id + 5).value = 'Rotation (Angle Diff - rad)'
+        sheet.cell(row=row, column=col_id + 5).value = f'Rotation (Angle Diff - {_config.TEST.units[1]})'
         sheet.cell(row=row + 2, column=col_id + 5).value = 'NN'
-        self._put_values_for_col(sheet, col_id + 5, row + 3, results['angle_diff_nn'])
+        self._put_values_for_col(sheet, col_id + 5, row + 3, results['angle_diff_nn'], unit_type=1)
         sheet.cell(row=row + 2, column=col_id + 6).value = 'NN + ICP'
-        self._put_values_for_col(sheet, col_id + 6, row + 3, results['angle_diff_nn_icp'])
+        self._put_values_for_col(sheet, col_id + 6, row + 3, results['angle_diff_nn_icp'], unit_type=1)
         sheet.cell(row=row+2, column=col_id + 7).value = 'KP'
-        self._put_values_for_col(sheet, col_id + 7, row + 3, results['angle_diff_kp'])
+        self._put_values_for_col(sheet, col_id + 7, row + 3, results['angle_diff_kp'], unit_type=1)
         sheet.cell(row=row+2, column=col_id + 8).value = 'KP + ICP'
-        self._put_values_for_col(sheet, col_id + 8, row + 3, results['angle_diff_kp_icp'])
+        self._put_values_for_col(sheet, col_id + 8, row + 3, results['angle_diff_kp_icp'], unit_type=1)
 
-        sheet.cell(row=row, column=col_id + 9).value = 'ADD (m)'
+        sheet.cell(row=row, column=col_id + 9).value = f'ADD ({_config.TEST.units[0]})'
         sheet.cell(row=row + 2, column=col_id + 9).value = 'NN'
-        self._put_values_for_col(sheet, col_id + 9, row + 3, results['ADD_nn'])
+        self._put_values_for_col(sheet, col_id + 9, row + 3, results['ADD_nn'], unit_type=0)
         sheet.cell(row=row + 2, column=col_id + 10).value = 'NN + ICP'
-        self._put_values_for_col(sheet, col_id + 10, row + 3, results['ADD_nn_icp'])
+        self._put_values_for_col(sheet, col_id + 10, row + 3, results['ADD_nn_icp'], unit_type=0)
         sheet.cell(row=row+2, column=col_id + 11).value = 'KP'
-        self._put_values_for_col(sheet, col_id + 11, row + 3, results['ADD_kp'])
+        self._put_values_for_col(sheet, col_id + 11, row + 3, results['ADD_kp'], unit_type=0)
         sheet.cell(row=row+2, column=col_id + 12).value = 'KP + ICP'
-        self._put_values_for_col(sheet, col_id + 12, row + 3, results['ADD_kp_icp'])
+        self._put_values_for_col(sheet, col_id + 12, row + 3, results['ADD_kp_icp'], unit_type=0)
 
         sheet.cell(row=row, column=col_id + 13).value = 'Key Points'
-        sheet.cell(row=row+2, column=col_id + 13).value = 'Distance Error (m)'
-        self._put_values_for_col(sheet, col_id + 13, row + 3, results['mean_kp_error'])
+        sheet.cell(row=row+2, column=col_id + 13).value = f'Distance Error ({_config.TEST.units[0]})'
+        self._put_values_for_col(sheet, col_id + 13, row + 3, results['mean_kp_error'], unit_type=0)
 
         sheet.cell(row=row, column=col_id + 14).value = 'Base2Cam Errors\r\n(NN+ICP)'
         sheet.cell(row=row, column=col_id + 14).alignment = Alignment(wrap_text=True)
-        sheet.cell(row=row+2, column=col_id + 14).value = 'Translation (m)'
-        self._put_values_for_col(sheet, col_id + 14, row + 3, results['base2cam_dist_position'])
-        sheet.cell(row=row+2, column=col_id + 15).value = 'Rotation (rad)'
-        self._put_values_for_col(sheet, col_id + 15, row + 3, results['base2cam_angle_diff'])
+        sheet.cell(row=row+2, column=col_id + 14).value = f'Translation ({_config.TEST.units[0]})'
+        self._put_values_for_col(sheet, col_id + 14, row + 3, results['base2cam_dist_position'], unit_type=0)
+        sheet.cell(row=row+2, column=col_id + 15).value = f'Rotation ({_config.TEST.units[1]})'
+        self._put_values_for_col(sheet, col_id + 15, row + 3, results['base2cam_angle_diff'], unit_type=1)
 
         if _config.TEST.SEGMENTATION.evaluate:
             sheet.cell(row=row, column=seg_col_id).value = 'Segmentation'
             sheet.cell(row=row+1, column=seg_col_id).value = 'All'
             sheet.cell(row=row+2, column=seg_col_id).value = 'Accuracy'
-            self._put_values_for_col(sheet, seg_col_id, row + 3, results['segmentation_accuracy'])
+            self._put_values_for_col(sheet, seg_col_id, row + 3, results['segmentation_accuracy'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 1).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 1, row + 3, results['segmentation_precision'])
+            self._put_values_for_col(sheet, seg_col_id + 1, row + 3, results['segmentation_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 2).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 2, row + 3, results['segmentation_recall'])
+            self._put_values_for_col(sheet, seg_col_id + 2, row + 3, results['segmentation_recall'], unit_type=2)
             sheet.cell(row=row+1, column=seg_col_id + 3).value = 'End Effector'
             sheet.cell(row=row+2, column=seg_col_id + 3).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 3, row + 3, results['segmentation_ee_precision'])
+            self._put_values_for_col(sheet, seg_col_id + 3, row + 3, results['segmentation_ee_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 4).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 4, row + 3, results['segmentation_ee_recall'])
+            self._put_values_for_col(sheet, seg_col_id + 4, row + 3, results['segmentation_ee_recall'], unit_type=2)
             sheet.cell(row=row+1, column=seg_col_id + 5).value = 'Arm'
             sheet.cell(row=row+2, column=seg_col_id + 5).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 5, row + 3, results['segmentation_arm_precision'])
+            self._put_values_for_col(sheet, seg_col_id + 5, row + 3, results['segmentation_arm_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 6).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 6, row + 3, results['segmentation_arm_recall'])
+            self._put_values_for_col(sheet, seg_col_id + 6, row + 3, results['segmentation_arm_recall'], unit_type=2)
             sheet.cell(row=row+1, column=seg_col_id + 7).value = 'Background'
             sheet.cell(row=row+2, column=seg_col_id + 7).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 7, row + 3, results['segmentation_background_precision'])
+            self._put_values_for_col(sheet, seg_col_id + 7, row + 3, results['segmentation_background_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 8).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_background_recall'])
+            self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_background_recall'], unit_type=2)
 
         max_col_id = seg_col_id + 8
         max_row_id = row + 7
@@ -420,10 +455,23 @@ class TestApp:
         sheet.cell(row=2, column=1).font = Font(bold=True)
         sheet.cell(row=2, column=1).alignment = Alignment(horizontal="center", vertical="center")
 
-        sheet.cell(row=2, column=3).value = 'Translation Error (m):'
-        sheet.cell(row=3, column=3).value = 'Rotation Error (rad):'
-        sheet.cell(row=2, column=5).value = round(self.overall_results["calibration_dist_position"] or 0, 4) or "N/A"
-        sheet.cell(row=3, column=5).value = round(self.overall_results["calibration_angle_diff"] or 0, 4) or "N/A"
+        sheet.cell(row=2, column=3).value = f'Translation Error ({_config.TEST.units[0]}):'
+        sheet.cell(row=3, column=3).value = f'Rotation Error ({_config.TEST.units[1]}):'
+
+
+        val = self.overall_results["calibration_dist_position"] or 0
+        val = val if val > -1 else "N/A"
+        if val != "N/A":
+            val *= self.unit_multipliers[0]
+            val = round(val, 4)
+        sheet.cell(row=2, column=5).value = val
+
+        val = self.overall_results["calibration_angle_diff"] or 0
+        val = val if val > -1 else "N/A"
+        if val != "N/A":
+            val *= self.unit_multipliers[1]
+            val = round(val, 4)
+        sheet.cell(row=3, column=5).value = val
 
         sheet.cell(row=2, column=6).value = 'GT Pose (x, y, z, qw, qx, qy, qz):'
         sheet.cell(row=3, column=6).value = 'PRED Pose (x, y, z, qw, qx, qy, qz):'

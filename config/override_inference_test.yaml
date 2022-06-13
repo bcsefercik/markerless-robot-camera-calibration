@@ -8,13 +8,16 @@ TEST:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/p1_calib_2.json
 
-  output: test_results_p1_calib_v6_ADD.xlsx
+  output: test_results_p1_calib_v6_unit.xlsx
 
   ignore_unconfident: true
 
   # gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
   # gt_base_to_cam_pose: [0.65, 0.3546, 0.9807, -0.0236, -0.0027, 0.9332, -0.3586]
   gt_base_to_cam_pose: [0.6265, 0.3674, 0.9880, -0.0092, -0.0007, 0.9296, -0.3684]
+
+  units: ['cm', 'degree']
+  # units: ['m', 'rad']
 
   SEGMENTATION:
     evaluate: true

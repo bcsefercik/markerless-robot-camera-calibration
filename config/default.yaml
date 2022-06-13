@@ -131,6 +131,8 @@ TEST:
   KEY_POINTS:
     error_margin: 0.05  # in meters
 
+  units: ['m', 'rad']
+
 INFERENCE:
   data_source: /kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alive_test_v2_splits.json
 
