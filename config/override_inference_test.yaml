@@ -2,15 +2,19 @@ MODE: 'inference'
 
 TEST:
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
-  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v4_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v4_splits.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v4_splits_dummy.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/pred_test_splits.json
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/p1_calib_2.json
 
-  output: test_results_alivev4_wcalibration.xlsx
+  output: test_results_p1_calib_v6_ADD.xlsx
 
   ignore_unconfident: true
 
-  gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
+  # gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
+  # gt_base_to_cam_pose: [0.65, 0.3546, 0.9807, -0.0236, -0.0027, 0.9332, -0.3586]
+  gt_base_to_cam_pose: [0.6265, 0.3674, 0.9880, -0.0092, -0.0007, 0.9296, -0.3684]
 
   SEGMENTATION:
     evaluate: true
@@ -25,8 +29,9 @@ INFERENCE:
   num_of_dense_input_points: 2048
 
   # /camera_rgb_optical_frame to /camera_link
-  camera_link_transformation_pose: [0.000, 0.000, -0.045, 0.500, 0.500, -0.500, 0.500]  # official
+  # camera_link_transformation_pose: [0.00, -0.045, 0.00, 0.500, 0.500, -0.500, 0.500]  # official
   # camera_link_transformation_pose: [0.0062, 0.0309, -0.0454, 0.4688, 0.4857, -0.507, 0.536]
+  camera_link_transformation_pose: null
 
   kinect1_weight_polynomials: [-1.08e-03, -5.73e-05, 1.85E-03]  # [a, b, c] = c + bx + ax^2
 

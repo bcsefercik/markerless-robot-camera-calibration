@@ -99,6 +99,12 @@ class TestApp:
                 ee_idx = np.where(seg_results == 2)[0]
                 ee_raw_points = data.points[ee_idx]  # no origin offset
                 ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
+                ee_centered_points, _ = preprocess.center_at_origin(ee_raw_points)
+
+                ee_gt_idx = np.where(data.segmentation == 2)[0]
+                ee_gt_raw_points = data.points[ee_gt_idx]  # no origin offset
+                ee_gt_centered_points, _ = preprocess.center_at_origin(ee_gt_raw_points)
+                ee_centered_points = ee_gt_centered_points
 
                 rot_result = self._inference_engine.predict_rotation(
                     ee_raw_points, ee_raw_rgb
@@ -115,10 +121,14 @@ class TestApp:
                 self.instance_results[data_key]['dist_position'] = {'nn': nn_pose_metrics['dist_position']}
                 self.instance_results[data_key]['angle_diff'] = {'nn': nn_pose_metrics['angle_diff']}
 
+                self.instance_results[data_key]['ADD_nn'] = metrics.compute_ADD_np(ee_centered_points, data.pose, nn_pose)
+
                 nn_pose_icp = self._inference_engine.match_icp(ee_raw_points, nn_pose)
                 nn_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, nn_pose_icp)
                 self.instance_results[data_key]['dist_position']['nn_icp'] = nn_pose_icp_metrics['dist_position']
                 self.instance_results[data_key]['angle_diff']['nn_icp'] = nn_pose_icp_metrics['angle_diff']
+
+                self.instance_results[data_key]['ADD_nn_icp'] = metrics.compute_ADD_np(ee_centered_points, data.pose, nn_pose_icp)
 
                 result_dto.ee_pose = nn_pose_icp
 
@@ -157,10 +167,14 @@ class TestApp:
                     self.instance_results[data_key]['dist_position']['kp'] = kp_pose_metrics['dist_position']
                     self.instance_results[data_key]['angle_diff']['kp'] = kp_pose_metrics['angle_diff']
 
+                    self.instance_results[data_key]['ADD_kp'] = metrics.compute_ADD_np(ee_centered_points, data.pose, kp_pose)
+
                     kp_pose_icp = self._inference_engine.match_icp(ee_raw_points, kp_pose)
                     kp_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, kp_pose_icp)
                     self.instance_results[data_key]['dist_position']['kp_icp'] = kp_pose_icp_metrics['dist_position']
                     self.instance_results[data_key]['angle_diff']['kp_icp'] = kp_pose_icp_metrics['angle_diff']
+
+                    self.instance_results[data_key]['ADD_kp_icp'] = metrics.compute_ADD_np(ee_centered_points, data.pose, kp_pose_icp)
 
                     result_dto.key_points_pose = kp_pose_icp
 
@@ -226,6 +240,11 @@ class TestApp:
             self.position_results[pos]['dist_position_kp'] = [ir['dist_position']['kp'] for ir in irs if 'kp' in ir['dist_position']]
             self.position_results[pos]['dist_position_kp_icp'] = [ir['dist_position']['kp_icp'] for ir in irs if 'kp' in ir['dist_position']]
 
+            self.position_results[pos]['ADD_nn'] = [ir['ADD_nn'] for ir in irs]
+            self.position_results[pos]['ADD_nn_icp'] = [ir['ADD_nn_icp'] for ir in irs]
+            self.position_results[pos]['ADD_kp'] = [ir['ADD_kp'] for ir in irs if 'ADD_kp' in ir]
+            self.position_results[pos]['ADD_kp_icp'] = [ir['ADD_kp_icp'] for ir in irs if 'ADD_kp' in ir]
+
             if _config.TEST.SEGMENTATION.evaluate:
                 self.position_results[pos]['segmentation_accuracy'] = [ir['segmentation']['accuracy'] for ir in irs]
                 self.position_results[pos]['segmentation_precision'] = [ir['segmentation']['precision'] for ir in irs]
@@ -254,15 +273,16 @@ class TestApp:
         sheet.cell(row=start_row + 1, column=col_id).value = round(min(values), 4) if len(values) > 0 else "N/A"
         sheet.cell(row=start_row + 2, column=col_id).value = round(max(values), 4) if len(values) > 0 else "N/A"
         sheet.cell(row=start_row + 3, column=col_id).value = round(statistics.median(values), 4) if len(values) > 0 else "N/A"
+        sheet.cell(row=start_row + 4, column=col_id).value = round(statistics.stdev(values), 4) if len(values) > 1 else "N/A"
 
     def _create_excel_cells(self, sheet, title, results, start_cell="A-1"):
         start_cell = start_cell.split('-')
         col = start_cell[0].upper()
         col_id = ord(col) - ord('A') + 1
-        seg_col_id = col_id + 12
+        seg_col_id = col_id + 16
         row = int(start_cell[1])
 
-        sheet.merge_cells(f'{chr(ord(col) - 1)}{row}:{chr(ord(col) - 1)}{row + 6}')
+        sheet.merge_cells(f'{chr(ord(col) - 1)}{row}:{chr(ord(col) - 1)}{row + 7}')
         sheet.cell(row=row, column=1).value = title
         sheet.cell(row=row, column=1).font = Font(bold=True)
         sheet.cell(row=row, column=1).alignment = Alignment(horizontal="center", vertical="center", textRotation=90)
@@ -270,8 +290,9 @@ class TestApp:
         sheet.merge_cells(f'{col}{row}:{col}{row+2}')
         sheet.merge_cells(f'{chr(ord(col) + 1)}{row}:{chr(ord(col) + 4)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 5)}{row}:{chr(ord(col) + 8)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 9)}{row}:{chr(ord(col) + 9)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + 10)}{row}:{chr(ord(col) + 11)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 9)}{row}:{chr(ord(col) + 12)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 13)}{row}:{chr(ord(col) + 13)}{row + 1}')
+        sheet.merge_cells(f'{chr(ord(col) + 14)}{row}:{chr(ord(col) + 15)}{row + 1}')
 
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row}:{chr(ord(col) + seg_col_id - col_id + 8)}{row}')
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 2)}{row + 1}')
@@ -279,13 +300,14 @@ class TestApp:
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 5)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 6)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 7)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 1}')
 
-        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 7}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 7}')
-        sheet.cell(row=row+7, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
+        sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 8}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 8}')
+        sheet.cell(row=row+8, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
 
         sheet.cell(row=row+3, column=col_id).value = 'Avg'
         sheet.cell(row=row+4, column=col_id).value = 'Min'
         sheet.cell(row=row+5, column=col_id).value = 'Max'
         sheet.cell(row=row+6, column=col_id).value = 'Med'
+        sheet.cell(row=row+7, column=col_id).value = 'Std'
 
         sheet.cell(row=row, column=col_id + 1).value = 'Translation (Euler Dist - m)'
         sheet.cell(row=row+2, column=col_id + 1).value = 'NN'
@@ -307,16 +329,26 @@ class TestApp:
         sheet.cell(row=row+2, column=col_id + 8).value = 'KP + ICP'
         self._put_values_for_col(sheet, col_id + 8, row + 3, results['angle_diff_kp_icp'])
 
-        sheet.cell(row=row, column=col_id + 9).value = 'Key Points'
-        sheet.cell(row=row+2, column=col_id + 9).value = 'Distance Error (m)'
-        self._put_values_for_col(sheet, col_id + 9, row + 3, results['mean_kp_error'])
+        sheet.cell(row=row, column=col_id + 9).value = 'ADD (m)'
+        sheet.cell(row=row + 2, column=col_id + 9).value = 'NN'
+        self._put_values_for_col(sheet, col_id + 9, row + 3, results['ADD_nn'])
+        sheet.cell(row=row + 2, column=col_id + 10).value = 'NN + ICP'
+        self._put_values_for_col(sheet, col_id + 10, row + 3, results['ADD_nn_icp'])
+        sheet.cell(row=row+2, column=col_id + 11).value = 'KP'
+        self._put_values_for_col(sheet, col_id + 11, row + 3, results['ADD_kp'])
+        sheet.cell(row=row+2, column=col_id + 12).value = 'KP + ICP'
+        self._put_values_for_col(sheet, col_id + 12, row + 3, results['ADD_kp_icp'])
 
-        sheet.cell(row=row, column=col_id + 10).value = 'Base2Cam Errors\r\n(NN+ICP)'
-        sheet.cell(row=row, column=col_id + 10).alignment = Alignment(wrap_text=True)
-        sheet.cell(row=row+2, column=col_id + 10).value = 'Translation (m)'
-        self._put_values_for_col(sheet, col_id + 10, row + 3, results['base2cam_dist_position'])
-        sheet.cell(row=row+2, column=col_id + 11).value = 'Rotation (rad)'
-        self._put_values_for_col(sheet, col_id + 11, row + 3, results['base2cam_angle_diff'])
+        sheet.cell(row=row, column=col_id + 13).value = 'Key Points'
+        sheet.cell(row=row+2, column=col_id + 13).value = 'Distance Error (m)'
+        self._put_values_for_col(sheet, col_id + 13, row + 3, results['mean_kp_error'])
+
+        sheet.cell(row=row, column=col_id + 14).value = 'Base2Cam Errors\r\n(NN+ICP)'
+        sheet.cell(row=row, column=col_id + 14).alignment = Alignment(wrap_text=True)
+        sheet.cell(row=row+2, column=col_id + 14).value = 'Translation (m)'
+        self._put_values_for_col(sheet, col_id + 14, row + 3, results['base2cam_dist_position'])
+        sheet.cell(row=row+2, column=col_id + 15).value = 'Rotation (rad)'
+        self._put_values_for_col(sheet, col_id + 15, row + 3, results['base2cam_angle_diff'])
 
         if _config.TEST.SEGMENTATION.evaluate:
             sheet.cell(row=row, column=seg_col_id).value = 'Segmentation'
@@ -344,7 +376,7 @@ class TestApp:
             self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_background_recall'])
 
         max_col_id = seg_col_id + 8
-        max_row_id = row + 6
+        max_row_id = row + 7
 
         return max_row_id, max_col_id
 
@@ -366,7 +398,7 @@ class TestApp:
                 sheet.cell(row=row, column=col).border = border
 
         for i, (pk, prs) in enumerate(self.position_results.items()):
-            self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{5 + (i + 1) * 8}")
+            self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{5 + (i + 1) * 9}")
 
         sheet.merge_cells(f'B1:{chr(ord("A") + max_col - 1)}1')
         sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'

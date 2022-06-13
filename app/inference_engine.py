@@ -165,15 +165,27 @@ class InferenceEngine:
         if raw_calibration is None:
             return CalibrationResultDTO(pose_camera_link=None)
 
+        # pose_camera_link_avg_stack = np.stack(
+        #     (
+        #         raw_calibration.base_pose_camera_link,
+        #         raw_calibration.key_points_base_pose_camera_link,
+        #         transform_pose2pose(raw_calibration.base_pose, self.camera_link_transformation_pose),
+        #         transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose)
+        #     ),
+        #     axis=0
+        # )
         pose_camera_link_avg_stack = np.stack(
             (
-                raw_calibration.base_pose_camera_link,
-                raw_calibration.key_points_base_pose_camera_link,
-                transform_pose2pose(raw_calibration.base_pose, self.camera_link_transformation_pose),
-                transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose)
+                raw_calibration.base_pose,
+                raw_calibration.key_points_base_pose,
             ),
             axis=0
         )
+
+        print(raw_calibration.base_pose_camera_link)
+        print(raw_calibration.key_points_base_pose_camera_link)
+        # print(transform_pose2pose(raw_calibration.base_pose, self.camera_link_transformation_pose))
+        # print(transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose))
 
         pose_camera_link_avg = calib_util.compute_poses_average(pose_camera_link_avg_stack)
         calibration = CalibrationResultDTO(pose_camera_link=pose_camera_link_avg)

@@ -307,6 +307,7 @@ class MainApp:
                         self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
 
                     if result.base_pose is not None:
+                        print(result.base_pose)
                         self.base_frame = create_coordinate_frame(result.base_pose, switch_w=False)
 
                 if self.ee_frame is not None:
