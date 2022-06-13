@@ -1,3 +1,4 @@
+from operator import gt
 import statistics
 from unittest import result
 import torch
@@ -5,6 +6,9 @@ import torch.nn.functional as F
 import numpy as np
 
 from utils.quaternion import qmul_np, qconj_np
+from utils.transformation import (
+    get_quaternion_rotation_matrix
+)
 import ipdb
 
 EPS = 1e-7
@@ -102,3 +106,17 @@ def compute_kp_error(gt_coords, kp_coords, kp_classes):
     gt_coords_selected = gt_coords[kp_classes]
 
     return np.linalg.norm(gt_coords_selected - kp_coords, axis=1).mean()
+
+
+def compute_ADD_np(points, gt_pose, pred_pose):
+    gt_rot_mat = get_quaternion_rotation_matrix(gt_pose[3:], switch_w=False)
+    gt_translation = gt_pose[:3]
+    pred_rot_mat = get_quaternion_rotation_matrix(pred_pose[3:], switch_w=False)
+    pred_translation = pred_pose[:3]
+
+    gt_part = (gt_rot_mat @ points.T) + gt_translation.reshape(3, 1)
+    pred_part = (pred_rot_mat @ points.T) + pred_translation.reshape(3, 1)
+
+    ADD = np.linalg.norm(gt_part - pred_part, axis=0).mean()
+
+    return ADD
