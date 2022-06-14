@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(BASE_PATH))
 from utils.transformation import get_pose_from_matrix, get_transformation_matrix
 
 
-def get_point2point_matcher(cad_name="hand_notblender.obj"):
+def get_point2point_matcher(cad_name=os.path.join(BASE_PATH, "..", "app", "hand_files", "hand_notblender.obj")):
     # _cad_mesh = o3d.io.read_triangle_mesh(
     #     os.path.join(BASE_PATH, "..", "app", "hand_files", "hand_notblender.obj")
     # )
