@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     # points_show = np.concatenate((points, new_ee_points), axis=0)
     # rgb_show = np.concatenate((rgb, ee_rgb), axis=0)
-    match_icp = icp.get_point2point_matcher()
+    match_icp = icp.get_point2point_matcher("../app/hand_files/hand.pcd")
     points_show = points
     rgb_show = rgb
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     pcd_cad.normals = o3d.utility.Vector3dVector(pcd_cad_normals[pcd_cad_mask])
 
     jiggle = (np.random.rand(7) * 2 - 1) * 0.03
-    pose_jiggled = pose_w_first + jiggle
+    pose_jiggled = pose_w_first
     trans_mat_jiggled = get_transformation_matrix(pose_jiggled, switch_w=True)  # switch_w=False in dataloader
     print(jiggle)
     reg_p2l_pose = match_icp(ee_points, pose_jiggled)

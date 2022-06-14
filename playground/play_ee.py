@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
 from utils.data import get_ee_cross_section_idx, get_ee_idx, get_roi_mask
 from utils.visualization import create_coordinate_frame
-from utils.transformation import get_quaternion_rotation_matrix, select_closest_points_to_line
+from utils.transformation import get_quaternion_rotation_matrix, get_transformation_matrix, get_transformation_matrix_inverse, select_closest_points_to_line
 from utils.preprocess import center_at_origin
 
 
@@ -92,14 +92,21 @@ if __name__ == "__main__":
     #     rgb[:, 2] = preprocessing.minmax_scale(rgb[:, 2], feature_range=(0, 1), axis=0)
 
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=True)  # switch_w=False in dataloader
+    trans_mat = get_transformation_matrix(pose, switch_w=True)
+    trans_mat_inv = get_transformation_matrix_inverse(trans_mat)
     ee_points = points[ee_idx]
 
-    new_ee_points = (rot_mat.T @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
-
+    new_ee_points = (trans_mat_inv[:3, :3] @ np.concatenate((ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
+    new_ee_points = new_ee_points + trans_mat_inv[:3, 3]
     ee_rgb[closest_points_idx] = np.array([1.0, 0, 0])
-    new_ee_points, origin_offset = center_at_origin(new_ee_points)
+    origin_offset = np.array([1.0, 0, 0])
+    # new_ee_points, origin_offset = center_at_origin(new_ee_points)
     new_ee_pose_pos = new_ee_points[-1]
     new_ee_points = new_ee_points[:-1]
+    ee_pcd = o3d.geometry.PointCloud()
+    ee_pcd.points = o3d.utility.Vector3dVector(new_ee_points)
+    ee_pcd.colors = o3d.utility.Vector3dVector(ee_rgb)
+    o3d.io.write_point_cloud("ee.pcd", ee_pcd)
 
     # reverse the transformation above
     new_ee_points_reverse = np.array(new_ee_points, copy=True)
@@ -121,8 +128,8 @@ if __name__ == "__main__":
     ee_magic_frame = create_coordinate_frame(ee_pos_magic_reverse_pose, switch_w=False)
 
     # ipdb.set_trace()
-    points_show = np.concatenate((points, new_ee_points, new_ee_points_reverse), axis=0)
-    rgb = np.concatenate((rgb, ee_rgb, ee_reverse_rgb), axis=0)
+    points_show = np.concatenate((points, new_ee_points), axis=0)
+    rgb = np.concatenate((rgb, ee_rgb), axis=0)
     # points_show = new_ee_points
     # rgb = ee_rgb
 
@@ -130,7 +137,7 @@ if __name__ == "__main__":
     pcd.points = o3d.utility.Vector3dVector(points_show)
     pcd.colors = o3d.utility.Vector3dVector(rgb)
 
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     print('# of masked points:', len(rgb))
     o3d.visualization.draw_geometries(

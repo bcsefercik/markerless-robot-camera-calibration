@@ -174,24 +174,27 @@ if __name__ == "__main__":
 
     base2kinect_trans = get_base2cam_matrix(pred_pose, robot2ee_pose_w_first)
     base2kinect_pose = get_pose_from_matrix(base2kinect_trans)
-    # print("PRED transformed base2cam:", base2kinect_pose.tolist())
+    print("PRED transformed base2cam:",  [round(a, 4) for a in base2kinect_pose.tolist()])
 
     base2kinect_trans_gt = get_base2cam_matrix(pose_w_first, robot2ee_pose_w_first)
+    # ipdb.set_trace()
     base2kinect_pose_gt = get_pose_from_matrix(base2kinect_trans_gt)
-    print("GT transformed base2cam:", base2kinect_pose_gt.tolist())
+    print("GT transformed base2cam:", [round(a, 4) for a in base2kinect_pose_gt.tolist()])
 
     # base2kinect_trans = get_transformation_matrix(base2kinect_pose, switch_w=False)
     base_frame = create_coordinate_frame(base2kinect_pose_gt, switch_w=False)
 
     # /camera_link /camera_rgb_optical_frame
-    optical_frame_to_cameralink_pose =  np.asarray([0.000, 0.000, -0.045, 0.500, 0.500, -0.500, 0.500])
+    optical_frame_to_cameralink_pose =  np.asarray([0.000, 0.000, 0, 0.500, 0.500, -0.500, 0.500])
 
     cameralink_pose = base2kinect_pose_gt
     cameralink_pose = transform_pose2pose(base2kinect_pose_gt, optical_frame_to_cameralink_pose)
-    print("camera_link pose:", cameralink_pose.tolist())
+    print("camera_link pose:", [round(a, 4) for a in cameralink_pose.tolist()])
     cameralink_frame = create_coordinate_frame(cameralink_pose, switch_w=False)
     cameralink_frame_gt = create_coordinate_frame(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]), switch_w=False)
+
     # kinect_frame.transform(get_transformation_matrix(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])))
+
 
     pred_trans = get_pose_from_matrix(get_transformation_matrix_inverse(base2kinect_trans_gt) @ get_transformation_matrix(np.array([0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299])))
 
@@ -203,7 +206,7 @@ if __name__ == "__main__":
 
     o3d.visualization.draw_geometries(
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
-        [pcd, pcd_cad, kinect_frame, cameralink_frame]
+        [pcd, pcd_cad, kinect_frame, cameralink_frame_gt]
         # [pcd, pcd_cad, kinect_frame, pred_frame, textured_mesh]
         # [pcd, pcd_cad, kinect_frame, ee_frame, textured_mesh]
         # [pcd, pcd_ee, pcd_cad, kinect_frame, pred_frame, textured_mesh]
