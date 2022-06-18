@@ -465,7 +465,7 @@ class InferenceEngine:
 
             if _config.INFERENCE.TRANSLATION.magic_enabled:
                 min_z = ee_pos_points.min(axis=0)[2]
-                ee_pos_magic = np.array([-0.01, 0.0, min_z])
+                ee_pos_magic = np.array([-0.015, 0.0, min_z])
                 ee_pos_magic_reverse = ee_pos_magic + pos_origin_offset
                 pos_result = rot_mat @ ee_pos_magic_reverse
             else:

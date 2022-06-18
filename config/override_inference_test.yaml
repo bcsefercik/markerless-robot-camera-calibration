@@ -8,7 +8,7 @@ TEST:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/p1_calib_2.json
 
-  output: test_results_p1_calib_v6_unit.xlsx
+  output: test_results_p1_calib_v7_gtseg__.xlsx
 
   ignore_unconfident: true
 
@@ -20,7 +20,7 @@ TEST:
   # units: ['m', 'rad']
 
   SEGMENTATION:
-    evaluate: true
+    evaluate: false
 
   KEY_POINTS:
     error_margin: 0.04  # in meters

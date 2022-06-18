@@ -120,7 +120,7 @@ class PickleDataEngine(DataEngineInterface):
             points,
             pose,
             ee_dim={
-                "min_z": -0,
+                "min_z": -0.0095,
                 "max_z": 0.13,
                 "min_x": -0.04,
                 "max_x": 0.04,
