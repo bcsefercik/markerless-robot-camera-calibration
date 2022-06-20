@@ -279,7 +279,12 @@ class MainApp:
             self._calibrate_button.enabled = False
             self._calibrated_pred_check.checked = True
             self._calibrated_pred_check.enabled = True
-            self.calibrated_base_frame = create_coordinate_frame(calibration_result.pose_camera_link, switch_w=False)
+            self.calibrated_base_frame = create_coordinate_frame(
+                calibration_result.pose_camera_link,
+                length=0.24,
+                radius=0.01,
+                switch_w=False
+            )
             self.widget3d.scene.remove_geometry("calibrated_base_frame")
             self.widget3d.scene.add_geometry("calibrated_base_frame", self.calibrated_base_frame, self.lit)
             self.widget3d.scene.show_geometry("calibrated_base_frame", self._calibrated_pred_check.checked)
@@ -389,7 +394,7 @@ class MainApp:
                     self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
                     self.widget3d.scene.show_geometry("ee_frame", self._instant_pred_check.checked)
 
-                if self.base_frame is not None:
+                if self.base_frame is not None and not self._calibrated_pred_check.checked:
                     self.widget3d.scene.add_geometry("base_frame", self.base_frame, self.lit)
                     self.widget3d.scene.show_geometry("base_frame", self._instant_pred_check.checked)
 
