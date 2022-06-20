@@ -61,7 +61,7 @@ class PickleDataEngine(DataEngineInterface):
     def get(self) -> PointCloudDTO:
         # time.sleep(0.1)
         data_ins = next(self.data_pool)
-        data_ins = self.data['test'][52]
+        # data_ins = self.data['test'][52]
         data, _ = file_utils.load_alive_file(data_ins["filepath"])
 
         ee2base_pose = None

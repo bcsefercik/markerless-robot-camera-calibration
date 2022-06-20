@@ -180,3 +180,7 @@ INFERENCE:
     use_coordinates_as_features: false
     num_of_keypoints: 6
     error_margin: 0.05  # in meters
+
+  CALIBRATION:
+    num_of_frames: 10
+    min_num_of_positions: 6

@@ -5,6 +5,7 @@ import queue
 import sys
 import threading
 import time
+import typing
 
 import ipdb
 import numpy as np
@@ -25,6 +26,7 @@ from utils.visualization import (
 
 import data_engine
 from inference_engine import InferenceEngine
+from dto import ResultDTO
 
 _config = config.Config()
 _logger = logger.Logger().get()
@@ -47,7 +49,11 @@ class MainApp:
         self.stop_event = multiprocessing.Event()
         self._seg_event = multiprocessing.Event()
         self._calibration_event = multiprocessing.Event()
+        self._collection_event = multiprocessing.Event()
         self._inference_queue = queue.Queue(1)
+        self._calibration_queue = queue.Queue(128)
+
+        self._calibration_data: typing.List[typing.List[ResultDTO]] = list()
 
         self.rot_mat = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]])
 
@@ -64,7 +70,8 @@ class MainApp:
             )
 
         self.window = gui.Application.instance.create_window(
-            "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey",
+            "Markerless Robot-Depth Camera Calibration Tool",
+            # "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey",
             1000,
             500,
         )
@@ -149,9 +156,15 @@ class MainApp:
         )
         self.panel.add_child(self._calibrated_pred_check)
 
+        self._collect_data_button = gui.Button("Collect Data")
+        self._collect_data_button.vertical_padding_em = 0.5
+        self._collect_data_button.set_on_clicked(self._collect_data)
+        self.panel.add_child(self._collect_data_button)
+
         self._calibrate_button = gui.Button("Calibrate")
         self._calibrate_button.vertical_padding_em = 0.5
         self._calibrate_button.set_on_clicked(self._calibrate)
+        self._calibrate_button.enabled = False
         self.panel.add_child(self._calibrate_button)
 
         self._results_label = gui.Label("")
@@ -168,7 +181,7 @@ class MainApp:
         ))
         self.logo_rgb_widget = gui.ImageWidget(self.logo_img)
         self.logo_panel.add_child(self.logo_rgb_widget)
-        self.window.add_child(self.logo_panel)
+        # self.window.add_child(self.logo_panel)
 
         self.notification_panel = gui.Horiz(
             0.5 * em, gui.Margins(left=margin, right=margin, top=0.68 * em, bottom=margin)
@@ -181,8 +194,75 @@ class MainApp:
 
         threading.Thread(target=self._update_thread).start()
         threading.Thread(target=self._calibration_thread).start()
+        threading.Thread(target=self._collection_thread).start()
 
         self._data_source.run()
+
+    def _collect_data(self):
+        self._calibration_data.append(list())
+
+        self._collection_event.set()
+        self._calibrate_button.enabled = False
+        self._collect_data_button.enabled = False
+
+    def _collection_thread(self):
+        # needs to stay alive
+        while True:
+            self._collection_event.wait()
+            if self.stop_event.is_set():
+                break
+
+            result = self._calibration_queue.get()
+
+            self._calibration_data[-1].append(result)
+            print(len(self._calibration_data[-1]), result)
+
+            if len(self._calibration_data[-1]) >= _config.INFERENCE.CALIBRATION.num_of_frames:
+                self._collect_data_button.enabled = True
+
+                self._collection_event.clear()
+                with self._calibration_queue.mutex:
+                    self._calibration_queue.queue.clear()
+
+                self._calibrate_button.enabled = len(self._calibration_data) >= _config.INFERENCE.CALIBRATION.min_num_of_positions
+
+        return True
+
+    def _calibrate(self):
+        self._calibrate_button.enabled = False
+
+        self._calibrated_pred_check.checked = False
+        self._calibrated_pred_check.enabled = False
+        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
+
+        self._calibration_event.set()
+
+    def _calibration_thread(self):
+        # needs to stay alive
+        while True:
+            self._calibration_event.wait()
+            if self.stop_event.is_set():
+                break
+            self._results_label.text = "calibration yo!"
+
+            time.sleep(5)
+
+            self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
+
+            # self.calibrated_ee_frame = "nanananan"
+
+            self._calibrate_button.enabled = False
+            self._calibrated_pred_check.checked = True
+            self._calibrated_pred_check.enabled = True
+            self.widget3d.scene.remove_geometry("calibrated_ee_frame")
+            self.widget3d.scene.add_geometry("calibrated_ee_frame", self.calibrated_ee_frame, self.lit)
+            self.widget3d.scene.show_geometry("calibrated_ee_frame", self._calibrated_pred_check.checked)
+
+            self._calibration_event.clear()
+            self._collection_event.clear()
+            self._calibration_data.clear()
+
+        return True
 
     def _on_layout(self, layout_context):
         contentRect = self.window.content_rect
@@ -228,42 +308,11 @@ class MainApp:
         else:
             self._seg_event.clear()
 
-    def _calibrate(self):
-        self._calibrate_button.enabled = False
-
-        self._calibrated_pred_check.checked = False
-        self._calibrated_pred_check.enabled = False
-        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
-
-        self._calibration_event.set()
-
-    def _calibration_thread(self):
-        while True:
-            self._calibration_event.wait()
-            if self.stop_event.is_set():
-                return
-            self._results_label.text = "calibration yo!"
-
-            time.sleep(5)
-
-            self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
-
-            # self.calibrated_ee_frame = "nanananan"
-
-            self._calibrate_button.enabled = True
-            self._calibrated_pred_check.checked = True
-            self._calibrated_pred_check.enabled = True
-            self.widget3d.scene.remove_geometry("calibrated_ee_frame")
-            self.widget3d.scene.add_geometry("calibrated_ee_frame", self.calibrated_ee_frame, self.lit)
-            self.widget3d.scene.show_geometry("calibrated_ee_frame", self._calibrated_pred_check.checked)
-
-            self._calibration_event.clear()
-        return True
-
     def _on_close(self):
         self.stop_event.set()  # set before all
         time.sleep(0.1)
         self._calibration_event.set()  # need to clear loop
+        self._collection_event.set()  # need to clear loop
         self._data_source.exit()
         time.sleep(4)
 
@@ -307,7 +356,6 @@ class MainApp:
                         self.ee_frame = create_coordinate_frame(result.ee_pose, switch_w=False)
 
                     if result.base_pose is not None:
-                        print(result.base_pose)
                         self.base_frame = create_coordinate_frame(result.base_pose, switch_w=False)
 
                 if self.ee_frame is not None:
@@ -326,10 +374,11 @@ class MainApp:
                         self.lit
                     )
                     self.widget3d.scene.show_geometry("key_points", self._kp_check.checked)
-            except:
+            except:  # noqa
                 _logger.exception("GUI update failed.")
 
         while not self.stop_event.is_set():
+            l_start = time.time()
             data = self._data_source.get()
             # print(data.points.shape)
             # print(data.rgb.shape)
@@ -337,12 +386,21 @@ class MainApp:
             if data is not None:
                 result = self._inference_engine.predict(data)
 
+                # save results for calibration
+                if self._collection_event.is_set():
+                    try:
+                        self._calibration_queue.put_nowait(result)
+                    except queue.Full:
+                        _logger.exception("Calibration queue is full.")
+
                 if not self.stop_event.is_set():
                     # Update the images. This must be done on the UI thread.
                     gui.Application.instance.post_to_main_thread(
                         self.window, lambda: update(data, result)
                     )
+            l_end = time.time()
 
+            print(f"FPS: {(1/(l_end - l_start)):.2f}")
             time.sleep(0.05)
 
 
