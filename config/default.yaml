@@ -183,4 +183,4 @@ INFERENCE:
 
   CALIBRATION:
     num_of_frames: 10
-    min_num_of_positions: 2
+    min_num_of_positions: 6

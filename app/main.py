@@ -54,6 +54,7 @@ class MainApp:
         self._calibration_queue = queue.Queue(128)
 
         self._calibration_data: typing.List[typing.List[ResultDTO]] = list()
+        self.calibration_result = None
 
         self.rot_mat = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]])
 
@@ -103,6 +104,11 @@ class MainApp:
         )
         self.widget3d.scene.show_geometry("calibrated_base_frame", False)
 
+        self.calibrated_base_label_text = 'Calibrated\n    Frame'
+        self.calibrated_base_label = self.widget3d.add_3d_label(np.array([0,0,0]), '')
+        self.calibrated_base_label.color = gui.Color(0, 0, 0)
+        self.calibrated_base_label.scale = 1.3
+
         _init_points = (np.random.rand(200000, 3) - 0.5) * 3
         self.pcd = o3d.geometry.PointCloud()
         self.pcd.points = o3d.utility.Vector3dVector(_init_points)
@@ -150,11 +156,7 @@ class MainApp:
         self._calibrated_pred_check = gui.Checkbox("Latest Calibrated Prediction")
         self._calibrated_pred_check.checked = False
         self._calibrated_pred_check.enabled = False
-        self._calibrated_pred_check.set_on_checked(
-            lambda state: self.widget3d.scene.show_geometry(
-                "calibrated_base_frame", state
-            )
-        )
+        self._calibrated_pred_check.set_on_checked(self._show_calib_pred)
         self.panel.add_child(self._calibrated_pred_check)
 
         self._collect_data_button = gui.Button("Collect Data")
@@ -207,6 +209,13 @@ class MainApp:
         threading.Thread(target=self._collection_thread).start()
 
         self._data_source.run()
+
+    def _show_calib_pred(self, state):
+        self.calibrated_base_label.text = self.calibrated_base_label_text if state else ''
+        self.calibrated_base_label.position = self.calibration_result.pose_camera_link[:3]
+        self.widget3d.scene.show_geometry(
+                "calibrated_base_frame", state
+            )
 
     def _collect_data(self):
         self._calibration_data.append(list())
@@ -268,26 +277,29 @@ class MainApp:
             self._notification_label.text = "Calibration in progress."
             calibration_input = {f'p{i}': v for i, v in enumerate(self._calibration_data)}
 
-            calibration_result = self._inference_engine.calibrate(calibration_input)
-            # ipdb.set_trace()
-            # time.sleep(5)
+            self.calibration_result = self._inference_engine.calibrate(calibration_input)
+            if self.calibration_result.pose_camera_link is not None:
+                cr = self.calibration_result.pose_camera_link
+                title = "camera_rgb_optical_frame\npanda_link0:\n\n"
+                self._results_label.text = title + f"x:\t{cr[0]:.4f}\ny:\t{cr[1]:.4f}\nz:\t{cr[2]:.4f}\nq_w:\t{cr[3]:.4f}\nq_x:\t{cr[4]:.4f}\nq_y:\t{cr[5]:.4f}\nq_z:\t{cr[6]:.4f}\n"
 
-            self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
+                # self.calibrated_base_frame = "nanananan"
 
-            # self.calibrated_base_frame = "nanananan"
-
-            self._calibrate_button.enabled = False
-            self._calibrated_pred_check.checked = True
-            self._calibrated_pred_check.enabled = True
-            self.calibrated_base_frame = create_coordinate_frame(
-                calibration_result.pose_camera_link,
-                length=0.24,
-                radius=0.01,
-                switch_w=False
-            )
-            self.widget3d.scene.remove_geometry("calibrated_base_frame")
-            self.widget3d.scene.add_geometry("calibrated_base_frame", self.calibrated_base_frame, self.lit)
-            self.widget3d.scene.show_geometry("calibrated_base_frame", self._calibrated_pred_check.checked)
+                self._calibrate_button.enabled = False
+                self._calibrated_pred_check.checked = True
+                self._show_calib_pred(True)
+                self._calibrated_pred_check.enabled = True
+                self.calibrated_base_frame = create_coordinate_frame(
+                    self.calibration_result.pose_camera_link,
+                    length=0.24,
+                    radius=0.012,
+                    switch_w=False
+                )
+                self.widget3d.scene.remove_geometry("calibrated_base_frame")
+                self.widget3d.scene.add_geometry("calibrated_base_frame", self.calibrated_base_frame, self.lit)
+                self.widget3d.scene.show_geometry("calibrated_base_frame", self._calibrated_pred_check.checked)
+            else:
+                self._results_label.text = "No calibration,\ntry again."
 
             self.notification_panel.visible = False
             self._calibration_event.clear()
