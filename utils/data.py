@@ -283,6 +283,9 @@ def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, i
         [0.24, -0.32, 0.2],  # P4: bottom right
     ])
 
+    if len(ee_bbox) < 1 or len(ee_selection) < 0:
+        return np.array([]), np.array([])
+
     front_pidx = np.linalg.norm(ee_bbox.reshape((-1, 1, 3)) - ee_selection, axis=2).argmin(axis=1)
 
     front_kp_candidates = new_ee_points[ee_idx[front_pidx]]
