@@ -89,6 +89,7 @@ class MainApp:
         self.kinect_frame = get_frame_from_pose(frame, [0] * 7)
         # kinect_frame.rotate(self.rot_mat)
         self.widget3d.scene.add_geometry("kinect_frame", self.kinect_frame, self.lit)
+        self.widget3d.scene.show_geometry("kinect_frame", False)
 
         self.ee_frame = create_coordinate_frame([0, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
         self.base_frame = create_coordinate_frame([-0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
@@ -125,8 +126,8 @@ class MainApp:
         self.panel.add_child(self._seg_check)
 
         self._kinect_frame_check = gui.Checkbox("Camera Frame")
-        self._kinect_frame_check.checked = True
-        self._kinect_frame_check.set_on_checked(self._toggle_kinect_frame)
+        self._kinect_frame_check.checked = False
+        self._kinect_frame_check.set_on_checked(lambda state: self.widget3d.scene.show_geometry("kinect_frame", state))
         self.panel.add_child(self._kinect_frame_check)
 
         self._instant_pred_check = gui.Checkbox("Instant Prediction")
@@ -215,7 +216,9 @@ class MainApp:
             result = self._calibration_queue.get()
 
             self._calibration_data[-1].append(result)
-            print(len(self._calibration_data[-1]), result)
+
+            self._results_label.text = f"Position: #{len(self._calibration_data)}, Frame: {len(self._calibration_data[-1])}/{_config.INFERENCE.CALIBRATION.num_of_frames}"
+            # print(len(self._calibration_data[-1]), result)
 
             if len(self._calibration_data[-1]) >= _config.INFERENCE.CALIBRATION.num_of_frames:
                 self._collect_data_button.enabled = True
@@ -298,9 +301,6 @@ class MainApp:
         )
         self.logo_panel.background_color = gui.Color(0.3, 0.3, 0.3, 0)
         # ipdb.set_trace()
-
-    def _toggle_kinect_frame(self, state):
-        self.widget3d.scene.show_geometry("kinect_frame", state)
 
     def _toggle_segmentation(self, state):
         if state:
