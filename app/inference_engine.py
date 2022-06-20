@@ -182,8 +182,8 @@ class InferenceEngine:
             axis=0
         )
 
-        print(raw_calibration.base_pose_camera_link)
-        print(raw_calibration.key_points_base_pose_camera_link)
+        # print(raw_calibration.base_pose_camera_link)
+        # print(raw_calibration.key_points_base_pose_camera_link)
         # print(transform_pose2pose(raw_calibration.base_pose, self.camera_link_transformation_pose))
         # print(transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose))
 

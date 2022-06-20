@@ -95,13 +95,13 @@ class MainApp:
         self.base_frame = create_coordinate_frame([-0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
         # self.widget3d.scene.add_geometry("ee_frame", self.ee_frame, self.lit)
 
-        self.calibrated_ee_frame = create_coordinate_frame(
+        self.calibrated_base_frame = create_coordinate_frame(
             [-0.2, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
         )
         self.widget3d.scene.add_geometry(
-            "calibrated_ee_frame", self.calibrated_ee_frame, self.lit
+            "calibrated_base_frame", self.calibrated_base_frame, self.lit
         )
-        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
+        self.widget3d.scene.show_geometry("calibrated_base_frame", False)
 
         _init_points = (np.random.rand(200000, 3) - 0.5) * 3
         self.pcd = o3d.geometry.PointCloud()
@@ -152,7 +152,7 @@ class MainApp:
         self._calibrated_pred_check.enabled = False
         self._calibrated_pred_check.set_on_checked(
             lambda state: self.widget3d.scene.show_geometry(
-                "calibrated_ee_frame", state
+                "calibrated_base_frame", state
             )
         )
         self.panel.add_child(self._calibrated_pred_check)
@@ -184,10 +184,19 @@ class MainApp:
         self.logo_panel.add_child(self.logo_rgb_widget)
         # self.window.add_child(self.logo_panel)
 
+        self.warning_panel = gui.Horiz(
+            0.5 * em, gui.Margins(left=margin, right=margin, top=0.68 * em, bottom=margin)
+        )
+        self._warning_label = gui.Label("Please, move the end effector to a more visible position!")
+        self._warning_label.text_color = gui.Color(1, 1, 1, 1)
+        self._warning_label.font_id = 1
+        self.warning_panel.add_child(self._warning_label)
+        self.window.add_child(self.warning_panel)
+
         self.notification_panel = gui.Horiz(
             0.5 * em, gui.Margins(left=margin, right=margin, top=0.68 * em, bottom=margin)
         )
-        self._notification_label = gui.Label("Please, move the end effector to a more visible position!")
+        self._notification_label = gui.Label("Collecting data. Please, do not move the end effector.")
         self._notification_label.text_color = gui.Color(1, 1, 1, 1)
         self._notification_label.font_id = 1
         self.notification_panel.add_child(self._notification_label)
@@ -206,6 +215,9 @@ class MainApp:
         self._calibrate_button.enabled = False
         self._collect_data_button.enabled = False
 
+        self._notification_label.text = "Collecting data. Please, do not move the end effector. \n"
+        self.notification_panel.visible = True
+
     def _collection_thread(self):
         # needs to stay alive
         while True:
@@ -217,15 +229,19 @@ class MainApp:
 
             self._calibration_data[-1].append(result)
 
-            self._results_label.text = f"Position: #{len(self._calibration_data)}, Frame: {len(self._calibration_data[-1])}/{_config.INFERENCE.CALIBRATION.num_of_frames}"
+            self._notification_label.text = "Collecting data. Please, do not move the end effector. \n"
+
+            self._notification_label.text += f"Position: #{len(self._calibration_data)}, Frame: {len(self._calibration_data[-1])}/{_config.INFERENCE.CALIBRATION.num_of_frames}"
             # print(len(self._calibration_data[-1]), result)
 
             if len(self._calibration_data[-1]) >= _config.INFERENCE.CALIBRATION.num_of_frames:
+                time.sleep(0.1)
                 self._collect_data_button.enabled = True
 
                 self._collection_event.clear()
                 with self._calibration_queue.mutex:
                     self._calibration_queue.queue.clear()
+                self.notification_panel.visible = False
 
                 self._calibrate_button.enabled = len(self._calibration_data) >= _config.INFERENCE.CALIBRATION.min_num_of_positions
 
@@ -236,7 +252,7 @@ class MainApp:
 
         self._calibrated_pred_check.checked = False
         self._calibrated_pred_check.enabled = False
-        self.widget3d.scene.show_geometry("calibrated_ee_frame", False)
+        self.widget3d.scene.show_geometry("calibrated_base_frame", False)
 
         self._calibration_event.set()
 
@@ -246,21 +262,29 @@ class MainApp:
             self._calibration_event.wait()
             if self.stop_event.is_set():
                 break
-            self._results_label.text = "calibration yo!"
 
-            time.sleep(5)
+            self.notification_panel.visible = True
+
+            self._notification_label.text = "Calibration in progress."
+            calibration_input = {f'p{i}': v for i, v in enumerate(self._calibration_data)}
+
+            calibration_result = self._inference_engine.calibrate(calibration_input)
+            # ipdb.set_trace()
+            # time.sleep(5)
 
             self._results_label.text = "x: \ny: \nz: \nq_w: \nq_x: \nq_y: \nq_z: \n"
 
-            # self.calibrated_ee_frame = "nanananan"
+            # self.calibrated_base_frame = "nanananan"
 
             self._calibrate_button.enabled = False
             self._calibrated_pred_check.checked = True
             self._calibrated_pred_check.enabled = True
-            self.widget3d.scene.remove_geometry("calibrated_ee_frame")
-            self.widget3d.scene.add_geometry("calibrated_ee_frame", self.calibrated_ee_frame, self.lit)
-            self.widget3d.scene.show_geometry("calibrated_ee_frame", self._calibrated_pred_check.checked)
+            self.calibrated_base_frame = create_coordinate_frame(calibration_result.pose_camera_link, switch_w=False)
+            self.widget3d.scene.remove_geometry("calibrated_base_frame")
+            self.widget3d.scene.add_geometry("calibrated_base_frame", self.calibrated_base_frame, self.lit)
+            self.widget3d.scene.show_geometry("calibrated_base_frame", self._calibrated_pred_check.checked)
 
+            self.notification_panel.visible = False
             self._calibration_event.clear()
             self._collection_event.clear()
             self._calibration_data.clear()
@@ -282,13 +306,22 @@ class MainApp:
             panel_width,
             contentRect.height,
         )
-        self.notification_panel.frame = gui.Rect(
+        self.warning_panel.frame = gui.Rect(
             self.widget3d.frame.get_left(),
             contentRect.y,
             contentRect.width - panel_width,
             46,
         )
-        self.notification_panel.background_color = gui.Color(0.9, 0.3, 0.3, 0.96)
+        self.warning_panel.background_color = gui.Color(0.9, 0.3, 0.3, 0.96)
+        self.warning_panel.visible = False
+
+        self.notification_panel.frame = gui.Rect(
+            self.widget3d.frame.get_left(),
+            contentRect.y,
+            contentRect.width - panel_width,
+            72,
+        )
+        self.notification_panel.background_color = gui.Color(0.5, 0.5, 0.5, 0.96)
         self.notification_panel.visible = False
 
         logo_panel_height = 46
@@ -301,12 +334,6 @@ class MainApp:
         )
         self.logo_panel.background_color = gui.Color(0.3, 0.3, 0.3, 0)
         # ipdb.set_trace()
-
-    def _toggle_segmentation(self, state):
-        if state:
-            self._seg_event.set()
-        else:
-            self._seg_event.clear()
 
     def _on_close(self):
         self.stop_event.set()  # set before all
@@ -326,7 +353,7 @@ class MainApp:
 
         def update(data, result):
             try:
-                self.notification_panel.visible = not result.is_confident
+                self.warning_panel.visible = not self.notification_panel.visible and not result.is_confident
 
                 if self._seg_event.is_set() and result.segmentation is not None:
                     rgb = self._seg_colors[result.segmentation]
@@ -400,7 +427,7 @@ class MainApp:
                     )
             l_end = time.time()
 
-            print(f"FPS: {(1/(l_end - l_start)):.2f}")
+            # print(f"FPS: {(1/(l_end - l_start)):.2f}")
             time.sleep(0.05)
 
 
