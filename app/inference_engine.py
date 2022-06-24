@@ -157,7 +157,7 @@ class InferenceEngine:
         '''
         data: Dict[str, List[ResultDTO] | List[TestResultDTO]]
         '''
-        # TODO: add kinect1 weights
+        # TODO: might add kinect1 weight avg
         individual_calibrations = [self._calibrate_individual(v) for v in data.values()]
         individual_calibrations = [v for v in individual_calibrations if v is not None]
 
@@ -275,26 +275,6 @@ class InferenceEngine:
                 _logger.warning("fail kp error margin")
                 return False
 
-        # rot_mat = get_quaternion_rotation_matrix(
-        #     result.ee_pose[3:], switch_w=False
-        # )  # switch_w=False in inference
-        # ee_points = (rot_mat.T @ ee_raw_points.reshape((-1, 3, 1))).reshape(
-        #     (-1, 3)
-        # )
-
-        # ee_points_min = ee_points.min(axis=0)
-        # ee_points_max = ee_points.max(axis=0)
-        # ee_width = abs(ee_points_min[1] - ee_points_max[1])
-        # ee_height = abs(ee_points_min[2] - ee_points_max[2])
-
-        # if ee_width < self.ee_min_width or ee_height < self.ee_min_height:
-        #     print('fail dims')
-        #     return False
-
-        # TODO: implement kp sanity check
-        # TODO: implement surface area check
-
-        # ipdb.set_trace()
         return True
 
     def predict(self, data: PointCloudDTO):

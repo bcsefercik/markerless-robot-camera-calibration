@@ -36,8 +36,31 @@ if __name__ == "__main__":
         rgb = data['rgb']
         labels = data['labels']
         pose = data['pose']
-    else:
-        points, rgb, labels, _, pose = data
+    # else:
+    #     points, rgb, labels, _, pose = data
+
+    arm_idx = np.where(labels == 1)[0]
+    # ee_idx = get_ee_idx(points, pose, switch_w=True, arm_idx=arm_idx) # switch_w=False in dataloader
+    # # labels[ee_idx] = 2
+    # pose_w_first = transformation.switch_w(pose)
+    # icp_m = icp.get_point2point_matcher()
+    # pose = icp_m(points[ee_idx], pose_w_first)
+    # pose = np.concatenate((pose[:3], pose[4:], [pose[3]]))
+
+    ee_idx = get_ee_idx(points, pose, switch_w=True, arm_idx=arm_idx) # switch_w=False in dataloader
+    labels[ee_idx] = 2
+
+    data_json = {
+        "points": points,
+        "rgb": rgb,
+        "labels": labels,
+        "instance_labels": labels,
+        "pose": pose,
+        "joint_angles": None
+    }
+    # ipdb.set_trace()
+    # with open(sys.argv[1], 'wb') as fp:
+    #     pickle.dump(data_json, fp)
 
     labels = np.array(labels, dtype=int)
 
