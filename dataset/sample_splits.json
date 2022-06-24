@@ -1,6 +1,128 @@
 {
-    "train": [],
-    "val": [],
+    "train": [
+        {
+            "filepath": "dataset/sample/labeled/1.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 33251
+        },
+        {
+            "filepath": "dataset/sample/labeled/4.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 43337
+        },
+        {
+            "filepath": "dataset/sample/labeled/2.pickle",
+            "position": "c2",
+            "light": "c1",
+            "arm_point_count": 20983
+        },
+        {
+            "filepath": "dataset/sample/labeled/5.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 27235
+        },
+        {
+            "filepath": "dataset/sample/labeled/3.pickle",
+            "position": "c3",
+            "light": "c1",
+            "arm_point_count": 15633
+        },
+        {
+            "filepath": "dataset/sample/labeled/1.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 33251
+        },
+        {
+            "filepath": "dataset/sample/labeled/4.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 43337
+        },
+        {
+            "filepath": "dataset/sample/labeled/2.pickle",
+            "position": "c2",
+            "light": "c1",
+            "arm_point_count": 20983
+        },
+        {
+            "filepath": "dataset/sample/labeled/5.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 27235
+        },
+        {
+            "filepath": "dataset/sample/labeled/3.pickle",
+            "position": "c3",
+            "light": "c1",
+            "arm_point_count": 15633
+        }
+    ],
+    "val": [
+        {
+            "filepath": "dataset/sample/labeled/1.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 33251
+        },
+        {
+            "filepath": "dataset/sample/labeled/4.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 43337
+        },
+        {
+            "filepath": "dataset/sample/labeled/2.pickle",
+            "position": "c2",
+            "light": "c1",
+            "arm_point_count": 20983
+        },
+        {
+            "filepath": "dataset/sample/labeled/5.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 27235
+        },
+        {
+            "filepath": "dataset/sample/labeled/3.pickle",
+            "position": "c3",
+            "light": "c1",
+            "arm_point_count": 15633
+        },
+        {
+            "filepath": "dataset/sample/labeled/1.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 33251
+        },
+        {
+            "filepath": "dataset/sample/labeled/4.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 43337
+        },
+        {
+            "filepath": "dataset/sample/labeled/2.pickle",
+            "position": "c2",
+            "light": "c1",
+            "arm_point_count": 20983
+        },
+        {
+            "filepath": "dataset/sample/labeled/5.pickle",
+            "position": "c1",
+            "light": "c1",
+            "arm_point_count": 27235
+        },
+        {
+            "filepath": "dataset/sample/labeled/3.pickle",
+            "position": "c3",
+            "light": "c1",
+            "arm_point_count": 15633
+        }
+],
     "test": [
         {
             "filepath": "dataset/sample/labeled/1.pickle",
