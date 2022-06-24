@@ -1,6 +1,6 @@
 # Learning Markerless Robot-Depth Camera Calibration and End-Effector Pose Estimation
 
-**Disclaimer:** We were not able to arrange an undisclosed large storage server to share our dataset and models, in time. We are going to publish our dataset and trained models once the paper is published. We shared a small sample from our dataset under `dataset/sample` which can be used to run training and testing scripts. We will also open source the easy robot-depth camera calibration app shown in video along with training and testing scripts.
+**Disclaimer:** We were not able to arrange an undisclosed large storage server to share our dataset and models, in time. We are going to publish our dataset and trained models once the paper is published. We shared a small sample from our dataset under `dataset/sample` which can be used to run training and testing scripts. We will also open source the [easy robot-depth camera calibration app](#calibration-app) shown in video along with training and testing scripts.
 
 
 ## Install
@@ -10,6 +10,14 @@ Please install Python packages with:
 ```bash
 pip3 install -r requirements.txt
 ```
+## Calibration App
+**Disclaimer:** In order to fully utilize the calibration application, you need to specify tranied model paths in the config file. These models will be published alongside the paper itself as we stated above. With following commands you can run the app and verify its flow but won't be able to see predictions for the time being.
+
+```bash
+cd app
+python3 main.py --config ../config/default.yaml
+```
+![App Visualization](dataset/app_viz.png "App Visualization")
 
 ## Code
 ### Training
@@ -37,12 +45,6 @@ python3 test_*.py --config config/default.yaml --override <exp_path>/<config_fil
 ```
 This overrides the values in the default config with the ones used in that particular experiment.
 
-### Testing the system
-To test the overall system you need to set paths to your trained pytorch models (.pth) in config file under INFERENCE key. All the result are exported in to excel file whose path is defined in config file via `TEST.output` key.
-```sh
-cd app
-python3 test.py --config ../config/default.yaml
-```
 
 ### utils/
 We use the code here during training, testing and inference. Small part of the code is taken from other code bases whose links are shared in the related comments. We also utilize several frameworks' methods whose information can be found in `requirements.txt` with the version data.
