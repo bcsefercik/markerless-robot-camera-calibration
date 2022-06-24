@@ -22,6 +22,8 @@ from utils import augmentation as aug
 _config = config.Config()
 _logger = logger.Logger().get()
 
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
 
 class AliveV2Dataset(Dataset):
     def __init__(self, set_name="train", augment=False, file_names=list(), quantization_enabled=True):
@@ -132,19 +134,22 @@ class AliveV2Dataset(Dataset):
 
         if _config.DATA.ee_segmentation_enabled or _config.DATA.data_type == "ee_seg":
             if self.ee_idx[i] is None:
-                self.ee_idx[i] = get_ee_idx(
-                    points,
-                    pose,
-                    ee_dim={
-                        'min_z': -0,
-                        'max_z': 0.13,
-                        'min_x': -0.04,
-                        'max_x': 0.04,
-                        'min_y': -0.13,
-                        'max_y': 0.13
-                    },  # leave big margin for bbox since we remove non arm points
-                    arm_idx=arm_idx,
-                    switch_w=False)
+                if not (labels == 2).any():
+                    self.ee_idx[i] = get_ee_idx(
+                        points,
+                        pose,
+                        ee_dim={
+                            'min_z': -0,
+                            'max_z': 0.13,
+                            'min_x': -0.04,
+                            'max_x': 0.04,
+                            'min_y': -0.13,
+                            'max_y': 0.13
+                        },  # leave big margin for bbox since we remove non arm points
+                        arm_idx=arm_idx,
+                        switch_w=False)
+                else:
+                    self.ee_idx[i] = np.where(labels == 2)[0]
 
             labels[self.ee_idx[i]] = 2
 
@@ -332,6 +337,12 @@ class AliveV2Dataset(Dataset):
     def load_data_file(self, i, semantic_enabled=False):
         fn = self.file_names[i]
         curr_file_name = fn["filepath"] if isinstance(fn, dict) else fn
+        if not os.path.isabs(curr_file_name):
+            curr_file_name = os.path.join(
+                os.path.dirname(BASE_PATH),
+                curr_file_name
+            )
+
         x, semantic_pred = file_utils.load_alive_file(
             curr_file_name, semantic_enabled=semantic_enabled
         )
@@ -418,6 +429,5 @@ def collate_tupled(data):
         end_offset = start_offset + len(labels[i])
         others[i]["offset"] = (start_offset, end_offset)
         start_offset = end_offset
-
 
     return coords_batch, feats_batch, labels_batch, poses_batch, others

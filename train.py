@@ -1,3 +1,4 @@
+from bdb import BdbQuit
 import random
 import time
 import json
@@ -372,6 +373,7 @@ def main():
 
 
 if __name__ == "__main__":
+    main()
     while True:
         try:
             main()

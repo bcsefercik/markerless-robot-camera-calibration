@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /log/default.log
-exp_path: /exp/default
+log_path: log/default.log
+exp_path: exp/default
 
 MODE: 'train'
 
@@ -149,7 +149,7 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp36_seg_origin_s200/default-000000008.pth
+    checkpoint: exp/exp36_seg_origin_s200/default-000000008.pth
     backbone: 'robotnet_segmentation'
     classes: ['background', 'arm', 'ee']
     class_colors: ['2C3E50', 'E74C3C', 'F1C40F']
@@ -157,7 +157,7 @@ INFERENCE:
     center_at_origin: true
 
   TRANSLATION:
-    checkpoint: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp34_vote_origin/default-000000096.pth'
+    checkpoint: 'exp/exp34_vote_origin/default-000000096.pth'
     backbone: 'minkunet'
     scale: 200
     center_at_origin: true
@@ -168,11 +168,11 @@ INFERENCE:
     backbone: 'minkunet'
     encode_only: true
     scale: 200
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_geodesic_origin/default-000000072.pth
+    checkpoint: exp/exp38_ee_seg_geodesic_origin/default-000000072.pth
     center_at_origin: true
 
   KEY_POINTS:
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp45_kp6_pt2_coord_center_uniform_aug/default-000000114.pth
+    checkpoint: exp/exp45_kp6_pt2_coord_center_uniform_aug/default-000000114.pth
     backbone: 'pointnet2'
     scale: 800
     center_at_origin: true

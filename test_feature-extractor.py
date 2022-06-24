@@ -111,6 +111,6 @@ if __name__ == "__main__":
         )
 
         eval(data_loader, model, criterion, miner)
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     _logger.info("DONE!")
