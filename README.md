@@ -56,3 +56,17 @@ Our data files are pickle files (<filename>.pickle) dumped with a single JSON ob
     "joint_angles": "<9 sized numpy.float32 array> containing joint angles"
 }
 ```
+### Data Visualization
+We have shared sample from our test data under `dataset/sample`. You can visualize the data with following commands. Also, you can visualize the segmentation labels using `k` button on your keyboard.
+```bash
+cd visualization
+python3 viz_pickle.py ../dataset/sample/labeled/<filename>.pickle
+```
+
+**_Example:_**
+```bash
+cd visualization
+python3 viz_pickle.py ../dataset/sample/labeled/2.pickle
+```
+![Data Visualization](dataset/sample_viz.png "Data Visualization")
+
