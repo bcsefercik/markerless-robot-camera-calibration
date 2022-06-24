@@ -1,3 +1,5 @@
+# Github: https://github.com/yanx27/Pointnet_Pointnet2_pytorch
+
 import torch.nn as nn
 import torch.nn.functional as F
 from model.pointnet2_utils import PointNetSetAbstraction, PointNetFeaturePropagation, PointNetSetAbstractionMsg

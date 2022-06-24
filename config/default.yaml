@@ -172,14 +172,15 @@ INFERENCE:
     center_at_origin: true
 
   KEY_POINTS:
-    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp39_keypoints_s800/default-000000012.pth
-    backbone: 'robotnet_segmentation'
+    checkpoint: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp45_kp6_pt2_coord_center_uniform_aug/default-000000114.pth
+    backbone: 'pointnet2'
     scale: 800
     center_at_origin: true
-    conf_threshold: 0.99999
+    conf_threshold: 0.75
     use_coordinates_as_features: false
     num_of_keypoints: 6
     error_margin: 0.05  # in meters
+    pointcloud_sampling_method: uniform  # choices: farthest, uniform
 
   CALIBRATION:
     num_of_frames: 10

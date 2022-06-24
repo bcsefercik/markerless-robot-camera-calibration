@@ -68,8 +68,11 @@ if __name__ == "__main__":
     else:
         points, rgb, labels, _, pose = data
 
-    with open(sys.argv[2], 'r') as fp:
-        limits = json.load(fp)
+    if len(sys.argv) > 2:
+        with open(sys.argv[2], 'r') as fp:
+            limits = json.load(fp)
+    else:
+        limits = dict()
 
     pred = [0] * 7
 
@@ -144,5 +147,5 @@ if __name__ == "__main__":
 
     key_to_callback = {ord("K"): switch_to_normal}
     o3d.visualization.draw_geometries_with_key_callbacks(
-        [pcd, ee_frame, kinect_frame, ee_frame_pred, obbox], key_to_callback
+        [pcd, ee_frame, kinect_frame, obbox], key_to_callback
     )
