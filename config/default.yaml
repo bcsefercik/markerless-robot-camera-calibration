@@ -2,7 +2,7 @@
 log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/default.log
 exp_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/default
 
-MODE: 'train'  # or inference
+MODE: 'train'
 
 PARAM:
   ee_r: 0.02  # m
