@@ -149,30 +149,22 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: exp/exp36_seg_origin_s200/default-000000008.pth
+    checkpoint: exp/exp36_seg_origin_s200/default-000000008.pth  # path to trained segmentation model
     backbone: 'robotnet_segmentation'
     classes: ['background', 'arm', 'ee']
     class_colors: ['2C3E50', 'E74C3C', 'F1C40F']
     scale: 200
     center_at_origin: true
 
-  TRANSLATION:
-    checkpoint: 'exp/exp34_vote_origin/default-000000096.pth'
-    backbone: 'minkunet'
-    scale: 200
-    center_at_origin: true
-    move_ee_to_origin: true
-    magic_enabled: false
-
   ROTATION:
     backbone: 'minkunet'
     encode_only: true
     scale: 200
-    checkpoint: exp/exp38_ee_seg_geodesic_origin/default-000000072.pth
+    checkpoint: exp/exp38_ee_seg_geodesic_origin/default-000000072.pth  # path to trained model
     center_at_origin: true
 
   KEY_POINTS:
-    checkpoint: exp/exp45_kp6_pt2_coord_center_uniform_aug/default-000000114.pth
+    checkpoint: exp/exp45_kp6_pt2_coord_center_uniform_aug/default-000000114.pth  # path to trained model
     backbone: 'pointnet2'
     scale: 800
     center_at_origin: true

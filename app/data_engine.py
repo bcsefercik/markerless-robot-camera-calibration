@@ -18,6 +18,9 @@ from utils.transformation import switch_w
 from dto import PointCloudDTO, RawDTO
 
 
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+
+
 class DataEngineInterface(metaclass=abc.ABCMeta):
     @classmethod
     def __subclasshook__(cls, subclass):
@@ -50,6 +53,11 @@ class PickleDataEngine(DataEngineInterface):
         self.data = {split: []}
         with open(data_path, "r") as fp:
             self.data.update(json.load(fp))
+
+        if not os.path.isabs(self.data[split][0]["filepath"]):
+            for i, sf in enumerate(self.data[split]):
+                self.data[split][i]["filepath"] = os.path.join(os.path.dirname(BASE_PATH), sf["filepath"])
+
         self.data[split].sort(
             key=lambda x: (
                 x["position"],

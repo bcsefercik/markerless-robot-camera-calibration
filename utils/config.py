@@ -62,6 +62,18 @@ class Config(metaclass=SingletonMeta):
 
         self.__dict__.update(self.config)
 
+        if not os.path.isabs(self.exp_path):
+            self.exp_path = os.path.join(
+                os.path.dirname(BASE_PATH),
+                self.exp_path
+            )
+
+        if not os.path.isabs(self.log_path):
+            self.log_path = os.path.join(
+                os.path.dirname(BASE_PATH),
+                self.log_path
+            )
+
         if not os.path.isdir(self.exp_path):
             os.mkdir(self.exp_path)
 

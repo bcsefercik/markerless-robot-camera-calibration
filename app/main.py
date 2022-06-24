@@ -34,9 +34,17 @@ _logger = logger.Logger().get()
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 class MainApp:
     def __init__(self, data_source) -> None:
+        if not os.path.isabs(str(data_source)):
+            data_source = os.path.join(
+                os.path.dirname(BASE_PATH),
+                str(data_source)
+            )
+
         if os.path.isfile(str(data_source)):
             self._data_source = data_engine.PickleDataEngine(data_source)
         else:
