@@ -1,4 +1,5 @@
 # Copyright (c) 2018-present, Facebook, Inc.
+# taken from: https://github.com/facebookresearch/QuaterNet
 # All rights reserved.
 #
 # This source code is licensed under the license found in the

@@ -41,8 +41,11 @@ cd app
 python3 test.py --config ../config/default.yaml
 ```
 
+### utils
+We use the code here during training, testing and inference. Small part of the code is taken from other code bases whose links are shared in the related comments. We also utilize several frameworks' methods whose information can be found in requirements.txt with the version data.
+
 ## Data
-Our data files are pickle files dumped with a single JSON object. JSON object structure is as follows:
+Our data files are pickle files (<filename>.pickle) dumped with a single JSON object. JSON object structure is as follows:
 ```JSON
 {
     "points": "<Nx3 numpy.float32 matrix>",
