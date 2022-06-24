@@ -60,7 +60,6 @@ class InferenceEngine:
         self.models["minkunet34C"] = minkunet.MinkUNet34C
         self.models["minkunet14A"] = minkunet.MinkUNet14A
         self.models["minkunet"] = minkunet.MinkUNet18D
-        self.models["translation"] = RobotNetVote
         self.models["robotnet_encode"] = RobotNetEncode
         self.models["robotnet"] = RobotNet
         self.models["robotnet_segmentation"] = RobotNetSegmentation
@@ -80,17 +79,6 @@ class InferenceEngine:
             use_cuda=_use_cuda,
         )
         self._segmentation_model.eval()
-
-        self._translation_model = self.models["translation"](
-            in_channels=_config.DATA.input_channel,
-            num_classes=2,  # binary; ee point or not
-        )
-        utils.checkpoint_restore(
-            self._translation_model,
-            f=_config.INFERENCE.TRANSLATION.checkpoint,
-            use_cuda=_use_cuda,
-        )
-        self._translation_model.eval()
 
         compute_confidence = _config()["STRUCTURE"].get("compute_confidence", False)
         self._rotation_model = self.models[
@@ -443,31 +431,10 @@ class InferenceEngine:
                 ee_pos_points = ee_points
                 pos_origin_offset = np.array([0.0, 0.0, 0.0])
 
-            if _config.INFERENCE.TRANSLATION.magic_enabled:
-                min_z = ee_pos_points.min(axis=0)[2]
-                ee_pos_magic = np.array([-0.015, 0.0, min_z])
-                ee_pos_magic_reverse = ee_pos_magic + pos_origin_offset
-                pos_result = rot_mat @ ee_pos_magic_reverse
-            else:
-                pos_points = torch.from_numpy(ee_pos_points).to(dtype=torch.float32)
-
-                pos_in_field = ME.TensorField(
-                    features=ee_rgb,
-                    coordinates=ME.utils.batched_coordinates(
-                        [pos_points * _config.INFERENCE.TRANSLATION.scale],
-                        dtype=torch.float32,
-                    ),
-                    quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE,
-                    minkowski_algorithm=ME.MinkowskiAlgorithm.SPEED_OPTIMIZED,
-                    device=_device,
-                )
-                pos_input = pos_in_field.sparse()
-                pos_output = self._translation_model(pos_input)
-                pos_out_field = pos_output.slice(pos_in_field)
-
-                pos_result = out_utils.get_pred_center(
-                    pos_out_field.features, ee_raw_points, q=q
-                )
+            min_z = ee_pos_points.min(axis=0)[2]
+            ee_pos_magic = np.array([-0.015, 0.0, min_z])
+            ee_pos_magic_reverse = ee_pos_magic + pos_origin_offset
+            pos_result = rot_mat @ ee_pos_magic_reverse
 
         return pos_result, pos_origin_offset
 
