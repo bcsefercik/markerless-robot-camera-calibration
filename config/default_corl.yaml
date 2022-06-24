@@ -126,7 +126,7 @@ TEST:
   gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
 
   SEGMENTATION:
-    evaluate: true
+    evaluate: false
 
   KEY_POINTS:
     error_margin: 0.05  # in meters

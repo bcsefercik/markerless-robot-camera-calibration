@@ -12,6 +12,8 @@ _logger = logger.Logger().get()
 _use_cuda = torch.cuda.is_available()
 _device = torch.device("cuda" if _use_cuda else "cpu")
 
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+
 class AverageMeter(object):
     """Computes and stores the average and current value"""
 
@@ -98,7 +100,12 @@ def checkpoint_restore(
                 f = f[-1]
                 epoch = int(f[len(exp_path) + len(exp_name) + 2 : -4])
 
-    if len(f) > 0:
+    if len(f) > 0 and (os.path.exists(f) or os.path.exists(os.path.join(os.path.dirname(BASE_PATH), f))):
+        if not os.path.exists(f):
+            f = os.path.join(
+                os.path.dirname(BASE_PATH),
+                f
+            )
         _logger.info("Restore from " + f)
         checkpoint = torch.load(f, map_location=torch.device(_device))
         model.load_state_dict(checkpoint["model_state_dict"])
