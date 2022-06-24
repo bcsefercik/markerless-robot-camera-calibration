@@ -145,6 +145,9 @@ INFERENCE:
   # camera_link_transformation_pose: [0.0062, 0.0309, -0.0454, 0.4688, 0.4857, -0.507, 0.536]
   camera_link_transformation_pose: null
 
+  SANITY:
+    min_num_of_ee_points: 3000
+
   INPUT:
     roi: {}
 

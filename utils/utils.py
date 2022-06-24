@@ -117,6 +117,9 @@ def checkpoint_restore(
                     for k, v in state.items():
                         if torch.is_tensor(v):
                             state[k] = v.cuda()
+    else:
+        epoch = -100
+        _logger.info("Did not restore from " + f)
 
     if use_cuda:
         model.cuda()

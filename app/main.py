@@ -451,9 +451,9 @@ class MainApp:
                         self.window, lambda: update(data, result)
                     )
             l_end = time.time()
-
-            # print(f"FPS: {(1/(l_end - l_start)):.2f}")
-            time.sleep(0.05)
+            duration = l_end - l_start
+            # print(f"FPS: {(1/(duration)):.2f}")
+            time.sleep(max(0.8 - duration, 0.05))
 
 
 

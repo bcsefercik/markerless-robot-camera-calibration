@@ -65,6 +65,8 @@ class InferenceEngine:
         self.models["robotnet_segmentation"] = RobotNetSegmentation
         self.models["pointnet2"] = PointNet2SSG
 
+        self.pred_enabled = True
+
         # self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
         #     in_channels=_config.DATA.input_channel,
         #     out_channels=len(_config.INFERENCE.SEGMENTATION.classes),
@@ -73,11 +75,12 @@ class InferenceEngine:
             in_channels=_config.DATA.input_channel,
             num_classes=len(_config.INFERENCE.SEGMENTATION.classes),
         )
-        utils.checkpoint_restore(
+        cp_restore_result = utils.checkpoint_restore(
             self._segmentation_model,
             f=_config.INFERENCE.SEGMENTATION.checkpoint,
             use_cuda=_use_cuda,
         )
+        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
         self._segmentation_model.eval()
 
         compute_confidence = _config()["STRUCTURE"].get("compute_confidence", False)
@@ -92,6 +95,7 @@ class InferenceEngine:
             f=_config.INFERENCE.ROTATION.checkpoint,
             use_cuda=_use_cuda,
         )
+        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
         self._rotation_model.eval()
 
         if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
@@ -112,7 +116,10 @@ class InferenceEngine:
             f=_config.INFERENCE.KEY_POINTS.checkpoint,
             use_cuda=_use_cuda,
         )
+        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
         self._key_points_model.eval()
+
+        _logger.info("Loaded all models.")
 
         # CAD to PCD, ICP inits
         self.match_icp = icp.get_point2point_matcher()
@@ -266,6 +273,9 @@ class InferenceEngine:
         return True
 
     def predict(self, data: PointCloudDTO):
+        if not self.pred_enabled:
+            return ResultDTO(segmentation=np.zeros(len(data.points), dtype=np.int))
+
         with torch.no_grad():
             rgb = preprocess.normalize_colors(data.rgb)  # never use data.rgb below
 

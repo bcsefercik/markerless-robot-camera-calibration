@@ -18,7 +18,7 @@ INFERENCE:
 
   icp_enabled: true
 
-  SANITY:  # TODO: add this to default.yaml
+  SANITY:
     min_num_of_ee_points: 3000
 
   INPUT:
