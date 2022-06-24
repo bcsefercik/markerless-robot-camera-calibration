@@ -119,7 +119,7 @@ def checkpoint_restore(
                             state[k] = v.cuda()
     else:
         epoch = -100
-        _logger.info("Did not restore from " + f)
+        _logger.info(f"Did not restore from {f}")
 
     if use_cuda:
         model.cuda()

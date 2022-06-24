@@ -303,6 +303,8 @@ def main():
         use_cuda=_use_cuda
     )  # resume from the latest epoch, or specify the epoch to restore
 
+    start_epoch = max(1, start_epoch)
+
     for epoch in range(start_epoch, _config.TRAIN.epochs + 1):
         train_epoch(train_data_loader, model, optimizer, criterion, epoch)
 
