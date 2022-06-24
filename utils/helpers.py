@@ -24,4 +24,3 @@ if __name__ == "__main__":
         },
         'DDDD': [1,2,3]
     }
-    print('bcs')

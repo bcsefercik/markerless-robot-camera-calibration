@@ -180,7 +180,7 @@ class MainApp:
         )
         self.logo_img = o3d.io.read_image(
             os.path.join(os.path.dirname(os.path.abspath(__file__)),
-            'ku_logo.png'
+            'logo.png'
         ))
         self.logo_rgb_widget = gui.ImageWidget(self.logo_img)
         self.logo_panel.add_child(self.logo_rgb_widget)
