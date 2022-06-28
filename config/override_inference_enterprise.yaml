@@ -19,7 +19,7 @@ INFERENCE:
   icp_enabled: true
 
   SANITY:
-    min_num_of_ee_points: 3000
+    min_num_of_ee_points: 2048
 
   INPUT:
     roi: {}
