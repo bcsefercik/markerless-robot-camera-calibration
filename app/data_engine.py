@@ -159,10 +159,11 @@ class PickleDataEngine(DataEngineInterface):
 
 
 class PCDDataEngine(DataEngineInterface):
-    def __init__(self, data_path, cyclic=True) -> None:
+    def __init__(self, data_path, cyclic=True, step=10) -> None:
         self.data = glob.glob(os.path.join(data_path, "*.pcd"))
         self.data.sort(key=lambda x: int(x.split('/')[-1].split('.')[0]))
-        self.data = self.data[:10]
+        self.data = [self.data[i] for i in range(0, len(self.data), step)]
+        # self.data = self.data[:30]
         self.data_pool = cycle(self.data) if cyclic else iter(self.data)
 
     def get(self) -> PointCloudDTO:

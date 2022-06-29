@@ -146,7 +146,7 @@ INFERENCE:
   camera_link_transformation_pose: null
 
   SANITY:
-    min_num_of_ee_points: 2048
+    min_num_of_ee_points: 3000
 
   INPUT:
     roi: {}

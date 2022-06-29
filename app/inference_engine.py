@@ -155,10 +155,13 @@ class InferenceEngine:
         # TODO: might add kinect1 weight avg
         individual_calibrations = [self._calibrate_individual(v) for v in data.values()]
         individual_calibrations = [v for v in individual_calibrations if v is not None]
-
-        raw_calibration = self._calibrate_individual(individual_calibrations)
-        if raw_calibration is None:
-            return CalibrationResultDTO(pose_camera_link=None)
+        # ipdb.set_trace()
+        if len(data) == 1 and len(individual_calibrations) > 0:
+            raw_calibration = individual_calibrations[0]
+        else:
+            raw_calibration = self._calibrate_individual(individual_calibrations)
+            if raw_calibration is None:
+                return CalibrationResultDTO(pose_camera_link=None)
 
         # pose_camera_link_avg_stack = np.stack(
         #     (
