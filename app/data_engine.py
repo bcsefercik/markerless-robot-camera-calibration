@@ -1,3 +1,4 @@
+import glob
 import ipdb
 
 import os
@@ -9,10 +10,11 @@ from itertools import cycle
 from datetime import datetime
 
 import numpy as np
+import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils
-from utils.data import get_ee_idx
+from utils.data import get_ee_idx, get_roi_mask
 from utils.transformation import switch_w
 
 from dto import PointCloudDTO, RawDTO
@@ -68,7 +70,10 @@ class PickleDataEngine(DataEngineInterface):
 
     def get(self) -> PointCloudDTO:
         # time.sleep(0.1)
-        data_ins = next(self.data_pool)
+        try:
+            data_ins = next(self.data_pool)
+        except StopIteration:
+            return None
         # data_ins = self.data['test'][52]
         data, _ = file_utils.load_alive_file(data_ins["filepath"])
 
@@ -142,6 +147,51 @@ class PickleDataEngine(DataEngineInterface):
         labels[ee_idx] = 2
 
         return RawDTO(points, rgb, pose, labels, ee2base_pose=ee2base_pose, other=other)
+
+    def run(self):
+        return None
+
+    def exit(self):
+        return None
+
+    def __len__(self):
+        return len(self.data_pool)
+
+
+class PCDDataEngine(DataEngineInterface):
+    def __init__(self, data_path, cyclic=True) -> None:
+        self.data = glob.glob(os.path.join(data_path, "*.pcd"))
+        self.data.sort(key=lambda x: int(x.split('/')[-1].split('.')[0]))
+        self.data = self.data[:10]
+        self.data_pool = cycle(self.data) if cyclic else iter(self.data)
+
+    def get(self) -> PointCloudDTO:
+        try:
+            data_ins = next(self.data_pool)
+        except StopIteration:
+            return None
+
+        _pcd = o3d.io.read_point_cloud(data_ins)
+        points = np.asarray(_pcd.points, dtype=np.float32)
+        rgb = np.asarray(_pcd.colors, dtype=np.float32)
+        roi_mask = get_roi_mask(points)
+        points = points[roi_mask]
+        rgb = rgb[roi_mask]
+        gt_pose = np.load(data_ins.replace(".pcd", ".npy"), allow_pickle=True)
+        ee2base_pose = np.load(
+            data_ins.replace(".pcd", "_robot2ee_pose.npy"), allow_pickle=True
+        )
+        ee2base_pose = switch_w(ee2base_pose)  # WXYZ
+        gt_pose = switch_w(gt_pose)  # WXYZ
+
+        return PointCloudDTO(
+            points=points,
+            rgb=rgb,
+            ee2base_pose=ee2base_pose,
+            timestamp=datetime.utcnow(),
+            id=data_ins,
+            gt_pose=None  # TODO: remove this line
+        )
 
     def run(self):
         return None
