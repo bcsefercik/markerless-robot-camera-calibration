@@ -183,6 +183,7 @@ class InferenceEngine:
         # print(transform_pose2pose(raw_calibration.key_points_base_pose, self.camera_link_transformation_pose))
 
         pose_camera_link_avg = calib_util.compute_poses_average(pose_camera_link_avg_stack)
+        print(f'Latest calibration: [{", ".join([str(round(i, 4)) for i in pose_camera_link_avg.tolist()])}]')
         calibration = CalibrationResultDTO(pose_camera_link=pose_camera_link_avg)
         calibration.load_from_test_result(raw_calibration)
 
@@ -192,49 +193,51 @@ class InferenceEngine:
         '''
         data: List[ResultDTO] | List[TestResultDTO]
         '''
-        confident_data = [d for d in data if d.is_confident]
-        if len(confident_data) < confident_count:
-            return None
+        try:
+            confident_data = [d for d in data if d.is_confident]
+            if len(confident_data) < confident_count:
+                return None
 
-        if weights is not None:
-            weights = weights[np.array([d.is_confident for d in data], dtype=bool)]
+            if weights is not None:
+                weights = weights[np.array([d.is_confident for d in data], dtype=bool)]
 
-        result_dto = TestResultDTO(segmentation=None, is_confident=True)
+            result_dto = TestResultDTO(segmentation=None, is_confident=True)
 
-        ee_poses = np.array([d.ee_pose for d in confident_data], dtype=np.float32)
-        ee_poses = calib_util.remove_pose_outliers(ee_poses)
-        result_dto.ee_pose = calib_util.compute_poses_average(ee_poses, weights=weights)
+            ee_poses = np.array([d.ee_pose for d in confident_data], dtype=np.float32)
+            ee_poses = calib_util.remove_pose_outliers(ee_poses)
+            result_dto.ee_pose = calib_util.compute_poses_average(ee_poses, weights=weights)
 
-        base_poses = np.array([d.base_pose for d in confident_data], dtype=np.float32)
-        base_poses = calib_util.remove_pose_outliers(base_poses)
-        result_dto.base_pose = calib_util.compute_poses_average(base_poses, weights=weights)
+            base_poses = np.array([d.base_pose for d in confident_data], dtype=np.float32)
+            base_poses = calib_util.remove_pose_outliers(base_poses)
+            result_dto.base_pose = calib_util.compute_poses_average(base_poses, weights=weights)
 
-        key_points_poses = np.array([d.key_points_pose for d in confident_data if d.key_points_pose is not None], dtype=np.float32)
-        key_points_poses = calib_util.remove_pose_outliers(key_points_poses)
-        result_dto.key_points_pose = calib_util.compute_poses_average(key_points_poses, weights=weights)
+            key_points_poses = np.array([d.key_points_pose for d in confident_data if d.key_points_pose is not None], dtype=np.float32)
+            key_points_poses = calib_util.remove_pose_outliers(key_points_poses)
+            result_dto.key_points_pose = calib_util.compute_poses_average(key_points_poses, weights=weights)
 
-        key_points_base_poses = np.array([d.key_points_base_pose for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
-        key_points_base_poses = calib_util.remove_pose_outliers(key_points_base_poses)
-        result_dto.key_points_base_pose = calib_util.compute_poses_average(key_points_base_poses, weights=weights)
+            key_points_base_poses = np.array([d.key_points_base_pose for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
+            key_points_base_poses = calib_util.remove_pose_outliers(key_points_base_poses)
+            result_dto.key_points_base_pose = calib_util.compute_poses_average(key_points_base_poses, weights=weights)
 
-        base_poses_camera_link = None
-        key_points_base_poses_camera_link = None
-        if isinstance(confident_data[0], ResultDTO):
-            if self.camera_link_transformation_pose is not None:
-                base_poses_camera_link = np.array([transform_pose2pose(d.base_pose, self.camera_link_transformation_pose) for d in confident_data if d.base_pose is not None], dtype=np.float32)
-                key_points_base_poses_camera_link = np.array([transform_pose2pose(d.key_points_base_pose, self.camera_link_transformation_pose) for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
-        elif isinstance(confident_data[0], TestResultDTO):
-            base_poses_camera_link = np.array([d.base_pose_camera_link for d in confident_data], dtype=np.float32)
-            key_points_base_poses_camera_link = np.array([d.key_points_base_pose_camera_link for d in confident_data], dtype=np.float32)
+            base_poses_camera_link = None
+            key_points_base_poses_camera_link = None
+            if isinstance(confident_data[0], ResultDTO):
+                if self.camera_link_transformation_pose is not None:
+                    base_poses_camera_link = np.array([transform_pose2pose(d.base_pose, self.camera_link_transformation_pose) for d in confident_data if d.base_pose is not None], dtype=np.float32)
+                    key_points_base_poses_camera_link = np.array([transform_pose2pose(d.key_points_base_pose, self.camera_link_transformation_pose) for d in confident_data if d.key_points_base_pose is not None], dtype=np.float32)
+            elif isinstance(confident_data[0], TestResultDTO):
+                base_poses_camera_link = np.array([d.base_pose_camera_link for d in confident_data], dtype=np.float32)
+                key_points_base_poses_camera_link = np.array([d.key_points_base_pose_camera_link for d in confident_data], dtype=np.float32)
 
-        if base_poses_camera_link is not None:
-            base_poses_camera_link = calib_util.remove_pose_outliers(base_poses_camera_link)
-            result_dto.base_pose_camera_link = calib_util.compute_poses_average(base_poses_camera_link, weights=weights)
+            if base_poses_camera_link is not None:
+                base_poses_camera_link = calib_util.remove_pose_outliers(base_poses_camera_link)
+                result_dto.base_pose_camera_link = calib_util.compute_poses_average(base_poses_camera_link, weights=weights)
 
-        if key_points_base_poses_camera_link is not None:
-            key_points_base_poses_camera_link = calib_util.remove_pose_outliers(key_points_base_poses_camera_link)
-            result_dto.key_points_base_pose_camera_link = calib_util.compute_poses_average(key_points_base_poses_camera_link, weights=weights)
-
+            if key_points_base_poses_camera_link is not None:
+                key_points_base_poses_camera_link = calib_util.remove_pose_outliers(key_points_base_poses_camera_link)
+                result_dto.key_points_base_pose_camera_link = calib_util.compute_poses_average(key_points_base_poses_camera_link, weights=weights)
+        except:
+            ipdb.set_trace()
         return result_dto
 
     def check_sanity(
@@ -245,7 +248,7 @@ class InferenceEngine:
     ):
         num_of_ee_points = (result.segmentation == 2).sum()
         if num_of_ee_points < _config.INFERENCE.SANITY.min_num_of_ee_points:
-            _logger.warning("fail min # points")
+            _logger.warning(f"fail min # points ({num_of_ee_points})")
             return False
 
         ee_raw_points = data.points[result.segmentation == 2]
