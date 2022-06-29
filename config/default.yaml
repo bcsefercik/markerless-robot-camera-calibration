@@ -146,7 +146,7 @@ INFERENCE:
   camera_link_transformation_pose: null
 
   SANITY:
-    min_num_of_ee_points: 3000
+    min_num_of_ee_points: 2048
 
   INPUT:
     roi: {}
@@ -186,5 +186,6 @@ INFERENCE:
     pointcloud_sampling_method: uniform  # choices: farthest, uniform
 
   CALIBRATION:
-    num_of_frames: 10
-    min_num_of_positions: 6
+    num_of_frames: 4
+    min_num_of_positions: 3
+    pcd_source: /home/ercan/bcs_workspace/bcs_ssd/bags/20220627_training/p3_fair_full/pcd_ee

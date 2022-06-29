@@ -38,9 +38,6 @@ INFERENCE:
 
   kinect1_weight_polynomials: [-1.08e-03, -5.73e-05, 1.85E-03]  # [a, b, c] = c + bx + ax^2
 
-  SANITY:  # TODO: add this to default.yaml
-    min_num_of_ee_points: 4096
-
   INPUT:
     roi: {}
 
