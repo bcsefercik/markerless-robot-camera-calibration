@@ -36,7 +36,7 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 class CalibrationApp:
     def __init__(self, data_source=_config.INFERENCE.CALIBRATION.pcd_source) -> None:
-        self._data_source = data_engine.PCDDataEngine(data_source, cyclic=False, step=10)
+        self._data_source = data_engine.PCDDataEngine(data_source, cyclic=False, step=1)
 
         self._inference_engine = InferenceEngine()
 
@@ -73,7 +73,7 @@ class CalibrationApp:
 
                 result = self._inference_engine.predict(data)
 
-                if len(self.instance_results[-1]) >= 10:
+                if len(self.instance_results[-1]) >= 20:
                     self.instance_results.append(list())
 
                 self.instance_results[-1].append(result)
