@@ -15,29 +15,22 @@ from utils.transformation import switch_w, transform_pose2pose
 from utils.preprocess import center_at_origin
 
 
+BASE_POSE = np.array(
+   [-0.032, 0.0763, 1.5966, -0.3511, -0.6685, -0.589, 0.2878]
+)  # w first
+
 # BASE_POSE = np.array(
 #     [
-#         -0.67407859,
-#         0.11282988,
-#         1.49869489,
-#         -0.4718421,
-#         -0.88097861,
-#         -0.00916152,
-#         -0.03402628,
+#         -0.6603,
+#         0.117,
+#         1.5072,
+#         -0.4742,
+#         -0.8801,
+#         -0.0127,
+#         -0.0201,
 #     ]
-# )  # w first
-
-BASE_POSE = np.array(
-    [
-        -0.66030359,
-        0.1169908,
-        1.50719007,
-        -0.47416406,
-        -0.88011599,
-        -0.01268632,
-        -0.02008359,
-    ]
-)  # w first
+# )
+# # w first p3_training
 
 if __name__ == "__main__":
     ee2base_pose = None
@@ -77,5 +70,6 @@ if __name__ == "__main__":
 
     # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
     ee_frame = create_coordinate_frame(ee_pose_w_first_transformed, switch_w=False)
+    base_frame = create_coordinate_frame(BASE_POSE, switch_w=False)
 
-    o3d.visualization.draw_geometries([pcd, kinect_frame, ee_frame])
+    o3d.visualization.draw_geometries([pcd, kinect_frame, ee_frame, base_frame])
