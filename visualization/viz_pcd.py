@@ -19,6 +19,15 @@ if __name__ == "__main__":
         # # "max_z": 1.5
     }
 
+    limits_box = {
+        "min_x": -0.6,
+        "max_x": 0.4,
+        "min_z": 0.3,
+        "max_z": 1.1,
+        "min_y": -0.5,
+        "max_y": 0.5,
+    }
+
     base_pose = None
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
@@ -57,6 +66,24 @@ if __name__ == "__main__":
     pcd_th = o3d.geometry.PointCloud()
     pcd_th.points = o3d.utility.Vector3dVector(points)
     pcd_th.colors = o3d.utility.Vector3dVector(rgb)
+
+    box_points_min = np.array([
+        limits_box.get('min_x', -1),
+        limits_box.get('min_y', 0),
+        limits_box.get('max_z', 0) - 0.01,
+    ])
+    box_points_max = np.array([
+        limits_box.get('max_x', 1),
+        limits_box.get('max_y', 2),
+        limits_box.get('max_z', 2.2),
+    ])
+
+    bbox = o3d.geometry.AxisAlignedBoundingBox(
+        box_points_min.reshape((3, 1)),
+        box_points_max.reshape((3, 1)),
+    )
+    bbox = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox)
+    bbox.color = [0, 0, 1]
 
     # R = pcd_th.get_rotation_matrix_from_xyz((np.pi, 0, 0))
     # pcd_th = pcd_th.rotate(R, center=(0,0,0))
