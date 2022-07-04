@@ -14,13 +14,12 @@ from utils.transformation import switch_w, transform_pose2pose
 if __name__ == "__main__":
 
     limits = {
-        "min_x": -0.5,
-        "max_x": 0.3,
-        "max_z": 1.3,
-        "min_y": -0.5
+        # "min_x": -0.7,
+        # "max_x": 0.7,
+        # # "max_z": 1.5
     }
 
-    base_pose = np.array([0.6265, 0.3674, 0.9880, -0.0092, -0.0007, 0.9296, -0.3684])
+    base_pose = None
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
     # frame = frame.rotate(frame.get_rotation_matrix_from_xyz((np.pi,0,np.pi/4)))
@@ -59,7 +58,19 @@ if __name__ == "__main__":
     pcd_th.points = o3d.utility.Vector3dVector(points)
     pcd_th.colors = o3d.utility.Vector3dVector(rgb)
 
-    o3d.visualization.draw_geometries([pcd_th, ee_frame, kinect_frame])
+    # R = pcd_th.get_rotation_matrix_from_xyz((np.pi, 0, 0))
+    # pcd_th = pcd_th.rotate(R, center=(0,0,0))
+    # ee_frame = ee_frame.rotate(R, center=(0,0,0))
+
+    o3d.visualization.draw_geometries(
+        [pcd_th],
+        # [pcd_th, ee_frame],
+        # [pcd_th, ee_frame, kinect_frame],
+        zoom=0.01,
+        front=[0., -0., -0.9],
+        lookat=[0, 0, 0],
+        up=[-0., -0.9768, 0.8]
+    )
 
     print(ee)
 
