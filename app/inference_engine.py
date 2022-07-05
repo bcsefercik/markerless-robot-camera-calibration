@@ -31,7 +31,7 @@ from utils.transformation import (
     get_pose_from_matrix,
     transform_pose2pose
 )
-from utils.data import get_farthest_point_sample_idx
+from utils.data import get_ee_idx, get_farthest_point_sample_idx
 from utils.data import get_6_key_points as get_gt_6_key_points
 from model.backbone import minkunet
 from model.robotnet_vote import RobotNetVote
@@ -196,6 +196,7 @@ class InferenceEngine:
         '''
         data: List[ResultDTO] | List[TestResultDTO]
         '''
+        result_dto = TestResultDTO(segmentation=None, is_confident=True)
         try:
             confident_data = [d for d in data if d.is_confident]
             if len(confident_data) < confident_count:
@@ -203,8 +204,6 @@ class InferenceEngine:
 
             if weights is not None:
                 weights = weights[np.array([d.is_confident for d in data], dtype=bool)]
-
-            result_dto = TestResultDTO(segmentation=None, is_confident=True)
 
             ee_poses = np.array([d.ee_pose for d in confident_data], dtype=np.float32)
             ee_poses = calib_util.remove_pose_outliers(ee_poses)
@@ -240,7 +239,7 @@ class InferenceEngine:
                 key_points_base_poses_camera_link = calib_util.remove_pose_outliers(key_points_base_poses_camera_link)
                 result_dto.key_points_base_pose_camera_link = calib_util.compute_poses_average(key_points_base_poses_camera_link, weights=weights)
         except:
-            ipdb.set_trace()
+            result_dto.is_confident = False
         return result_dto
 
     def check_sanity(
@@ -293,6 +292,7 @@ class InferenceEngine:
                 return result_dto
 
             ee_idx = np.where(seg_results == 2)[0]
+            arm_idx = np.where(seg_results == 1)[0]
 
             ee_raw_points = data.points[ee_idx]  # no origin offset
             ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
@@ -322,7 +322,25 @@ class InferenceEngine:
             result_dto.is_confident = self.check_sanity(data, result_dto)
 
             if _config.INFERENCE.icp_enabled:
-                result_dto.ee_pose = self.match_icp(ee_raw_points, result_dto.ee_pose)
+                ee_idx_rpt = get_ee_idx(
+                    data.points,
+                    result_dto.ee_pose,
+                    switch_w=False,
+                    arm_idx=arm_idx,
+                    ee_dim={
+                        'min_z': -0.03,
+                        'max_z': 0.04,
+                        'min_x': -0.1,
+                        'max_x': 0.1
+                    }
+                )
+                ee_idx_rpt_kpm = np.concatenate((ee_idx, ee_idx_rpt))
+                # if result_dto.key_points_pose is not None:
+
+
+                ee_points_rpt_kpm = np.array(data.points[ee_idx_rpt_kpm], copy=True)
+                # ipdb.set_trace()
+                result_dto.ee_pose = self.match_icp(ee_points_rpt_kpm, result_dto.ee_pose)
 
                 result_dto.key_points_pose = self.match_icp(
                     ee_raw_points, result_dto.key_points_pose
