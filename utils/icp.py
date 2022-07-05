@@ -31,7 +31,7 @@ def get_point2point_matcher(cad_name=os.path.join(BASE_PATH, "..", "app", "hand_
         )
         _pcd_cad_points = np.asarray(_cad_pcd.points)
         _pcd_cad_normals = np.asarray(_cad_pcd.normals)
-        _pcd_cad_mask = _pcd_cad_points[:, 0] > 0.0 * (_pcd_cad_points[:, 2] > -0.01)
+        _pcd_cad_mask = _pcd_cad_points[:, 0] > 0.0 * (_pcd_cad_points[:, 2] > -0.02)
         _cad_pcd.points = o3d.utility.Vector3dVector(
             _pcd_cad_points[_pcd_cad_mask]
         )
