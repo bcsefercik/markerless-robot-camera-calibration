@@ -263,7 +263,7 @@ def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.03, i
 
     key_points = np.array([
         [0.02, 0.09, 0],  # P1: top left
-        [0.02, -0.09, 0],  # P2: top right
+        [0.01, -0.1, 0],  # P2: top right
         [0.014, 0.095, 0.07],  # P3: bottom left
         [0.014, -0.095, 0.07],  # P4: bottom right
         [0, 0.048, 0.12],  # gripper
