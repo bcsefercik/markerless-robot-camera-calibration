@@ -102,8 +102,6 @@ if __name__ == "__main__":
     new_ee_points -= ee_pose_offset
     ref_key_points, ref_p_idx = get_6_key_points(new_ee_points, np.array([0, 0, 0, 1, 0, 0, 0]), switch_w=False)
 
-    ref_key_points[3, 0] = 0.02086613
-    ref_key_points[3, 2] = 0.0588744
     ref_shapes = generate_key_point_shapes(
         list(zip(list(range(len(ref_p_idx))), ref_key_points)),
         radius=0.008,

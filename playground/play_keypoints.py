@@ -41,7 +41,7 @@ if __name__ == "__main__":
     data, semantic_pred = file_utils.load_alive_file(sys.argv[1])
 
     if isinstance(data, dict):
-        points = data['points']
+        points = np.array(data['points'], dtype=np.float32)
         rgb = data['rgb']
         labels = data['labels']
         pose = data['pose']
@@ -50,10 +50,14 @@ if __name__ == "__main__":
         points = np.array(points, dtype=np.float32)
         rgb = np.array(rgb, dtype=np.float32)
         pose = np.array(pose, dtype=np.float32)
+
     ee_position = pose[:3]
     ee_orientation = pose[3:].tolist()
     ee_orientation = ee_orientation[-1:] + ee_orientation[:-1]
 
+    # points = points[labels == 1]
+    # rgb = rgb[labels == 1]
+    # labels = labels[labels == 1]
     arm_idx = np.where(labels == 1)[0]
     print('# of points:', len(rgb))
     print('# of arm points:', len(arm_idx))
@@ -63,7 +67,6 @@ if __name__ == "__main__":
     # labels = [arm_idx]
     # arm_idx = np.arange(len(arm_idx))
 
-
     pcd = o3d.geometry.PointCloud()
 
     frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.25)
@@ -71,11 +74,12 @@ if __name__ == "__main__":
     kinect_frame = copy.deepcopy(frame).translate([0, 0, 0])
     kinect_frame.rotate(frame.get_rotation_matrix_from_quaternion([0] * 4))
 
-    # kinect_frame = create_coordinate_frame([0] * 7, switch_w=False)
-    ee_frame = create_coordinate_frame(pose, switch_w=True)
+    kinect_frame = create_coordinate_frame([0, 0, 0, 1, 0, 0, 0], switch_w=False, radius=0.004)
+    ee_frame = create_coordinate_frame(pose, switch_w=True, radius=0.004)
 
     key_points_colors = get_key_point_colors()
 
+    # points = points * 0.5
     # ee_points = points - pose[:3]
     # ee_rgb = rgb
 
@@ -98,7 +102,16 @@ if __name__ == "__main__":
     new_ee_points = new_ee_points[:-1]
     new_ee_pose_points, ee_pose_offset = center_at_origin(new_ee_pose_pos)
     new_ee_points -= ee_pose_offset
+    # new_ee_points += np.array([0, 0, 0.3])
+
+    # pcd = o3d.io.read_point_cloud("../app/hand_files/hand.pcd")
+    # new_ee_points = np.asarray(pcd.points)
+    # ee_rgb = np.asarray(pcd.colors)
+
+    ee_rgb = ee_rgb * 0 + 0.64
+
     ref_key_points, ref_p_idx = get_6_key_points(new_ee_points, np.array([0, 0, 0, 1, 0, 0, 0]), switch_w=False)
+
 
     ref_shapes = generate_key_point_shapes(
         list(zip(list(range(len(ref_p_idx))), ref_key_points)),
@@ -113,9 +126,9 @@ if __name__ == "__main__":
     ref_key_points_lean = ref_key_points[p_idx > -1]
     key_points_cls_lean = np.where(p_idx > -1)[0]
     key_points_idx = p_idx[p_idx > -1]
-    pcls_idx, p_idx = collect_closest_points(p_idx, ee_points)
-    key_points_cls = key_points_cls_lean[pcls_idx]
-    key_points = ee_points[p_idx]
+    # pcls_idx, p_idx = collect_closest_points(p_idx, ee_points)
+    # key_points_cls = key_points_cls_lean[pcls_idx]
+    # key_points = ee_points[p_idx]
     # print(len(key_points_cls))
     # ipdb.set_trace()
 
@@ -130,7 +143,6 @@ if __name__ == "__main__":
     #     radius=0.016,
     #     shape='octahedron'
     # )  # multiple selection for each kp
-
     ee_points_aug = np.array(new_ee_points, copy=True)
     ee_points_aug -= np.array([0.1, 0.0, 0.0])
 
@@ -158,7 +170,7 @@ if __name__ == "__main__":
 
     R, t = get_rigid_transform_3D(ref_key_points_lean, key_points_lean)
 
-    ipdb.set_trace()
+    # ipdb.set_trace()
 
     # # reverse the transformation above
     # new_ee_points_reverse = np.array(new_ee_points, copy=True)
