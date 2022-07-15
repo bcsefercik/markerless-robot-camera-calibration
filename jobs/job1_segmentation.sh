@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=kp2pose
+#SBATCH --job-name=50_seg_t
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=ai
@@ -20,7 +20,6 @@ export CUDA_HOME=/usr/local/cuda-11.1
 export OMP_NUM_THREADS=6
 
 /kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 \
-/kuacc/users/bsefercik/repos/unknown_object_segmentation/train_kp_to_pose.py \
+/kuacc/users/bsefercik/repos/unknown_object_segmentation/train_segmentation.py \
 --config /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/default.yaml \
---override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_kp_to_pose.yaml
-
+--override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_segmentation.yaml

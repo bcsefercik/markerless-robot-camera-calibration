@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=exp28
+#SBATCH --job-name=51_rot
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=ai
@@ -19,5 +19,7 @@ module load gcc/8.3.0
 export CUDA_HOME=/usr/local/cuda-11.1
 export OMP_NUM_THREADS=6
 
-# /kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 /kuacc/users/bsefercik/repos/unknown_object_segmentation/train.py --config /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/default.yaml --override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_rotation_only.yaml
-/kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 /kuacc/users/bsefercik/repos/unknown_object_segmentation/train.py --config /kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp38_ee_seg_shapematch/default.yaml
+/kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 \
+/kuacc/users/bsefercik/repos/unknown_object_segmentation/train.py \
+--config /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/default.yaml \
+--override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_rotation_only.yaml
