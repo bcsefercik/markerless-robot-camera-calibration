@@ -12,7 +12,7 @@ GENERAL:
   seed: 1
 
 DATA:
-  folder: '/kuacc/users/bsefercik/dataset/alivev2'
+  folder: '/kuacc/users/bsefercik/dataset/alivev5'
   suffix: .pickle
   prefix: ''
   file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'

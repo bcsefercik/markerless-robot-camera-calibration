@@ -1,20 +1,22 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp49_seg_origin_aug_s100.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp49_seg_origin_aug_s100'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp50_seg_origin_aug_s200.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp50_seg_origin_aug_s200'
 
 GENERAL:
-  save_freq: 2
+  save_freq: 1
   seed: 1
 
 DATA:
   suffix: .pickle
   prefix: ''
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev5_splits.json'
+  load_cache_at_start: true
 
   workers: 4
-  batch_size: 5
+  batch_size: 2
 
-  scale: 100 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
+  scale: 200 # voxel_size (=quantization_size) = 1 / scale, scale 50 (2cm)
   full_scale: [128, 512]
   max_npoint: 250000
   mode: 4  # 4: mean
@@ -29,13 +31,15 @@ DATA:
 
   center_at_origin: true
 
-  position_eligibility_enabled: true
-  orientation_eligibility_enabled: true
+  position_eligibility_enabled: false
+  orientation_eligibility_enabled: false
 
   augmentation: [elastic, noise, transform, flip, gravity]
   augmentation_probability: 0.2
 
   keypoints_enabled: false
+
+  roi: null
 
 STRUCTURE:
   m: 32 # 16 or 32
