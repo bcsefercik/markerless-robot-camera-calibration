@@ -27,7 +27,12 @@ _logger = logger.Logger().get()
 
 class AliveV2DenseDataset(AliveV2Dataset):
     def __getitem__(self, i):
-        points, rgb, labels, _, pose, _, other = self.load_generic_data(i)
+        data = self.load_generic_data(i)
+        if data is None:
+            self.file_idx_to_skip.add(i)
+            return None
+
+        points, rgb, labels, instance_labels, pose, joint_angles, other = data
 
         if len(points) < _config.DATA.num_of_dense_input_points:
             self.file_idx_to_skip.add(i)

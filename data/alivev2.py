@@ -143,8 +143,8 @@ class AliveV2Dataset(Dataset):
                             'max_z': 0.13,
                             'min_x': -0.05,
                             'max_x': 0.05,
-                            'min_y': -0.13,
-                            'max_y': 0.13
+                            'min_y': -0.14,
+                            'max_y': 0.14
                         },  # leave big margin for bbox since we remove non arm points
                         arm_idx=arm_idx,
                         switch_w=False)
@@ -238,7 +238,12 @@ class AliveV2Dataset(Dataset):
         return labels
 
     def __getitem__(self, i):
-        points, rgb, labels, instance_labels, pose, joint_angles, other = self.load_generic_data(i)
+        data = self.load_generic_data(i)
+        if data is None:
+            self.file_idx_to_skip.add(i)
+            return None
+
+        points, rgb, labels, instance_labels, pose, joint_angles, other = data
 
         if _config()["DATA"].get("voxelize_position", False):
             pose[0, :3] /= self.quantization_size
