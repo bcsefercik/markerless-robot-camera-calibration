@@ -77,10 +77,10 @@ def get_roi_mask(points, min_x=-500, max_x=500, min_y=-500, max_y=500, min_z=-50
 
 def get_ee_idx(points, pose, switch_w=True, ee_dim=None, arm_idx=None):  # in training switch_w = False
     ee_dim_init = {
-        'min_z': -0,
+        'min_z': -0.006,
         'max_z': 0.12,
-        'min_x': -0.03,
-        'max_x': 0.03,
+        'min_x': -0.05,
+        'max_x': 0.05,
         'min_y': -0.11,
         'max_y': 0.11
     }
@@ -252,7 +252,7 @@ def get_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.018, ig
     return key_points, key_points_idx
 
 
-def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.02, ignore_label=-100):
+def get_6_key_points(ee_points, pose, switch_w=True, euclidean_threshold=0.03, ignore_label=-100):
     new_ee_points = np.array(ee_points, copy=True)
     rot_mat = get_quaternion_rotation_matrix(pose[3:], switch_w=switch_w)
     new_ee_points = (rot_mat.T @ np.concatenate((new_ee_points, pose[:3].reshape(1, 3))).reshape((-1, 3, 1))).reshape((-1, 3))
