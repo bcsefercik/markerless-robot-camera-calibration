@@ -11,15 +11,7 @@ from utils.transformation import switch_w, transform_pose2pose
 
 if __name__ == "__main__":
     base_pose = base_pose = np.array(
-        [
-            -0.66030359,
-            0.1169908,
-            1.50719007,
-            -0.47416406,
-            -0.88011599,
-            -0.01268632,
-            -0.02008359,
-        ]
+        [0.6105, 0.3857, 1.0007, 0.0019, -0.017, 0.9324, -0.3609]
     )  # w first
 
     i = 1

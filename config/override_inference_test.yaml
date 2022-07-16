@@ -8,7 +8,7 @@ TEST:
   data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/p1_calib_2.json
 
-  output: test_results_p1_calib_v7_gtseg__.xlsx
+  output: test_results_p1_calib_v8_seg_new_10.xlsx
 
   ignore_unconfident: true
 
@@ -20,10 +20,10 @@ TEST:
   # units: ['m', 'rad']
 
   SEGMENTATION:
-    evaluate: false
+    evaluate: true
 
   KEY_POINTS:
-    error_margin: 0.04  # in meters
+    error_margin: 0.1  # in meters
 
 INFERENCE:
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
@@ -42,7 +42,8 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp50_orig_aug_s200_e6.pth
     scale: 200
     center_at_origin: true
 
@@ -55,6 +56,7 @@ INFERENCE:
 
   ROTATION:
     checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation_s200_posematch_origin_e104_20220509.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/exp51_ee_seg_rot_origin_e96_s200.pth
     center_at_origin: true
 
   KEY_POINTS:

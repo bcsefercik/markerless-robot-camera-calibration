@@ -135,8 +135,8 @@ class PickleDataEngine(DataEngineInterface):
             ee_dim={
                 "min_z": -0.0095,
                 "max_z": 0.13,
-                "min_x": -0.04,
-                "max_x": 0.04,
+                "min_x": -0.05,
+                "max_x": 0.05,
                 "min_y": -0.13,
                 "max_y": 0.13,
             },  # leave big margin for bbox since we remove non arm points

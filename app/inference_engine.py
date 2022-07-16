@@ -263,7 +263,7 @@ class InferenceEngine:
             _logger.warning("fail dim check")
             return False
 
-        if len(result.key_points) > 0:
+        if len(result.key_points) > 3:
             kp_pred_classes, kp_pred_coords = zip(*result.key_points)
             kp_pred_classes = np.array(kp_pred_classes, dtype=np.int)
             kp_pred_coords = np.array(kp_pred_coords, dtype=np.float32)
@@ -272,7 +272,7 @@ class InferenceEngine:
             )
 
             if kp_error > kp_error_margin:
-                _logger.warning("fail kp error margin")
+                _logger.warning(f"fail kp error margin ({round(kp_error, 2)} m)")
                 return False
 
         return True
