@@ -104,7 +104,7 @@ def compute_pose_metrics(gt: np.array, pred: np.array):
 
 def compute_kp_error(gt_coords, kp_coords, kp_classes):
     if len(gt_coords) < 2 or len(kp_coords) < 2 or len(kp_classes) < 2:
-        return 0
+        return 100
 
     gt_coords_selected = gt_coords[kp_classes]
 
