@@ -64,8 +64,8 @@ def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['backgro
         fn = len(gt_idx - tp_idx)
         fp = len(pred_idx - tp_idx)
 
-        precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
+        precision = int(fp == 0) or tp / (tp + fp)
+        recall = int(fn == 0) or tp / (tp + fn)
 
         results["class_results"][cn] = {
             "precision": precision,
