@@ -79,8 +79,8 @@ class MainApp:
             )
 
         self.window = gui.Application.instance.create_window(
-            "Markerless Robot-Depth Camera Calibration Tool",
-            # "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey",
+            # "Markerless Robot-Depth Camera Calibration Tool",
+            "Alive Lab Robot Calibration Tool - Koç University, Istanbul, Turkey",
             1000,
             500,
         )
@@ -192,7 +192,7 @@ class MainApp:
         ))
         self.logo_rgb_widget = gui.ImageWidget(self.logo_img)
         self.logo_panel.add_child(self.logo_rgb_widget)
-        # self.window.add_child(self.logo_panel)
+        self.window.add_child(self.logo_panel)
 
         self.warning_panel = gui.Horiz(
             0.5 * em, gui.Margins(left=margin, right=margin, top=0.68 * em, bottom=margin)
