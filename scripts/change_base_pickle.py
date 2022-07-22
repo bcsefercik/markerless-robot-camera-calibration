@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
         data, semantic_pred = file_utils.load_alive_file(fpath)
         ee2base_pose = data['robot2ee_pose']
-        print(i)
+        print(fpath)
 
         ee2base_pose_w_first = switch_w(ee2base_pose)
 
