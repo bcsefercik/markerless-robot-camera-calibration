@@ -3,6 +3,7 @@ import ipdb
 import os
 import sys
 import pickle
+import glob
 
 import numpy as np
 
@@ -12,15 +13,14 @@ from utils import file_utils
 
 if __name__ == "__main__":
     base_pose = np.array(
-        [-0.0113, 0.0775, 1.592, -0.3419, -0.6686, -0.5882, 0.3004]
-    )  # w first p2 training
+        [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]
+    )  # p2 test
 
-    i = 1
-
-    while True:
-        fpath = os.path.join(sys.argv[1], f"{i}.pickle")
-        if not os.path.isfile(fpath):
-            break
+    pickles = glob.glob(os.path.join(sys.argv[1], "*.pickle"))
+    for fpath in pickles:
+        # fpath = os.path.join(sys.argv[1], f"{i}.pickle")
+        # if not os.path.isfile(fpath):
+        #     break
 
         data, semantic_pred = file_utils.load_alive_file(fpath)
         ee2base_pose = data['robot2ee_pose']
@@ -36,7 +36,5 @@ if __name__ == "__main__":
 
         with open(fpath, "wb") as fp:
             pickle.dump(data, fp)
-
-        i += 1
 
     print('done')
