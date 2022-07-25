@@ -1,0 +1,402 @@
+{
+    "train": [],
+    "val": [],
+    "test": [
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/19.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36546
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/17.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36497
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/15.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36552
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/18.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36610
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/20.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36497
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/22.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36552
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/25.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36473
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/21.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36395
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/24.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36575
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/16.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36562
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i1/labeled/23.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 36333
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/121.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33213
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/116.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33195
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/123.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33332
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/117.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33201
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/120.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33350
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/115.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33124
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/119.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33244
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/125.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33380
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/118.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33206
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/124.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33273
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i2/labeled/122.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 33386
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/223.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30738
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/216.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30710
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/217.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30680
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/215.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30635
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/218.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30592
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/219.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30689
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/225.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30733
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/220.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30727
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/224.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30764
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/222.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30779
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i3/labeled/221.pickle",
+            "position": "i3",
+            "light": "i3",
+            "arm_point_count": 30673
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/593.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35270
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/586.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35001
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/591.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35240
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/594.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35161
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/590.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35179
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/588.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35257
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/585.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35101
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/592.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35172
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/587.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35148
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/595.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35189
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i6/labeled/589.pickle",
+            "position": "i6",
+            "light": "i6",
+            "arm_point_count": 35286
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/753.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28162
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/754.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28165
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/750.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28312
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/749.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28207
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/747.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28192
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/746.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28192
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/755.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28139
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/751.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28212
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/748.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28185
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/752.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28150
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i7/labeled/745.pickle",
+            "position": "i7",
+            "light": "i7",
+            "arm_point_count": 28121
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/895.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28213
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/892.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28192
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/888.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28133
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/893.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28220
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/885.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28174
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/886.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28320
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/891.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28185
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/889.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28316
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/887.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28256
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/890.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28230
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p2_test_full/i8/labeled/894.pickle",
+            "position": "i8",
+            "light": "i8",
+            "arm_point_count": 28151
+        }
+    ]
+}

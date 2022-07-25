@@ -1,0 +1,336 @@
+{
+    "train": [],
+    "val": [],
+    "test": [
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1394.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20535
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1392.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20552
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1390.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20411
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1393.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20519
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1395.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20510
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1397.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20428
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1400.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20450
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1396.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20390
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1399.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20393
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1391.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20413
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i14/labeled/1398.pickle",
+            "position": "i14",
+            "light": "i14",
+            "arm_point_count": 20566
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1006.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26869
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1001.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26977
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1008.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26965
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1002.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 27035
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1005.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 27006
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1000.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 27002
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1004.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26799
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1010.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26903
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1003.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26928
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1009.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26915
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i10/labeled/1007.pickle",
+            "position": "i10",
+            "light": "i10",
+            "arm_point_count": 26974
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/878.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9440
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/871.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9493
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/872.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9424
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/870.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9468
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/873.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9509
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/874.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9469
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/880.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9405
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/875.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9521
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/879.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9398
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/877.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9393
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i9/labeled/876.pickle",
+            "position": "i9",
+            "light": "i9",
+            "arm_point_count": 9466
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/18.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18892
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/11.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18921
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/16.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18914
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/19.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 19014
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/15.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18926
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/13.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18852
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/10.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18972
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/17.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18951
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/12.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18871
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/20.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18957
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i1/labeled/14.pickle",
+            "position": "i1",
+            "light": "i1",
+            "arm_point_count": 18915
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/148.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32247
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/149.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32266
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/145.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32189
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/144.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32310
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/142.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32340
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/141.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32253
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/150.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32168
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/146.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32226
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/143.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32333
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/147.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32239
+        },
+        {
+            "filepath": "/media/ercan/bcs_ssd1/bags/20220718_test/p3_test_full/i2/labeled/140.pickle",
+            "position": "i2",
+            "light": "i2",
+            "arm_point_count": 32194
+        }
+    ]
+}

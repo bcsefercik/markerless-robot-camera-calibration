@@ -12,9 +12,10 @@ from utils.transformation import switch_w, transform_pose2pose
 from utils import file_utils
 
 if __name__ == "__main__":
-    base_pose = np.array(
-        [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]
-    )  # p2 test
+    # base_pose = np.array(
+    #     [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]
+    # )  # p2 test
+    base_pose = np.array([-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561])  # p3 test
 
     pickles = glob.glob(os.path.join(sys.argv[1], "*.pickle"))
     for fpath in pickles:
