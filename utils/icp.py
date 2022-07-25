@@ -7,7 +7,7 @@ import open3d as o3d
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(BASE_PATH))
-from utils.transformation import get_pose_from_matrix, get_transformation_matrix
+from utils.transformation import get_pose_from_matrix, get_quaternion_rotation_matrix, get_transformation_matrix
 
 
 def get_point2point_matcher(cad_name=os.path.join(BASE_PATH, "..", "app", "hand_files", "hand_notblender.obj")):
@@ -51,6 +51,12 @@ def get_point2point_matcher(cad_name=os.path.join(BASE_PATH, "..", "app", "hand_
         if ee_points is None or pose_initial is None:
             return pose_initial
 
+        # rot_mat = get_quaternion_rotation_matrix(
+        #     pose_initial[3:], switch_w=False
+        # )  # switch_w=False in inference
+
+        # pose_initial[:3] = pose_initial[:3] + (rot_mat @ np.array([0.01, 0.0, +0.01]))
+
         trans_mat_initial = get_transformation_matrix(pose_initial, switch_w=False)
 
         _ee_pcd.points = o3d.utility.Vector3dVector(ee_points)
@@ -64,6 +70,14 @@ def get_point2point_matcher(cad_name=os.path.join(BASE_PATH, "..", "app", "hand_
             _icp_method,
         )
 
-        return get_pose_from_matrix(reg_p2l.transformation)
+        pose = get_pose_from_matrix(reg_p2l.transformation)
+
+        # rot_mat = get_quaternion_rotation_matrix(
+        #             pose[3:], switch_w=False
+        #         )  # switch_w=False in inference
+
+        # pose[:3] = pose[:3] + (rot_mat @ np.array([0, 0.0, 0.0]))
+
+        return pose
 
     return match
