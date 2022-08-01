@@ -7,16 +7,18 @@ import numpy as np
 import open3d as o3d
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.data import get_roi_mask
+from utils.data import get_ee_idx, get_roi_mask
 from utils.visualization import get_frame_from_pose, create_coordinate_frame
 from utils.transformation import switch_w, transform_pose2pose
+from utils import icp
+
 
 if __name__ == "__main__":
 
     limits = {
-        # "min_x": -0.7,
-        # "max_x": 0.7,
-        # # "max_z": 1.5
+        "min_x": -0.5,
+        # "max_x": 0.5,
+        "max_z": 1.2
     }
 
     limits_box = {
@@ -84,7 +86,6 @@ if __name__ == "__main__":
     )
     bbox = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(bbox)
     bbox.color = [0, 0, 1]
-
     # R = pcd_th.get_rotation_matrix_from_xyz((np.pi, 0, 0))
     # pcd_th = pcd_th.rotate(R, center=(0,0,0))
     # ee_frame = ee_frame.rotate(R, center=(0,0,0))
@@ -93,10 +94,10 @@ if __name__ == "__main__":
         [pcd_th],
         # [pcd_th, ee_frame],
         # [pcd_th, ee_frame, kinect_frame],
-        zoom=0.01,
-        front=[0., -0., -0.9],
-        lookat=[0, 0, 0],
-        up=[-0., -0.9768, 0.8]
+        # zoom=0.01,
+        # front=[0., -0., -0.9],
+        # lookat=[0, 0, 0],
+        # up=[-0., -0.9768, 0.8]
     )
 
     print(ee)

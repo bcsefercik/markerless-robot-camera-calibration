@@ -39,6 +39,8 @@ if __name__ == "__main__":
     else:
         points, rgb, labels, _, pose = data
 
+    print("pose:", pose)
+
     labels = np.array(labels, dtype=int)
 
     if len(sys.argv) > 2:
