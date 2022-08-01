@@ -49,7 +49,7 @@ if __name__ == "__main__":
     ee_idx = np.where(labels == 2)[0]
     if len(ee_idx) < 1:
         ee_idx = get_ee_idx(points, pose_w_first, switch_w=False, arm_idx=arm_idx, ee_dim={
-            'min_z': -0.02,
+            'min_z': -0.025,
             'max_z': 0.12,
             'min_x': -0.05,
             'max_x': 0.05,
@@ -57,6 +57,13 @@ if __name__ == "__main__":
             'max_y': 0.11
         })
         labels[ee_idx] = 2
+
+    # labels[arm_idx[:1000]] = 2
+    # min_yo = np.linalg.norm(points-np.array([-3, 3, 5]), axis=1).argsort()[:500]
+    # labels[min_yo] = 2
+    # min_yo = np.linalg.norm(points-np.array([-4, -1, 5]), axis=1).argsort()[:500]
+    # labels[min_yo] = 2
+    # ipdb.set_trace()
 
     if len(sys.argv) > 2 and os.path.isfile(sys.argv[2]):
         with open(sys.argv[2], 'r') as fp:
@@ -131,7 +138,8 @@ if __name__ == "__main__":
     #     key_to_callback
     # )
     o3d.visualization.draw_geometries(
-        [pcd, ee_frame, ref_shapes, obbox],
+        [pcd],
+        # [pcd, ee_frame, ref_shapes, obbox],
         zoom=0.01,
         front=[0., -0., -0.9],
         lookat=[0, 0, 0],
