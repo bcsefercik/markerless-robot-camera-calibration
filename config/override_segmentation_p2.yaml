@@ -1,6 +1,6 @@
 # Top Level Params
-log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp54_seg_origin_aug_s200_15_p1.log
-exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp54_seg_origin_aug_s200_15_p1'
+log_path: /kuacc/users/bsefercik/repos/unknown_object_segmentation/log/exp54_seg_origin_aug_s200_15_p2.log
+exp_path: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/exp/exp54_seg_origin_aug_s200_15_p2'
 
 GENERAL:
   save_freq: 1
@@ -10,7 +10,7 @@ DATA:
   suffix: .pickle
   prefix: ''
   # file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev1_splits_all_train.json,/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev3_splits.json'
-  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev5_splits.json'
+  file_names: '/kuacc/users/bsefercik/repos/unknown_object_segmentation/others/alivev5_p2_splits.json'
   load_cache_at_start: true
 
   workers: 4
