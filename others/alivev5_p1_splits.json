@@ -1,0 +1,5228 @@
+{
+    "train": [
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/4.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 2956
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/5.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 5651
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/6.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8303
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/7.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8810
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/8.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8881
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/9.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8586
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/10.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8584
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/11.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8640
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/12.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8601
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/13.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8753
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/14.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8741
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/15.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8793
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/16.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8712
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/17.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8757
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/18.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8759
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/19.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9008
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/20.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9884
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/21.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11835
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/22.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12919
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/23.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12964
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/24.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13050
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/25.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12420
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/26.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12111
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/27.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11843
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/28.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11550
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/29.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11566
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/30.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11794
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/31.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13102
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/32.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13786
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/33.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18417
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/34.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21774
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/35.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23323
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/36.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25703
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/37.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27256
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/38.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27414
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/39.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28201
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/40.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27692
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/41.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28028
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/42.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27764
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/43.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28454
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/44.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28989
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/45.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29098
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/46.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30860
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/47.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32838
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/48.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34375
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/49.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35874
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/50.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36642
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/51.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35461
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/52.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29084
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/53.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24758
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/54.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20957
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/55.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23171
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/56.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26101
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/57.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25478
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/58.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21588
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/59.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16725
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/60.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15725
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/61.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16085
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/62.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18597
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/63.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18605
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/64.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21058
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/65.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22429
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/66.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23200
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/67.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23856
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/68.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23100
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/69.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22241
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/70.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21524
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/71.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19669
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/72.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33446
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/73.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32001
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/74.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32986
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/75.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34036
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/76.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36080
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/77.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38069
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/78.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38178
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/79.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39566
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/80.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39638
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/81.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39829
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/82.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39143
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/83.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38977
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/84.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37180
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/85.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36708
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/86.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36696
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/87.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36595
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/88.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37069
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/89.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37342
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/90.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37006
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/91.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37009
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/92.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35778
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/93.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33018
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/94.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32321
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/95.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30852
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/96.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28421
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/97.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25901
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/98.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22099
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/99.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14323
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/100.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8939
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/101.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 5255
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/102.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 3104
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/103.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 2032
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/104.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 1994
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/105.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 3056
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/106.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 3741
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/107.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 4084
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/108.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 3859
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/109.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 4118
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/110.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 4439
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/111.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 6659
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/112.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12100
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/113.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16379
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/114.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20275
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/115.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21062
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/116.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20873
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/117.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21085
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/118.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21595
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/119.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21040
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/120.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19087
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/121.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16121
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/122.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12977
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/123.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11217
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/124.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10847
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/125.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11211
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/126.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13057
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/127.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14792
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/128.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14956
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/129.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15852
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/130.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14986
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/131.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14985
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/132.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13394
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/133.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14647
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/134.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14959
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/135.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16046
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/136.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16832
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/137.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15662
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/138.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14807
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/139.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14423
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/140.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14447
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/141.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17101
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/142.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18122
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/143.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21037
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/144.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23539
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/145.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25640
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/146.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26862
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/147.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26905
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/148.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24651
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/149.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23965
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/150.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20174
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/151.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17253
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/152.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15313
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/153.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13786
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/154.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14161
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/155.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14271
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/156.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17586
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/157.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19223
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/158.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20893
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/159.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21275
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/160.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24505
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/161.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24497
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/162.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28030
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/163.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29613
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/164.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29991
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/165.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30445
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/166.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30308
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/167.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28295
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/168.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27782
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/169.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28622
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/170.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/171.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26925
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/172.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24911
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/173.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21795
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/174.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19448
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/175.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18812
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/176.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20714
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/177.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24515
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/178.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27355
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/179.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29055
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/180.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30394
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/181.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31488
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/182.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33299
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/183.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35046
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/184.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36477
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/185.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36851
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/186.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37281
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/187.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37191
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/188.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38236
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/189.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38435
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/190.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38970
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/191.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39269
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/192.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39756
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/193.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21725
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/194.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22937
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/195.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23209
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/196.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26052
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/197.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27479
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/198.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27194
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/199.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25792
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/200.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31324
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/201.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29252
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/202.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27788
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/203.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25701
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/204.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23916
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/205.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22484
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/206.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20300
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/207.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20136
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/208.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19700
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/209.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18942
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/210.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18751
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/211.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16943
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/212.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15072
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/213.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13497
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/214.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12250
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/215.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11047
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/216.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9730
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/217.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9312
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/218.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9400
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/219.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9081
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/220.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9015
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/221.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9939
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/222.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10081
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/223.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14319
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/224.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13844
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/225.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13325
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/226.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12043
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/227.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11785
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/228.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12108
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/229.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11667
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/230.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11113
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/231.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12309
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/232.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13822
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/233.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16182
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/234.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/235.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18492
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/236.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22287
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/237.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22484
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/238.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25086
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/239.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25989
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/240.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26946
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/241.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28519
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/242.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29479
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/243.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30450
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/244.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30758
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/245.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32957
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/246.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33399
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/247.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33626
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/248.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30699
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/249.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/250.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28251
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/251.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23842
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/252.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22588
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/253.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29365
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/254.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29803
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/255.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30408
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/256.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29255
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/257.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28932
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/258.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29025
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/259.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28965
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/260.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32858
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/261.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32905
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/262.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31237
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/263.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29659
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/264.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27292
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/265.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26771
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/266.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19725
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/267.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19012
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/268.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12883
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/269.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12313
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/270.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12777
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/271.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13262
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/272.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13674
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/273.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14110
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/274.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14415
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/275.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15492
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/276.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15553
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/277.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15161
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/278.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15067
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/279.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13403
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/280.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12611
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/281.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11228
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/282.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10497
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/283.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10226
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/284.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11132
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/285.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11332
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/286.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14044
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/287.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15440
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/288.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16359
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/289.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16598
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/290.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19312
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/291.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21279
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/292.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23150
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/293.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24026
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/294.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23169
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/295.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20907
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/296.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19785
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/297.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19458
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/298.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19895
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/299.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19723
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/300.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20383
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/301.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19380
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/302.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18275
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/303.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18522
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/304.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18953
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/305.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17233
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/306.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16766
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/307.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15567
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/308.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14125
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/309.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12845
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/310.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12845
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/311.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11927
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/312.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12767
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/313.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13156
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/314.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12541
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/315.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15066
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/316.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18168
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/317.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18650
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/318.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22202
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/319.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20208
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/320.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17415
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/321.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17080
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/322.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12909
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/323.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12260
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/324.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13382
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/325.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19004
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/326.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19719
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/327.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27035
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/328.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30513
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/329.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32677
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/330.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34379
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/331.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34162
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/332.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36815
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/333.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37594
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/334.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38320
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/335.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39127
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/336.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39475
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/337.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 40051
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/338.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39981
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/339.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39784
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/340.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 40500
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/341.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 40688
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/342.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 41254
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/343.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 41500
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/344.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 41612
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/345.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 41264
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/346.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 40041
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/347.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39121
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/348.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38998
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/349.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 39595
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/350.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37157
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/351.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34012
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/352.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31776
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/353.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30338
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/354.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27949
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/355.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26731
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/356.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26626
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/357.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26864
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/358.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29801
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/359.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34752
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/360.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35442
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/361.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35097
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/362.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35333
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/363.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35222
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/364.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36165
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/365.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32525
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/366.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23700
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/367.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25296
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/368.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25190
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/369.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26826
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/370.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28866
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/371.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29879
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/372.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29663
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/373.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27836
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/374.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29462
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/375.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29502
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/376.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28969
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/377.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26921
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/378.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22469
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/379.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22944
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/380.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25715
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/381.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30244
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/382.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31480
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/383.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31000
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/384.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30605
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/385.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31593
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/386.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32305
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/387.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32283
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/388.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31140
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/389.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29932
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/390.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28224
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/391.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27131
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/392.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25704
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/393.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23540
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/394.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21533
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/395.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20624
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/396.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17467
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/397.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16357
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/398.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17092
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/399.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18123
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/400.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21249
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/401.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21045
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/402.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19716
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/403.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17674
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/404.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15047
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/405.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10777
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/406.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9385
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/407.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9237
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/408.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10350
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/409.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12820
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/410.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15686
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/411.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17367
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/412.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18500
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/413.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18648
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/414.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20316
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/415.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21251
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/416.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22109
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/417.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22151
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/418.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21958
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/419.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21389
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/420.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21579
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/421.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21811
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/422.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22486
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/423.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22731
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/424.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22802
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/425.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22746
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/426.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21045
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/427.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20301
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/428.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19414
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/429.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17886
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/430.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17391
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/431.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15914
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/432.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14731
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/433.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14634
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/434.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12347
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/435.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12260
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/436.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11724
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/437.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13082
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/438.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14045
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/439.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15601
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/440.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17205
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/441.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19097
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/442.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21160
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/443.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24147
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/444.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26563
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/445.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27870
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/446.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29788
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/447.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31483
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/448.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32367
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/449.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32870
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/450.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33131
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/451.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33117
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/452.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33055
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/453.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31911
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/454.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31845
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/455.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28339
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/456.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21996
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/457.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15050
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/458.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14597
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/459.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14512
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/460.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14964
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/461.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14915
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/462.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17772
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/463.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21354
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/464.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24069
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/465.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25523
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/466.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26433
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/467.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26800
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/468.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27610
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/469.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28374
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/470.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28456
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/471.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24183
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/472.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22385
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/473.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21049
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/474.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20905
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/475.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19350
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/476.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19610
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/477.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20150
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/478.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21048
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/479.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22846
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/480.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24689
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/481.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27420
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/482.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29934
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/483.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32030
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/484.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34242
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/485.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36034
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/486.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36822
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/487.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34648
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/488.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27208
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/489.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24549
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/490.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14890
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/491.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12780
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/492.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11607
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/493.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12821
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/494.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15250
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/495.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18625
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/496.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19709
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/497.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24953
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/498.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23605
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/499.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23353
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/500.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20694
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/501.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18949
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/502.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16978
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/503.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12816
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/504.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10538
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/505.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9919
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/506.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10374
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/507.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12164
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/508.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14419
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/509.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15492
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/510.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20865
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/511.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23110
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/512.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25729
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/513.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26888
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/514.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28261
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/515.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30463
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/516.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29462
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/517.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29364
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/518.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28041
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/519.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26888
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/520.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25026
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/521.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22937
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/522.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21413
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/523.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21515
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/524.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21928
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/525.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23440
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/526.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25570
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/527.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26193
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/528.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26249
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/529.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26602
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/530.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24466
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/531.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24354
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/532.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24837
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/533.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25371
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/534.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26457
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/535.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27145
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/536.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26710
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/537.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26963
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/538.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26917
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/539.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26494
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/540.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26915
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/541.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26694
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/542.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26945
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/543.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26837
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/544.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26564
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/545.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27136
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/546.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26710
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/547.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25533
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/548.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24455
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/549.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23563
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/550.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23766
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/551.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23613
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/552.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21308
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/553.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18744
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/554.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17563
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/555.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17061
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/556.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17937
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/557.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19315
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/558.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21833
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/559.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23990
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/560.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25392
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/561.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27458
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/562.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27648
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/563.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30381
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/564.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32578
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/565.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33592
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/566.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33245
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/567.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32919
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/568.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32468
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/569.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32203
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/570.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31567
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/571.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30289
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/572.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29876
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/573.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30984
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/574.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32178
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/575.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32996
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/576.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33615
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/577.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33815
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/578.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34451
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/579.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36180
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/580.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36907
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/581.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36897
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/582.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37289
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/583.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33997
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/584.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36709
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/585.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34382
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/586.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36085
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/587.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34683
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/588.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33499
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/589.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31636
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/590.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30880
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/591.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29162
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/592.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28760
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/593.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29155
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/594.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29107
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/595.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29146
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/596.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29515
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/597.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29812
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/598.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29189
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/599.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28245
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/600.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27135
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/601.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27633
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/602.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31067
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/603.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35087
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/604.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 37287
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/605.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27205
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/606.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26913
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/607.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25635
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/608.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26322
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/609.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24955
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/610.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36242
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/611.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32882
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/612.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30360
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/613.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28980
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/614.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22736
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/615.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22504
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/616.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23865
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/617.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24026
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/618.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24961
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/619.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25523
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/620.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27433
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/621.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28825
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/622.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29325
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/623.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29710
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/624.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 29628
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/625.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30337
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/626.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30882
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/627.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32069
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/628.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32002
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/629.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34395
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/630.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35290
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/631.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34791
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/632.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34608
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/633.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34166
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/634.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32298
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/635.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30770
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/636.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30411
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/637.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30476
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/638.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31463
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/639.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33236
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/640.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34652
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/641.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34729
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/642.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38481
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/643.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38823
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/644.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 38202
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/645.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36405
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/646.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34160
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/647.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30912
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/648.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28861
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/649.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22000
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/650.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19225
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/651.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17039
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/652.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18531
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/653.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18778
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/654.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20605
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/655.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24490
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/656.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24334
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/657.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22857
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/658.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22851
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/659.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22186
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/660.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21336
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/661.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20277
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/662.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20164
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/663.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19240
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/664.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18513
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/665.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18503
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/666.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18541
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/667.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18352
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/668.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18295
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/669.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17985
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/670.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17715
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/671.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17341
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/672.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17013
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/673.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16845
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/674.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16417
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/675.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16478
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/676.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16842
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/677.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22708
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/678.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18294
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/679.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22886
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/680.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19479
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/681.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20661
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/682.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22929
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/683.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23722
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/684.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20788
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/685.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30087
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/686.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31615
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/687.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32125
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/688.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32570
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/689.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36253
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/690.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36223
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/691.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36565
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/692.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34173
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/693.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33125
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/694.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31753
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/695.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33950
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/696.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 32082
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/697.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28705
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/698.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25859
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/699.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22089
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/700.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19037
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/701.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16072
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/702.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13694
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/703.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12803
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/704.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12602
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/705.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11416
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/706.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10818
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/707.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10543
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/708.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10414
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/709.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10438
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/710.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10117
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/711.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 9384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/712.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8413
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/713.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 6926
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/714.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 7041
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/715.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8106
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/716.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10861
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/717.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12022
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/718.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12233
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/719.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12386
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/720.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12338
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/721.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12453
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/722.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12646
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/723.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12698
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/724.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13140
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/725.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14064
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/726.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13824
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/727.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14150
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/728.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14112
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/729.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14137
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/730.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14155
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/731.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14119
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/732.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13916
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/733.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13877
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/734.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13741
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/735.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13294
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/736.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13860
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/737.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14489
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/738.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14580
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/739.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15368
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/740.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16516
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/741.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17428
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/742.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17854
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/743.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18182
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/744.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18699
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/745.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18808
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/746.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18172
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/747.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17638
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/748.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17045
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/749.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17178
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/750.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17760
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/751.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18318
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/752.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18219
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/753.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18035
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/754.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17247
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/755.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16737
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/756.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/757.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15961
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/758.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15727
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/759.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18259
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/760.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19405
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/761.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20028
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/762.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20138
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/763.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19937
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/764.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 18720
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/765.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13961
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/766.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 11351
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/767.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10621
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/768.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10969
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/769.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 13128
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/770.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22104
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/771.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22448
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/772.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23972
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/773.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23818
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/774.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23765
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/775.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20824
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/776.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17976
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/777.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16032
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/778.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16413
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/779.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15430
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/780.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15246
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/781.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15525
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/782.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15321
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/783.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 15832
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/784.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 16379
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/785.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17841
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/786.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20585
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/787.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22104
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/788.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22546
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/789.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22713
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/790.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22841
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/791.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24000
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/792.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24353
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/793.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24210
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/794.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24194
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/795.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25232
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/796.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26950
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/797.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 30384
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/798.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 33052
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/799.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 34645
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/800.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35930
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/801.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36724
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/802.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 36493
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/803.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 35457
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/804.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 31828
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/805.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 28709
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/806.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 27256
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/807.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25868
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/808.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 22828
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/809.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19401
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/810.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 14678
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/811.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 10695
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/812.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8509
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/813.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 8962
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/814.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12495
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/815.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 12660
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/816.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 17435
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/817.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 19555
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/818.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 20514
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/819.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23962
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/820.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24289
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/821.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24294
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/822.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23305
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/823.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21891
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/824.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21257
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/825.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 21540
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/826.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23447
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/827.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25524
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/828.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 26005
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/829.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25832
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/830.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25559
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/831.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 25067
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/832.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24428
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/833.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24549
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/834.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24447
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/835.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24378
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/836.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24256
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/837.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24268
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/838.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24256
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/839.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24261
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/840.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24248
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/841.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24069
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/842.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24113
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/843.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24299
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/844.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24187
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/845.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24064
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/846.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23977
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/847.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23907
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/848.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24179
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/849.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24070
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/850.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24132
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/851.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24224
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/852.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24132
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/853.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24189
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/854.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24159
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/855.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24337
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/856.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24081
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/857.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24243
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/858.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24269
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/859.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24301
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/860.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24119
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/861.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24245
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/862.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24293
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/863.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24172
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/864.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24079
+        }
+    ],
+    "val": [
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/865.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24298
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/866.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24220
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/867.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24106
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/868.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24112
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/869.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24048
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/870.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23848
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/871.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24001
+        },
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/872.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 24140
+        }
+    ],
+    "test": [
+        {
+            "filepath": "/kuacc/users/bsefercik/dataset/alivev5/p1_half/labeled/873.pickle",
+            "position": "p1",
+            "light": "half",
+            "arm_point_count": 23890
+        }
+    ]
+}
