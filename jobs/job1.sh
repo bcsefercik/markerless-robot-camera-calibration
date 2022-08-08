@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=51_rot_p3
+#SBATCH --job-name=51_rot_p1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=ai
@@ -22,4 +22,4 @@ export OMP_NUM_THREADS=6
 /kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 \
 /kuacc/users/bsefercik/repos/unknown_object_segmentation/train.py \
 --config /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/default.yaml \
---override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_rotation_only_p3.yaml
+--override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_rotation_only_p1.yaml
