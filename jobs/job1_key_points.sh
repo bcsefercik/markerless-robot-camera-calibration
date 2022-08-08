@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=kp
+#SBATCH --job-name=kp_p3
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=ai
@@ -22,5 +22,5 @@ export OMP_NUM_THREADS=6
 /kuacc/users/bsefercik/.conda/envs/mink-t4/bin/python3 \
 /kuacc/users/bsefercik/repos/unknown_object_segmentation/train_key_points.py \
 --config /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/default.yaml \
---override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_key_points.yaml
+--override /kuacc/users/bsefercik/repos/unknown_object_segmentation/config/override_key_points_p3.yaml
 
