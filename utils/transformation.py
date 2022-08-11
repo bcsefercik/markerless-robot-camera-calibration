@@ -76,7 +76,6 @@ def get_transformation_matrix_inverse(trans_mat):
 
     return response
 
-
 def get_q_from_matrix(rot_mat):
     rot_mat = np.array(rot_mat, copy=True)
     rot = Rotation.from_matrix(rot_mat).as_quat()
@@ -91,6 +90,14 @@ def get_pose_from_matrix(trans_mat):
     pose = np.concatenate((translation, rotation))
 
     return pose  # x,y,z qw, qx, qy, qz
+
+
+def get_pose_inverse(pose):
+    # x, y, z qw, qx, qy, qz
+    tf = get_transformation_matrix(pose)
+    tf_inv = get_transformation_matrix_inverse(tf)
+
+    return get_pose_from_matrix(tf_inv)
 
 
 def get_quaternion_rotation_matrix_torch(quaternions: torch.Tensor) -> torch.Tensor:  # Input: WXYZ
