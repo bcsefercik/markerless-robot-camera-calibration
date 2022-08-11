@@ -27,7 +27,5 @@ if __name__ == "__main__":
 
     ee_poses.extend(new_ee_poses)
 
-    ipdb.set_trace()
-
     with open(args.out, "wb") as fp:
         pickle.dump(ee_poses, fp)
