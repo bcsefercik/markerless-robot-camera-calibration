@@ -1,11 +1,13 @@
+import os
 import copy
 
 import numpy as np
 import open3d as o3d
 
-from utils.transformation import get_quaternion_rotation_matrix
+from utils.transformation import get_quaternion_rotation_matrix, get_transformation_matrix
 
-import ipdb
+
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_frame_from_pose(base_frame, pose, switch_w=True):
@@ -84,3 +86,38 @@ def generate_key_point_shapes(
         shapes += shape
 
     return shapes
+
+
+def get_kinect_mesh(pose, scale=0.001, coordinate_frame_enabled=False):
+    tf_mat = get_transformation_matrix(pose)
+
+    kinect_mesh = o3d.io.read_triangle_mesh(
+        os.path.join(
+            BASE_PATH, "..", "app", "hand_files", "kinect.obj"
+        )  # seems to work better
+    )
+    kinect_mesh.paint_uniform_color(np.array([0.1, 0.1, 0.1]))
+    kinect_mesh.scale(scale, np.array([0, 0, 0]))
+
+    k_rot_x = np.matrix([
+        [1, 0, 0],
+        [0, 0, 1],
+        [0, -1, 0]
+    ], dtype=np.float64)
+
+    k_rot_y = np.matrix([
+        [-1, 0, 0],
+        [0, 1, 0],
+        [0, 0, -1]
+    ], dtype=np.float64)
+
+    kinect_mesh.rotate(k_rot_y)
+    kinect_mesh.rotate(k_rot_x)
+
+    if coordinate_frame_enabled:
+        kinect_frame = create_coordinate_frame([-0.00773637, -0.03,  0.01641659, 1, 0, 0, 0], switch_w=False, radius=0.002)
+        kinect_mesh += kinect_frame
+
+    kinect_mesh.transform(tf_mat)
+
+    return kinect_mesh
