@@ -3,6 +3,7 @@ import sys
 import glob
 import pickle
 import argparse
+import random
 
 import open3d as o3d
 import numpy as np
@@ -55,13 +56,22 @@ if __name__ == "__main__":
     with open(args.ee, "rb") as fp:
         ee_poses = pickle.load(fp, encoding="bytes")
 
+    ee_poses = ee_poses[0:len(ee_poses):(len(ee_poses) // 100)]
+
     ee_frames = [
-        create_coordinate_frame(ep, length=0.07, radius=0.003, switch_w=True) for ep in ee_poses
+        create_coordinate_frame(ep, length=0.05, radius=0.0015, switch_w=True) for ep in ee_poses
     ]
+
+    # ee_frames = ee_frames[0:len(ee_frames):(len(ee_frames) // 100)]
 
     data, _ = file_utils.load_alive_file(args.ref)
     points = data['points']
     rgb = data['rgb']
+    labels = data['labels']
+    bg = labels == 0
+
+    points = points[bg]
+    rgb = rgb[bg]
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
