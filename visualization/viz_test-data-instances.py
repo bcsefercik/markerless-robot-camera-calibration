@@ -35,8 +35,11 @@ if __name__ == "__main__":
     rgb = data['rgb']
     pose = data['pose']
     labels = data['labels']
+    bg_labels = labels == 0
+    points = points[bg_labels]
+    rgb = rgb[bg_labels]
 
-    for cf in class_folders[1:]:
+    for cf in class_folders:
         print("Processing:", cf)
         pickles = glob.glob(os.path.join(cf, "labeled", "*.pickle"))
         sp = random.choice(pickles)
