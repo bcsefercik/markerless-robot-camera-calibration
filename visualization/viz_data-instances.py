@@ -10,7 +10,7 @@ import numpy as np
 
 sys.path.append("..")  # noqa
 from utils import file_utils
-from utils.visualization import create_coordinate_frame
+from utils.visualization import create_coordinate_frame, create_sphere
 
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -56,11 +56,16 @@ if __name__ == "__main__":
     with open(args.ee, "rb") as fp:
         ee_poses = pickle.load(fp, encoding="bytes")
 
-    ee_poses = ee_poses[0:len(ee_poses):(len(ee_poses) // 100)]
+    # ee_poses = ee_poses[0:len(ee_poses):(len(ee_poses) // 100)]
 
     ee_frames = [
         create_coordinate_frame(ep, length=0.05, radius=0.0015, switch_w=True) for ep in ee_poses
     ]
+
+    # ee_frames = [
+    #     create_sphere(ep, radius=0.002) for ep in ee_poses
+    # ]
+
 
     # ee_frames = ee_frames[0:len(ee_frames):(len(ee_frames) // 100)]
 

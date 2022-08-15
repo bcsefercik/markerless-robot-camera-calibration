@@ -54,6 +54,14 @@ def create_coordinate_frame(pose, length=0.2, radius=0.0075, switch_w=True):
     return sphere + z_cylinder + y_cylinder + x_cylinder
 
 
+def create_sphere(pose, radius=0.0075):
+    sphere = o3d.geometry.TriangleMesh.create_sphere(radius=radius * 2.2)
+    sphere.translate(pose[:3])
+    sphere.paint_uniform_color([0.9, 0.1, 0.1])
+
+    return sphere
+
+
 def generate_colors(n):
     return np.random.rand(n, 3)
 
