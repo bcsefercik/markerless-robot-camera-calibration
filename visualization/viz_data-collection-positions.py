@@ -106,7 +106,8 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
-        [pcd, robot_mesh] + kinects,
+        [pcd] + kinects,
+        # [pcd, robot_mesh] + kinects,
         # [pcd, kinect_mesh, kinect_frame],
         # [pcd, ee_frame, ref_shapes, obbox],
         # zoom=0.2,
