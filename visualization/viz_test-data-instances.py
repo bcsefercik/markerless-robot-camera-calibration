@@ -21,6 +21,8 @@ import ipdb
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="viz test data")
     parser.add_argument("--data", type=str, default="test_data/")
+    parser.add_argument("--ref", type=str, default=None)
+    parser.add_argument("--arms", action="store_true")
     args = parser.parse_args()
 
     kinect_mesh = kinect_mesh = get_kinect_mesh(np.array([0, 0, 0, 1, 0, 0, 0]), coordinate_frame_enabled=True, scale=0.001)
@@ -28,8 +30,11 @@ if __name__ == "__main__":
     class_folders = glob.glob(os.path.join(args.data, "*"))
     class_folders = [cf for cf in class_folders if os.path.isdir(cf)]
 
-    pickles = glob.glob(os.path.join(class_folders[0], "labeled", "*.pickle"))
-    sp = random.choice(pickles)
+    sp = args.ref
+    if sp is None:
+        pickles = glob.glob(os.path.join(class_folders[0], "labeled", "*.pickle"))
+        sp = random.choice(pickles)
+
     data, _ = file_utils.load_alive_file(sp)
     points = data['points']
     rgb = data['rgb']
@@ -39,16 +44,21 @@ if __name__ == "__main__":
     points = points[bg_labels]
     rgb = rgb[bg_labels]
 
+    coordinate_frames = list()
+
     for cf in class_folders:
         print("Processing:", cf)
         pickles = glob.glob(os.path.join(cf, "labeled", "*.pickle"))
         sp = random.choice(pickles)
 
         data, _ = file_utils.load_alive_file(sp)
-        arm = data['labels'] == 1
-        points = np.concatenate((points, data['points'][arm]), axis=0)
-        rgb = np.concatenate((rgb, data['rgb'][arm]), axis=0)
 
+        coordinate_frames.append(create_coordinate_frame(data['pose'], switch_w=True, radius=0.005, length=0.15))
+
+        if args.arms:
+            arm = data['labels'] == 1
+            points = np.concatenate((points, data['points'][arm]), axis=0)
+            rgb = np.concatenate((rgb, data['rgb'][arm]), axis=0)
 
     roi_mask = get_roi_mask(
         points,
@@ -64,7 +74,7 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
-        [pcd, kinect_mesh],
+        [pcd, kinect_mesh] + coordinate_frames,
         # [pcd, kinect_mesh, kinect_frame],
         # [pcd, ee_frame, ref_shapes, obbox],
         zoom=0.2,
