@@ -104,17 +104,16 @@ if __name__ == "__main__":
     print(f'\n# frames:\t{instance_count}')
     print(f'Base Distances:\t{", ".join(unique_base_dists)} (m)')
 
+    plt.hist(ee_dists, density=True, bins=32)  # density=False would make counts
+    plt.ylabel('%')
+    plt.xlabel('EE Dists (m)')
+    plt.grid()
+    plt.show()
 
-    # plt.hist(ee_dists, density=True, bins=32)  # density=False would make counts
-    # plt.ylabel('%')
-    # plt.xlabel('EE Dists (m)')
-    # plt.grid()
-    # plt.show()
-
-    # plt.hist(ee_point_counts, density=True, bins=32)  # density=False would make counts
-    # plt.ylabel('%')
-    # plt.xlabel('EE Point Counts')
-    # plt.grid()
-    # plt.show()
+    plt.hist(ee_point_counts, density=True, bins=32)  # density=False would make counts
+    plt.ylabel('%')
+    plt.xlabel('EE Point Counts')
+    plt.grid()
+    plt.show()
 
     # ipdb.set_trace()
