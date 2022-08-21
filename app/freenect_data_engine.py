@@ -44,6 +44,8 @@ class FreenectDataEngine(DataEngineInterface):
 
     def run(self):
         rospy.init_node("depth_registered_recorder")
+
+        # rospy.Subscriber("/zed2/zed_node/point_cloud/cloud_registered", PointCloud2, self._callback)
         rospy.Subscriber("/camera/depth_registered/points", PointCloud2, self._callback)
         rospy.Subscriber("/robot/ee_pose", PoseStamped, self._ee_pose_callback)
 
