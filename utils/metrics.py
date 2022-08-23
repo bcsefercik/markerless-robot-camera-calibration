@@ -1,3 +1,4 @@
+from dis import dis
 from operator import gt
 import statistics
 from unittest import result
@@ -147,3 +148,29 @@ def compute_ADD_np(points, gt_pose, pred_pose):
     ADD = np.linalg.norm(gt_part - pred_part, axis=0).mean()
 
     return ADD
+
+
+def compute_rotational_diff(q1, q2, degree=True):
+    '''
+    q1: w, x, y, z
+    q2: w, x, y, z
+    '''
+    diff = np.arccos(2 * (np.sum(q1 * q2) ** 2) - 1)
+    # diff = 2 * np.arccos(abs(np.sum(q1 * q2)))
+
+    if degree:
+        diff *= 57.2958
+
+    return diff
+
+
+def compute_translational_diff(t1, t2, cm=True, method="euclidean"):
+    dist = -1
+
+    if method == "euclidean":
+        dist = np.linalg.norm(t1 - t2)
+
+    if cm:
+        dist *= 100
+
+    return dist
