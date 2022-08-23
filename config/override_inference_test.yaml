@@ -7,25 +7,38 @@ TEST:
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/pred_test_splits.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits_new.json
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/p1_calib_2.json
-  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
-  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/scripts/p2_test_splits.json
-  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/scripts/p3_test_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v5_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_test_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p2_test_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p3_test_splits.json
 
-  output: test_results_p1_.xlsx
+  # output: test_results_p2_no.xlsx
 
   ignore_unconfident: true
 
   # gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
   # gt_base_to_cam_pose: [0.65, 0.3546, 0.9807, -0.0236, -0.0027, 0.9332, -0.3586]
-  gt_base_to_cam_pose: [0.6265, 0.3674, 0.9880, -0.0092, -0.0007, 0.9296, -0.3684]  # p1 test
+  # gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test glorious
   # gt_base_to_cam_pose: [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]  # p2 test
   # gt_base_to_cam_pose: [-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561]  # p3 test
+
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_test_splits.json
+  gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test
+  output: test_results_p1_gt.xlsx
+
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p2_test_splits.json
+  # gt_base_to_cam_pose: [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]  # p2 test
+  # output: test_results_p2_gt.xlsx
+
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p3_test_splits.json
+  # gt_base_to_cam_pose: [-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561]  # p3 test
+  # output: test_results_p3_gt.xlsx
 
   units: ['cm', 'degree']
   # units: ['m', 'rad']
 
   SEGMENTATION:
-    evaluate: true
+    evaluate: false
 
   KEY_POINTS:
     error_margin: 0.1  # in meters
@@ -47,10 +60,9 @@ INFERENCE:
     roi: {}
 
   SEGMENTATION:
-    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
     # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp50_orig_aug_s200_e6.pth
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_15_e8.pth
-    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_08_e17.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_15_e8.pth
 
     scale: 200
     center_at_origin: true

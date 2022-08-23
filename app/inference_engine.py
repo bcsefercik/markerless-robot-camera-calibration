@@ -288,11 +288,11 @@ class InferenceEngine:
 
             result_dto = ResultDTO(segmentation=seg_results)
 
-            if seg_results is None:
-                return result_dto
-
             ee_idx = np.where(seg_results == 2)[0]
             arm_idx = np.where(seg_results == 1)[0]
+
+            if seg_results is None or len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
+                return result_dto
 
             ee_raw_points = data.points[ee_idx]  # no origin offset
             ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
@@ -421,8 +421,8 @@ class InferenceEngine:
         ee_idx = np.where(seg_results == 2)[0]
         seg_results[ee_idx] = 1  # initially, set all ee pred to arm
 
-        if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
-            return None
+        # if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
+        #     return None
 
         ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
         seg_results[
