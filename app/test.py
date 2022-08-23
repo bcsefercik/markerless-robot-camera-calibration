@@ -13,6 +13,7 @@ import torch
 import numpy as np
 import openpyxl
 from openpyxl.styles import Alignment, Side, Border, Font, PatternFill
+from openpyxl.utils import get_column_letter
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MinkowskiEngine as ME
@@ -99,6 +100,11 @@ class TestApp:
                         classes=_config.INFERENCE.SEGMENTATION.classes,
                     )
                     self.instance_results[data_key]['segmentation'] = segmentation_metrics
+
+                if seg_results is None:
+                    self.instance_results.pop(data_key)
+                    _logger.warning(f"fail min # points")
+                    continue
 
                 result_dto = TestResultDTO(segmentation=seg_results)
 
@@ -257,6 +263,7 @@ class TestApp:
                 self.position_results[pos]['segmentation_recall'] = [ir['segmentation']['recall'] for ir in irs]
 
                 for cls in _config.INFERENCE.SEGMENTATION.classes:
+                    self.position_results[pos][f'segmentation_{cls}_accuracy'] = [ir['segmentation']['class_results'][cls]['accuracy'] for ir in irs]
                     self.position_results[pos][f'segmentation_{cls}_precision'] = [ir['segmentation']['class_results'][cls]['precision'] for ir in irs]
                     self.position_results[pos][f'segmentation_{cls}_recall'] = [ir['segmentation']['class_results'][cls]['recall'] for ir in irs]
 
@@ -274,13 +281,16 @@ class TestApp:
 
         self.export_to_xslx()
 
+    # def _get_col_name(self, col_id: int) -> str:
+    #     quotient =
+
     def _put_values_for_col(self, sheet, col_id, start_row, values, unit_type=0):
         val = statistics.mean(values) if len(values) > 0 else "N/A"
         if val != "N/A":
             if unit_type < 2:
                 val *= self.unit_multipliers[unit_type]
             val = round(val, 4)
-        sheet.cell(row=start_row, column=col_id).value =val
+        sheet.cell(row=start_row, column=col_id).value = val
 
         val = min(values) if len(values) > 0 else "N/A"
         if val != "N/A":
@@ -329,11 +339,11 @@ class TestApp:
         sheet.merge_cells(f'{chr(ord(col) + 13)}{row}:{chr(ord(col) + 13)}{row + 1}')
         sheet.merge_cells(f'{chr(ord(col) + 14)}{row}:{chr(ord(col) + 15)}{row + 1}')
 
-        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row}:{chr(ord(col) + seg_col_id - col_id + 8)}{row}')
-        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 2)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 3)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 4)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 5)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 6)}{row + 1}')
-        sheet.merge_cells(f'{chr(ord(col) + seg_col_id - col_id + 7)}{row + 1}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 1}')
+        sheet.merge_cells(f'{get_column_letter(seg_col_id)}{row}:{get_column_letter(seg_col_id + 11)}{row}')
+        sheet.merge_cells(f'{get_column_letter(seg_col_id)}{row + 1}:{get_column_letter(seg_col_id + 2)}{row + 1}')
+        sheet.merge_cells(f'{get_column_letter(seg_col_id + 3)}{row + 1}:{get_column_letter(seg_col_id + 5)}{row + 1}')
+        sheet.merge_cells(f'{get_column_letter(seg_col_id + 6)}{row + 1}:{get_column_letter(seg_col_id + 8)}{row + 1}')
+        sheet.merge_cells(f'{get_column_letter(seg_col_id + 9)}{row + 1}:{get_column_letter(seg_col_id + 11)}{row + 1}')
 
         sheet.merge_cells(f'{chr(ord(col) - 1)}{row + 8}:{chr(ord(col) + seg_col_id - col_id + 8)}{row + 8}')
         sheet.cell(row=row+8, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
@@ -392,25 +402,33 @@ class TestApp:
             self._put_values_for_col(sheet, seg_col_id, row + 3, results['segmentation_accuracy'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 1).value = 'Precision'
             self._put_values_for_col(sheet, seg_col_id + 1, row + 3, results['segmentation_precision'], unit_type=2)
+            sheet.cell(row=row+2, column=seg_col_id + 1).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 1, row + 3, results['segmentation_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 2).value = 'Recall'
             self._put_values_for_col(sheet, seg_col_id + 2, row + 3, results['segmentation_recall'], unit_type=2)
             sheet.cell(row=row+1, column=seg_col_id + 3).value = 'End Effector'
-            sheet.cell(row=row+2, column=seg_col_id + 3).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 3, row + 3, results['segmentation_ee_precision'], unit_type=2)
-            sheet.cell(row=row+2, column=seg_col_id + 4).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 4, row + 3, results['segmentation_ee_recall'], unit_type=2)
-            sheet.cell(row=row+1, column=seg_col_id + 5).value = 'Arm'
-            sheet.cell(row=row+2, column=seg_col_id + 5).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 5, row + 3, results['segmentation_arm_precision'], unit_type=2)
-            sheet.cell(row=row+2, column=seg_col_id + 6).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 6, row + 3, results['segmentation_arm_recall'], unit_type=2)
-            sheet.cell(row=row+1, column=seg_col_id + 7).value = 'Background'
+            sheet.cell(row=row+2, column=seg_col_id + 3).value = 'Accuracy'
+            self._put_values_for_col(sheet, seg_col_id + 3, row + 3, results['segmentation_ee_accuracy'], unit_type=2)
+            sheet.cell(row=row+2, column=seg_col_id + 4).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 4, row + 3, results['segmentation_ee_precision'], unit_type=2)
+            sheet.cell(row=row+2, column=seg_col_id + 5).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 5, row + 3, results['segmentation_ee_recall'], unit_type=2)
+            sheet.cell(row=row+1, column=seg_col_id + 6).value = 'Arm'
+            sheet.cell(row=row+2, column=seg_col_id + 6).value = 'Accuracy'
+            self._put_values_for_col(sheet, seg_col_id + 6, row + 3, results['segmentation_arm_accuracy'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 7).value = 'Precision'
-            self._put_values_for_col(sheet, seg_col_id + 7, row + 3, results['segmentation_background_precision'], unit_type=2)
+            self._put_values_for_col(sheet, seg_col_id + 7, row + 3, results['segmentation_arm_precision'], unit_type=2)
             sheet.cell(row=row+2, column=seg_col_id + 8).value = 'Recall'
-            self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_background_recall'], unit_type=2)
+            self._put_values_for_col(sheet, seg_col_id + 8, row + 3, results['segmentation_arm_recall'], unit_type=2)
+            sheet.cell(row=row+1, column=seg_col_id + 9).value = 'Background'
+            sheet.cell(row=row+2, column=seg_col_id + 9).value = 'Accuracy'
+            self._put_values_for_col(sheet, seg_col_id + 9, row + 3, results['segmentation_background_accuracy'], unit_type=2)
+            sheet.cell(row=row+2, column=seg_col_id + 10).value = 'Precision'
+            self._put_values_for_col(sheet, seg_col_id + 10, row + 3, results['segmentation_background_precision'], unit_type=2)
+            sheet.cell(row=row+2, column=seg_col_id + 11).value = 'Recall'
+            self._put_values_for_col(sheet, seg_col_id + 11, row + 3, results['segmentation_background_recall'], unit_type=2)
 
-        max_col_id = seg_col_id + 8
+        max_col_id = seg_col_id + 11
         max_row_id = row + 7
 
         return max_row_id, max_col_id
@@ -435,7 +453,7 @@ class TestApp:
         for i, (pk, prs) in enumerate(self.position_results.items()):
             self._create_excel_cells(sheet, pk, prs, start_cell=f"B-{5 + (i + 1) * 9}")
 
-        sheet.merge_cells(f'B1:{chr(ord("A") + max_col - 1)}1')
+        sheet.merge_cells(f'B1:{get_column_letter(max_col)}1')
         sheet.cell(row=1, column=1).value = 'Config: (for reproduction)'
         sheet.cell(row=1, column=2).value = json.dumps(_config())
 
@@ -445,10 +463,10 @@ class TestApp:
         sheet.merge_cells(f'C3:D3')
         sheet.merge_cells(f'F2:H2')
         sheet.merge_cells(f'F3:H3')
-        sheet.merge_cells(f'I2:{chr(ord("A") + max_col - 1)}2')
-        sheet.merge_cells(f'I3:{chr(ord("A") + max_col - 1)}3')
+        sheet.merge_cells(f'I2:{get_column_letter(max_col)}2')
+        sheet.merge_cells(f'I3:{get_column_letter( max_col)}3')
 
-        sheet.merge_cells(f'A4:{chr(ord("A") + max_col - 1)}4')
+        sheet.merge_cells(f'A4:{get_column_letter(max_col)}4')
         sheet.cell(row=4, column=1).fill = PatternFill("solid", fgColor="DDDDDD")
 
         sheet.cell(row=2, column=1).value = 'CALIBRATION'

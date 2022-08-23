@@ -55,19 +55,38 @@ def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['backgro
     precisions = list()
     recalls = list()
 
+    tp_sum = 0
+    tn_sum = 0
+    fp_sum = 0
+    fn_sum = 0
+    recall_sum = 0
+
     for ci, cn in enumerate(classes):
         gt_idx = set(np.where(gt == ci)[0])
         pred_idx = set(np.where(pred == ci)[0])
 
         tp_idx = gt_idx & pred_idx
-        tp = len(tp_idx)
-        fn = len(gt_idx - tp_idx)
-        fp = len(pred_idx - tp_idx)
 
+        tp = len(tp_idx)
+        tn = len(gt) - len(gt_idx | pred_idx)
+        fp = len(pred_idx - tp_idx)
+        fn = len(gt_idx - tp_idx)
+
+        tp_sum += tp
+        tn_sum += tn
+        fp_sum += fp
+        fn_sum += fn
+
+        # Metrics for Multi-Class Classification: an Overview
+        # https://arxiv.org/abs/2008.05756?context=stat
+        accuracy = (tp + tn) / (tp + tn + fp + fn)
         precision = int(fp == 0) or tp / (tp + fp)
         recall = int(fn == 0) or tp / (tp + fn)
 
+        recall_sum += recall
+
         results["class_results"][cn] = {
+            "accuracy": accuracy,
             "precision": precision,
             "recall": recall
         }
@@ -75,7 +94,12 @@ def compute_segmentation_metrics(gt: np.array, pred: np.array, classes=['backgro
         precisions.append(precision)
         recalls.append(recall)
 
-    results["accuracy"] = sum(gt == pred) / len(gt)
+    sensitivity = tp_sum / (tp_sum + fn_sum)
+    specifity = tn_sum / (tn_sum + fp_sum)
+
+    # results["accuracy"] = sum(gt == pred) / len(gt)
+    results["accuracy"] = (sensitivity + specifity) / 2
+    # results["accuracy"] = (recall_sum) / 4
     results["precision"] = statistics.mean(precisions)
     results["recall"] = statistics.mean(recalls)
 
