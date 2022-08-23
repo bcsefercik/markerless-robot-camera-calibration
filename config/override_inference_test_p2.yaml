@@ -1,0 +1,76 @@
+MODE: 'inference'
+
+TEST:
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_test_splits.json
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p2_test_splits.json
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p3_test_splits.json
+
+  output: test_results_trn-p2_tst-p3.xlsx
+
+  ignore_unconfident: true
+
+  # gt_base_to_cam_pose: [0.645, 0.408, 0.994, 0.656, 0.2964, 0.2756, -0.6299]  # p1 tf_broadcaster (x, y, z, qw, qx, qy, qz)
+  # gt_base_to_cam_pose: [0.65, 0.3546, 0.9807, -0.0236, -0.0027, 0.9332, -0.3586]
+  # gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test
+  # gt_base_to_cam_pose: [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]  # p2 test
+  gt_base_to_cam_pose: [-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561]  # p3 test
+
+  units: ['cm', 'degree']
+  # units: ['m', 'rad']
+
+  SEGMENTATION:
+    evaluate: true
+
+  KEY_POINTS:
+    error_margin: 0.1  # in meters
+
+INFERENCE:
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/dataset/alive_test_v2_splits.json
+  data_source: null
+  ee_point_counts_threshold: 512
+  num_of_dense_input_points: 2048
+
+  # /camera_rgb_optical_frame to /camera_link
+  # camera_link_transformation_pose: [0.00, -0.045, 0.00, 0.500, 0.500, -0.500, 0.500]  # official
+  # camera_link_transformation_pose: [0.0062, 0.0309, -0.0454, 0.4688, 0.4857, -0.507, 0.536]
+  camera_link_transformation_pose: null
+
+  kinect1_weight_polynomials: [-1.08e-03, -5.73e-05, 1.85E-03]  # [a, b, c] = c + bx + ax^2
+
+  INPUT:
+    roi: {}
+
+  SEGMENTATION:
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_15_e8.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/position_based/exp54_seg_origin_aug_s200_15_p2/default-000000020.pth
+
+    scale: 200
+    center_at_origin: true
+
+  TRANSLATION:
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/translation_s200_origin_move-ee_20220509.pth
+    scale: 200
+    center_at_origin: true
+    move_ee_to_origin: true
+    magic_enabled: true
+
+  ROTATION:
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/rotation_s200_posematch_origin_e104_20220509.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/exp51_ee_seg_rot_origin_e96_s200.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/position_based/exp51_ee_seg_rot_origin_p2/default-000000240.pth
+    center_at_origin: true
+
+  KEY_POINTS:
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/exp45_kp6_pt2_coord_center_uniform_aug_e114_20220520.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/position_based/exp52_kp6_pt2_coord_center_uni_aug_2048_p2/default-000000256.pth
+
+    scale: 200
+    center_at_origin: true
+    use_coordinates_as_features: true
+    conf_threshold: 0.75
+    backbone: pointnet2
+    num_of_keypoints: 6
+    pointcloud_sampling_method: uniform  # choices: farthest, uniform
+
+exp_path: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference
+log_path: /home/ercan/bcs_workspace/unknown_object_segmentation/log/inference.log
