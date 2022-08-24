@@ -155,8 +155,8 @@ def compute_rotational_diff(q1, q2, degree=True):
     q1: w, x, y, z
     q2: w, x, y, z
     '''
-    diff = np.arccos(2 * (np.sum(q1 * q2) ** 2) - 1)
-    # diff = 2 * np.arccos(abs(np.sum(q1 * q2)))
+    # diff = np.arccos(2 * (np.sum(q1 * q2) ** 2) - 1)
+    diff = 2 * np.arccos(abs(np.sum(q1 * q2)))
 
     if degree:
         diff *= 57.2958
