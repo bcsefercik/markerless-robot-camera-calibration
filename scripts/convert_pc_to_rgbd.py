@@ -2,6 +2,7 @@ import os
 import sys
 
 import ipdb
+import cv2
 import open3d as o3d
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,9 +46,15 @@ if __name__ == "__main__":
     )  # kinect1 rgb
 
     # o3d.visualization.draw([pcd])
+
     rgbd_reproj = pcd.project_to_rgbd_image(
-        640, 480, intrinsic, depth_scale=5000.0, depth_max=10.0
+        640, 480, intrinsic, depth_scale=1000.0, depth_max=4.0
     )
+    # img = cv2.imread('/Users/bugra.sefercik/Desktop/camera_image.jpeg')
+
+    rgb = np.asarray(rgbd_reproj.color.to_legacy()) * 255
+    bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+    cv2.imwrite("nane.jpg", bgr)
 
     fig, axs = plt.subplots(1, 2)
     axs[0].imshow(np.asarray(rgbd_reproj.color.to_legacy()))
