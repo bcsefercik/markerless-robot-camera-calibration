@@ -96,7 +96,7 @@ def generate_key_point_shapes(
     return shapes
 
 
-def get_kinect_mesh(pose, scale=0.001, coordinate_frame_enabled=False):
+def get_kinect_mesh(pose, scale=0.001, coordinate_frame_enabled=False, color=[0.1, 0.1, 0.1]):
     tf_mat = get_transformation_matrix(pose)
 
     kinect_mesh = o3d.io.read_triangle_mesh(
@@ -104,7 +104,7 @@ def get_kinect_mesh(pose, scale=0.001, coordinate_frame_enabled=False):
             BASE_PATH, "..", "app", "hand_files", "kinect.obj"
         )  # seems to work better
     )
-    kinect_mesh.paint_uniform_color(np.array([0.1, 0.1, 0.1]))
+    kinect_mesh.paint_uniform_color(np.array(color))
     kinect_mesh.scale(scale, np.array([0, 0, 0]))
 
     k_rot_x = np.matrix([
