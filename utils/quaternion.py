@@ -140,6 +140,7 @@ def qfix(q):
     result[1:][mask] *= -1
     return result
 
+
 def expmap_to_quaternion(e):
     """
     Convert axis-angle rotations (aka exponential maps) to quaternions.
@@ -158,7 +159,8 @@ def expmap_to_quaternion(e):
     xyz = 0.5*np.sinc(0.5*theta/np.pi)*e
     return np.concatenate((w, xyz), axis=1).reshape(original_shape)
 
-def euler_to_quaternion(e, order):
+
+def euler_to_quaternion(e, order='xyz'):
     """
     Convert Euler angles to quaternions.
     """
