@@ -18,6 +18,7 @@ from utils.transformation import (
     transform_pose2pose,
 )
 from utils.data import get_roi_mask
+from utils.metrics import compute_rotational_diff, compute_translational_diff
 
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +49,14 @@ def create_kinect(
         color=color,
     )
 
-    return kinect_mesh
+    rot_diff = compute_rotational_diff(np.array([1, 0, 0, 0]), cam2base[3:])
+    tr_diff = compute_translational_diff(np.array([0, 0, 0]), cam2base[:3])
+
+    print(path)
+    print(f'Rotational change:\t{round(rot_diff, 1)} degrees')
+    print(f'Translation dist:\t{round(tr_diff, 1)} cm')
+
+    return kinect_mesh, kinect_pose
 
 
 if __name__ == "__main__":
@@ -95,25 +103,55 @@ if __name__ == "__main__":
     cam2base_mtx = get_transformation_matrix(cam2base)
 
     kinects = [
-        create_kinect(kp, cam2base, scale=0.0012) for kp in args.kinects + [args.ref]
+        create_kinect(kp, cam2base, scale=0.0012) for kp in args.kinects
     ]
+    kinect_meshes = [t[0] for t in kinects]
+    kinect_poses = [t[1] for t in kinects]
     # kinects = [
     #     get_kinect_mesh(cam2base, coordinate_frame_enabled=True)
     #     ]
 
-    robot_mesh.transform(cam2base_mtx)
+    # robot_mesh.transform(cam2base_mtx)
 
     test_kinects = [
         create_kinect(kp, cam2base, scale=0.0012, color=[0.6, 0.1, 0.1]) for kp in args.test_kinects
     ]
+    test_kinect_meshes = [t[0] for t in test_kinects]
+    test_kinect_poses = [t[1] for t in test_kinects]
+
+    rot_dists = dict()
+    trs_dists = dict()
+
+    for i, trn_title in enumerate(args.kinects):
+        trn_title_parts = trn_title.split("/p")
+        trn_position = trn_title_parts[1].split("_")[0]
+
+        for j, tst_title in enumerate(args.test_kinects):
+            tst_title_parts = tst_title.split("/p")
+            tst_position = tst_title_parts[1].split("_")[0]
+
+            key = f"P{trn_position}_trn, P{tst_position}_tst"
+
+            rot_diff = compute_rotational_diff(kinect_poses[i][3:], test_kinect_poses[j][3:])
+            trs_diff = compute_translational_diff(kinect_poses[i][:3], test_kinect_poses[j][:3])
+
+            rot_dists[key] = rot_diff
+            trs_dists[key] = trs_diff
+
+            print(f'{key} {round(rot_diff, 2)} degrees')
+            print(f'{key} {round(trs_diff, 2)} cm')
+
+    # print('rot:', rot_dists)
+    # print('trans:', trs_dists)
+
 
     # robot_mesh.rotate(k_rot_y)
 
     roi_mask = get_roi_mask(
         points,
         max_z=1.5,
-        max_y=0.5,
-        # min_x=-0.4,
+        max_y=0.4,
+        max_x=0.45,
     )
 
     pcd = o3d.geometry.PointCloud()
@@ -123,7 +161,7 @@ if __name__ == "__main__":
     # ipdb.set_trace()
 
     o3d.visualization.draw_geometries(
-        [pcd] + kinects + test_kinects,
+        [pcd] + kinect_meshes + test_kinect_meshes,
         # [pcd, robot_mesh] + kinects,
         # [pcd, kinect_mesh, kinect_frame],
         # [pcd, ee_frame, ref_shapes, obbox],
