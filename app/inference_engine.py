@@ -52,7 +52,7 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
 class InferenceEngine:
-    def __init__(self, calibration_only=True) -> None:
+    def __init__(self, calibration_only=False) -> None:
         if not calibration_only:
             self.cluster_util = out_utils.ClusterUtil()
 

@@ -107,7 +107,7 @@ class ArucoTestApp(TestApp):
 if __name__ == "__main__":
     np.random.seed(_config.TEST.seed)
 
-    app = ArucoTestApp()
+    app = ArucoTestApp(calibration_only=True)
     app.run_tests()
     # app.export_to_xslx()
 
