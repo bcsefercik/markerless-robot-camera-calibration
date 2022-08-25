@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import file_utils, icp, transformation
 from utils.quaternion import euler_to_quaternion
 from utils.visualization import create_coordinate_frame, create_sphere
+from utils.aruco import compute_ee_pose
 
 
 def pose_esitmation(
@@ -213,7 +214,7 @@ if __name__ == "__main__":
     tvec = tvec + (R @ t_tag2ee)
 
     qvec = transformation.get_q_from_matrix(R)
-    tag_frame = create_coordinate_frame(np.concatenate((tvec, qvec)), switch_w=False, radius=0.004)
+    tag_frame = create_coordinate_frame(compute_ee_pose(data["points"], data["rgb"]), switch_w=False, radius=0.004)
 
     o3d.visualization.draw([pcd, tag_frame], show_skybox=False)
 
