@@ -52,96 +52,97 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
 class InferenceEngine:
-    def __init__(self) -> None:
-        self.cluster_util = out_utils.ClusterUtil()
+    def __init__(self, calibration_only=True) -> None:
+        if not calibration_only:
+            self.cluster_util = out_utils.ClusterUtil()
 
-        self.models = defaultdict(lambda: minkunet.MinkUNet18D)
-        self.models["minkunet101"] = minkunet.MinkUNet101
-        self.models["minkunet34C"] = minkunet.MinkUNet34C
-        self.models["minkunet14A"] = minkunet.MinkUNet14A
-        self.models["minkunet"] = minkunet.MinkUNet18D
-        self.models["robotnet_encode"] = RobotNetEncode
-        self.models["robotnet"] = RobotNet
-        self.models["robotnet_segmentation"] = RobotNetSegmentation
-        self.models["pointnet2"] = PointNet2SSG
+            self.models = defaultdict(lambda: minkunet.MinkUNet18D)
+            self.models["minkunet101"] = minkunet.MinkUNet101
+            self.models["minkunet34C"] = minkunet.MinkUNet34C
+            self.models["minkunet14A"] = minkunet.MinkUNet14A
+            self.models["minkunet"] = minkunet.MinkUNet18D
+            self.models["robotnet_encode"] = RobotNetEncode
+            self.models["robotnet"] = RobotNet
+            self.models["robotnet_segmentation"] = RobotNetSegmentation
+            self.models["pointnet2"] = PointNet2SSG
 
-        self.pred_enabled = True
+            self.pred_enabled = True
 
-        # self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
-        #     in_channels=_config.DATA.input_channel,
-        #     out_channels=len(_config.INFERENCE.SEGMENTATION.classes),
-        # )
-        self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
-            in_channels=_config.DATA.input_channel,
-            num_classes=len(_config.INFERENCE.SEGMENTATION.classes),
-        )
-        cp_restore_result = utils.checkpoint_restore(
-            self._segmentation_model,
-            f=_config.INFERENCE.SEGMENTATION.checkpoint,
-            use_cuda=_use_cuda,
-        )
-        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
-        self._segmentation_model.eval()
-
-        compute_confidence = _config()["STRUCTURE"].get("compute_confidence", False)
-        self._rotation_model = self.models[
-            f'robotnet{"_encode" if _config.INFERENCE.ROTATION.encode_only else ""}'
-        ](
-            in_channels=_config.DATA.input_channel,
-            out_channels=(10 if compute_confidence else 7),
-        )
-        utils.checkpoint_restore(
-            self._rotation_model,
-            f=_config.INFERENCE.ROTATION.checkpoint,
-            use_cuda=_use_cuda,
-        )
-        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
-        self._rotation_model.eval()
-
-        if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
-            in_channels = (
-                6 if _config.INFERENCE.KEY_POINTS.use_coordinates_as_features else 9
-            )
-            self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
-                in_channels=in_channels,
-                num_classes=_config.INFERENCE.KEY_POINTS.num_of_keypoints,  # num of key points
-            )
-        else:
-            self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+            # self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
+            #     in_channels=_config.DATA.input_channel,
+            #     out_channels=len(_config.INFERENCE.SEGMENTATION.classes),
+            # )
+            self._segmentation_model = self.models[_config.INFERENCE.SEGMENTATION.backbone](
                 in_channels=_config.DATA.input_channel,
-                num_classes=10,  # num of key points, TODO: get from _config.INFERENCE.KEY_POINTS.backbone
+                num_classes=len(_config.INFERENCE.SEGMENTATION.classes),
             )
-        utils.checkpoint_restore(
-            self._key_points_model,
-            f=_config.INFERENCE.KEY_POINTS.checkpoint,
-            use_cuda=_use_cuda,
-        )
-        self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
-        self._key_points_model.eval()
+            cp_restore_result = utils.checkpoint_restore(
+                self._segmentation_model,
+                f=_config.INFERENCE.SEGMENTATION.checkpoint,
+                use_cuda=_use_cuda,
+            )
+            self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
+            self._segmentation_model.eval()
 
-        _logger.info("Loaded all models.")
+            compute_confidence = _config()["STRUCTURE"].get("compute_confidence", False)
+            self._rotation_model = self.models[
+                f'robotnet{"_encode" if _config.INFERENCE.ROTATION.encode_only else ""}'
+            ](
+                in_channels=_config.DATA.input_channel,
+                out_channels=(10 if compute_confidence else 7),
+            )
+            utils.checkpoint_restore(
+                self._rotation_model,
+                f=_config.INFERENCE.ROTATION.checkpoint,
+                use_cuda=_use_cuda,
+            )
+            self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
+            self._rotation_model.eval()
 
-        # CAD to PCD, ICP inits
-        self.match_icp = icp.get_point2point_matcher()
+            if _config.INFERENCE.KEY_POINTS.backbone == "pointnet2":
+                in_channels = (
+                    6 if _config.INFERENCE.KEY_POINTS.use_coordinates_as_features else 9
+                )
+                self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+                    in_channels=in_channels,
+                    num_classes=_config.INFERENCE.KEY_POINTS.num_of_keypoints,  # num of key points
+                )
+            else:
+                self._key_points_model = self.models[_config.INFERENCE.KEY_POINTS.backbone](
+                    in_channels=_config.DATA.input_channel,
+                    num_classes=10,  # num of key points, TODO: get from _config.INFERENCE.KEY_POINTS.backbone
+                )
+            utils.checkpoint_restore(
+                self._key_points_model,
+                f=_config.INFERENCE.KEY_POINTS.checkpoint,
+                use_cuda=_use_cuda,
+            )
+            self.pred_enabled = self.pred_enabled and (cp_restore_result > -1)
+            self._key_points_model.eval()
 
-        self.reference_key_points = np.array(
-            [
-                [0.01982731, 0.08085986, 0.00321919],
-                [0.02171595, -0.08986182, 0.00388430],
-                [0.01288678, 0.09103118, 0.06127814],
-                [0.02079032, -0.09790908, 0.05609143],
-                [-0.00185802, 0.04654205, 0.11564558],
-                [0.00241113, -0.04262756, 0.11564558],
-            ]
-        )
-        self.ee_min_width = (
-            abs(self.reference_key_points[0][1] - self.reference_key_points[1][1])
-            - 0.02
-        )  # cm
-        self.ee_min_height = (
-            abs(self.reference_key_points[0][2] - self.reference_key_points[2][2])
-            - 0.01
-        )  # cm
+            _logger.info("Loaded all models.")
+
+            # CAD to PCD, ICP inits
+            self.match_icp = icp.get_point2point_matcher()
+
+            self.reference_key_points = np.array(
+                [
+                    [0.01982731, 0.08085986, 0.00321919],
+                    [0.02171595, -0.08986182, 0.00388430],
+                    [0.01288678, 0.09103118, 0.06127814],
+                    [0.02079032, -0.09790908, 0.05609143],
+                    [-0.00185802, 0.04654205, 0.11564558],
+                    [0.00241113, -0.04262756, 0.11564558],
+                ]
+            )
+            self.ee_min_width = (
+                abs(self.reference_key_points[0][1] - self.reference_key_points[1][1])
+                - 0.02
+            )  # cm
+            self.ee_min_height = (
+                abs(self.reference_key_points[0][2] - self.reference_key_points[2][2])
+                - 0.01
+            )  # cm
 
         # /camera_rgb_optical_frame to /camera_link
         self.camera_link_transformation_pose = _config.INFERENCE.camera_link_transformation_pose
@@ -424,10 +425,11 @@ class InferenceEngine:
         # if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
         #     return None
 
-        ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
-        seg_results[
-            ee_idx[ee_idx_inside]
-        ] = 2  # set ee classes within largest linkage cluster
+        if len(ee_idx) > 1:
+            ee_idx_inside = self.cluster_util.get_largest_cluster(seg_points[ee_mask])
+            seg_results[
+                ee_idx[ee_idx_inside]
+            ] = 2  # set ee classes within largest linkage cluster
 
         return seg_results
 
