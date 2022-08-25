@@ -186,23 +186,42 @@ if __name__ == "__main__":
     corners_3d = np.asarray(corners_3d, dtype=np.float32)
 
     tag_size = 0.075  # meters
+
+    # corners_3d_ref = np.array(
+    #     [
+    #         [-tag_size / 2, -tag_size / 2, 0],
+    #         [-tag_size / 2, tag_size / 2, 0],
+    #         [tag_size / 2, tag_size / 2, 0],
+    #         [tag_size / 2, -tag_size / 2, 0],
+    #     ],
+    #     dtype=np.float32
+    # )  # original ar tag
+
     corners_3d_ref = np.array(
         [
-            [-tag_size / 2, -tag_size / 2, 0],
-            [-tag_size / 2, tag_size / 2, 0],
-            [tag_size / 2, tag_size / 2, 0],
-            [tag_size / 2, -tag_size / 2, 0],
+            [0, tag_size / 2, -tag_size / 2],
+            [0, -tag_size / 2, -tag_size / 2],
+            [0, -tag_size / 2, tag_size / 2],
+            [0, tag_size / 2, tag_size / 2],
         ],
         dtype=np.float32
     )
-    R, tvec = transformation.get_rigid_transform_3D(corners_3d_ref, corners_3d)
-    qvec = transformation.get_q_from_matrix(R)
-    # tag_point = create_sphere(t)
-    # ipdb.set_trace()
 
+    t_tag2ee = np.array([-0.012, -0.0, -0.05])
+
+    R, tvec = transformation.get_rigid_transform_3D(corners_3d_ref, corners_3d)
+    tvec = tvec + (R @ t_tag2ee)
+
+    qvec = transformation.get_q_from_matrix(R)
     tag_frame = create_coordinate_frame(np.concatenate((tvec, qvec)), switch_w=False, radius=0.004)
 
     o3d.visualization.draw([pcd, tag_frame], show_skybox=False)
+
+    # R =  R @ R_tag2ee
+    # qvec = transformation.get_q_from_matrix(R)
+    # tag_frame = create_coordinate_frame(np.concatenate((tvec, qvec)), switch_w=False, radius=0.004)
+
+    # o3d.visualization.draw([pcd, tag_frame], show_skybox=False)
 
     # cv2.imshow("NANE", frame / 255)
     # cv2.waitKey(0)
