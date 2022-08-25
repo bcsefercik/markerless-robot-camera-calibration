@@ -22,9 +22,9 @@ TEST:
   # gt_base_to_cam_pose: [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]  # p2 test
   # gt_base_to_cam_pose: [-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561]  # p3 test
 
-  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_test_splits.json
-  gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test
-  output: test_results_p1_gt.xlsx
+  # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_test_splits.json
+  # gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test
+  # output: test_results_p1_gt.xlsx
 
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p2_test_splits.json
   # gt_base_to_cam_pose: [0.0618, 0.0996, 1.4652, -0.3177, -0.6542, -0.6263, 0.2807]  # p2 test
@@ -33,6 +33,11 @@ TEST:
   # data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/p3_test_splits.json
   # gt_base_to_cam_pose: [-0.6674, 0.3508, 1.1362, -0.4583, -0.8867, 0.0239, -0.0561]  # p3 test
   # output: test_results_p3_gt.xlsx
+
+  # aruco tag
+  data_source: /home/ercan/bcs_workspace/unknown_object_segmentation/others/p1_tag_test_splits.json
+  gt_base_to_cam_pose: [0.5850, 0.3446, 0.9857, -0.0222, -0.0486, 0.9256, -0.3748]  # p1 test
+  t_tag2ee: [-0.012, -0.0, -0.05]
 
   units: ['cm', 'degree']
   # units: ['m', 'rad']

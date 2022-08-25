@@ -34,7 +34,7 @@ class ArucoTestApp(TestApp):
                 f"{data.other['position']}/{data.other['filepath'].split('/')[-1]}"
             )
 
-            ee_pose = aruco.compute_ee_pose(data.points, data.rgb)
+            ee_pose = aruco.compute_ee_pose(data.points, data.rgb, t_tag2ee=_config.TEST.t_tag2ee)
             result_dto = TestResultDTO(
                 segmentation=None,
                 ee_pose=ee_pose,
@@ -70,9 +70,10 @@ class ArucoTestApp(TestApp):
 
             _logger.info(f'{data_key}{"" if result_dto.is_confident else ", ignored"}')
 
+        print("Calibration Results:")
         self.calibration = self._inference_engine.calibrate(self.predictions)
 
-        print(self.calibration)
+        # print(self.calibration)
 
         position_results_raw = defaultdict(list)
         for ir in self.instance_results.values():
@@ -95,6 +96,10 @@ class ArucoTestApp(TestApp):
             calibration_metrics = metrics.compute_pose_metrics(self.calibration.pose_camera_link, self._gt_base_to_cam_pose)
             self.overall_results["calibration_angle_diff"] = calibration_metrics["angle_diff"]
             self.overall_results["calibration_dist_position"] = calibration_metrics["dist_position"]
+
+        print("Rotation error:", self.overall_results["calibration_angle_diff"])
+        print("Translation error:", self.overall_results["calibration_dist_position"])
+
         # print(self.instance_results)
         # self.export_to_xslx()
 

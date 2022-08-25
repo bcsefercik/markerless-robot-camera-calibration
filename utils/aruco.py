@@ -40,8 +40,9 @@ def compute_ee_pose(
     image_height=480,
     aruco_key=cv2.aruco.DICT_6X6_1000,
     aruco_tag_size=0.075,
-    t_tag2ee=np.array([-0.012, -0.0, -0.05]),
+    t_tag2ee=[-0.012, -0.0, -0.05],
 ):
+    t_tag2ee = np.asarray(t_tag2ee)
     pcd = o3d.t.geometry.PointCloud()
     pcd.point["positions"] = o3d.core.Tensor(points, _dtype, _device)
     pcd.point["colors"] = o3d.core.Tensor(rgb, _dtype, _device)
