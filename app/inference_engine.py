@@ -323,41 +323,42 @@ class InferenceEngine:
             result_dto.is_confident = self.check_sanity(data, result_dto)
 
             if _config.INFERENCE.icp_enabled:
-                ee_idx_rpt = get_ee_idx(
-                    data.points,
-                    result_dto.ee_pose,
-                    switch_w=False,
-                    arm_idx=arm_idx,
-                    ee_dim={
-                        'min_z': -0.03,
-                        'max_z': 0.04,
-                        'min_x': -0.1,
-                        'max_x': 0.1
-                    }
-                )
-                ee_idx_rpt_kpm = np.concatenate((ee_idx, ee_idx_rpt))
-                if result_dto.key_points_pose is not None:
-                    ee_idx_kpm = get_ee_idx(
-                        data.points,
-                        result_dto.key_points_pose,
-                        switch_w=False,
-                        arm_idx=arm_idx,
-                        ee_dim={
-                            'min_z': -0.03,
-                            'max_z': 0.04,
-                            'min_x': -0.1,
-                            'max_x': 0.1
-                        }
-                    )
-                    ee_idx_rpt_kpm = np.concatenate((ee_idx_rpt_kpm, ee_idx_kpm))
+                # ee_idx_rpt = get_ee_idx(
+                #     data.points,
+                #     result_dto.ee_pose,
+                #     switch_w=False,
+                #     arm_idx=arm_idx,
+                #     ee_dim={
+                #         'min_z': -0.03,
+                #         'max_z': 0.04,
+                #         'min_x': -0.1,
+                #         'max_x': 0.1
+                #     }
+                # )
+                # ee_idx_rpt_kpm = np.concatenate((ee_idx, ee_idx_rpt))
+                # if result_dto.key_points_pose is not None:
+                #     ee_idx_kpm = get_ee_idx(
+                #         data.points,
+                #         result_dto.key_points_pose,
+                #         switch_w=False,
+                #         arm_idx=arm_idx,
+                #         ee_dim={
+                #             'min_z': -0.03,
+                #             'max_z': 0.04,
+                #             'min_x': -0.1,
+                #             'max_x': 0.1
+                #         }
+                #     )
+                #     ee_idx_rpt_kpm = np.concatenate((ee_idx_rpt_kpm, ee_idx_kpm))
 
-                ee_idx_rpt_kpm = np.unique(ee_idx_rpt_kpm)
+                # ee_idx_rpt_kpm = np.unique(ee_idx_rpt_kpm)
 
-                ee_points_rpt_kpm = np.array(data.points[ee_idx_rpt_kpm], copy=True)
-                result_dto.ee_pose = self.match_icp(ee_points_rpt_kpm, result_dto.ee_pose)
+                # ee_points_rpt_kpm = np.array(data.points[ee_idx_rpt_kpm], copy=True)
+
+                result_dto.ee_pose = self.match_icp(ee_raw_points, result_dto.ee_pose)
 
                 result_dto.key_points_pose = self.match_icp(
-                    ee_points_rpt_kpm, result_dto.key_points_pose
+                    ee_raw_points, result_dto.key_points_pose
                 )
 
             if data.ee2base_pose is not None:

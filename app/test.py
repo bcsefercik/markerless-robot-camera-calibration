@@ -36,10 +36,10 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 
 class TestApp:
-    def __init__(self, data_source=_config.TEST.data_source) -> None:
+    def __init__(self, data_source=_config.TEST.data_source, calibration_only=False) -> None:
         self._data_source = data_engine.PickleDataEngine(data_source, cyclic=False)
 
-        self._inference_engine = InferenceEngine()
+        self._inference_engine = InferenceEngine(calibration_only=calibration_only)
 
         self._gt_base_to_cam_pose = np.array(_config.TEST.gt_base_to_cam_pose, dtype=np.float32)
 
