@@ -97,8 +97,8 @@ class ArucoTestApp(TestApp):
             self.overall_results["calibration_angle_diff"] = calibration_metrics["angle_diff"]
             self.overall_results["calibration_dist_position"] = calibration_metrics["dist_position"]
 
-        print("Rotation error:", self.overall_results["calibration_angle_diff"])
-        print("Translation error:", self.overall_results["calibration_dist_position"])
+        print("Translation error:", self.overall_results["calibration_dist_position"] * self.unit_multipliers[0])
+        print("Rotation error:", self.overall_results["calibration_angle_diff"] * self.unit_multipliers[1])
 
         # print(self.instance_results)
         # self.export_to_xslx()
