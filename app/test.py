@@ -103,17 +103,25 @@ class TestApp:
 
                 if seg_results is None:
                     self.instance_results.pop(data_key)
-                    _logger.warning(f"fail min # points")
+                    _logger.warning(f"Segmentation failed.")
                     continue
 
                 result_dto = TestResultDTO(segmentation=seg_results)
 
                 ee_idx = np.where(seg_results == 2)[0]
+
+                if len(ee_idx) < _config.INFERENCE.ee_point_counts_threshold:
+                    self.instance_results.pop(data_key)
+                    _logger.warning(f"fail min # points")
+                    continue
+
                 ee_raw_points = data.points[ee_idx]  # no origin offset
                 ee_raw_rgb = torch.from_numpy(rgb[ee_idx]).to(dtype=torch.float32)
                 ee_centered_points, _ = preprocess.center_at_origin(ee_raw_points)
 
                 ee_gt_idx = np.where(data.segmentation == 2)[0]
+                if len(ee_gt_idx) < 1:
+                    ee_gt_idx = np.array([1, 2, 3])
                 ee_gt_raw_points = data.points[ee_gt_idx]  # no origin offset
                 ee_gt_centered_points, _ = preprocess.center_at_origin(ee_gt_raw_points)
                 ee_centered_points = ee_gt_centered_points
