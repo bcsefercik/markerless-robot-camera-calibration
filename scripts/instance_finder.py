@@ -2,6 +2,8 @@ import os
 import sys
 import glob
 import argparse
+import shutil
+
 
 import numpy as np
 
@@ -43,5 +45,13 @@ if __name__ == "__main__":
             print(f'i{last_instance_id}: {start} - {end}')
 
             i += 9
+
+            out_folder = os.path.join(args.outfolder, f'i{last_instance_id}')
+            os.mkdir(out_folder)
+            out_folder = os.path.join(out_folder, 'labeled')
+            os.mkdir(out_folder)
+
+            for j in range(i, i + 10):
+                shutil.copyfile(pickles[j], os.path.join(out_folder, f'{j+1}.pickle'))
 
         i += 1
