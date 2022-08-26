@@ -37,7 +37,7 @@ if __name__ == "__main__":
         dist_last = np.linalg.norm(last_instance_pose - ee2base_pose)
         dist_e2e = np.linalg.norm(ee2base_pose - ee2base_pose_end)
 
-        if dist_last > 0.1 and dist_e2e < 0.05:
+        if dist_last > 0.1 and dist_e2e < 0.02:
             last_instance_pose = ee2base_pose
             last_instance_id += 1
             start = i + 1
