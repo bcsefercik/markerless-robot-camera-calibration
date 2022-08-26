@@ -23,8 +23,8 @@ INFERENCE:
   SEGMENTATION:
     # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/segmentation_s200_origin_robotnet_20220509.pth
     # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp50_orig_aug_s200_e6.pth
-    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_15_e8.pth
-    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_08_e17.pth
+    checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_15_e8.pth
+    # checkpoint: /home/ercan/bcs_workspace/unknown_object_segmentation/exp/inference/seg_exp53_orig_aug_s200_08_e17.pth
     scale: 200
     center_at_origin: true
 

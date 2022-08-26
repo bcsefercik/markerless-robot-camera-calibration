@@ -129,7 +129,7 @@ TEST:
     evaluate: true
 
   KEY_POINTS:
-    error_margin: 0.05  # in meters
+    error_margin: 0.1  # in meters
 
   units: ['m', 'rad']
 
