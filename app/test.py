@@ -143,7 +143,7 @@ class TestApp:
 
                 self.instance_results[data_key]['ADD_nn'] = metrics.compute_ADD_np(ee_centered_points, data.pose, nn_pose)
 
-                nn_pose_icp = self._inference_engine.match_icp(ee_raw_points, nn_pose)
+                nn_pose_icp = self._inference_engine.match_icp(ee_raw_points, nn_pose) if _config.INFERENCE.icp_enabled else nn_pose
                 nn_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, nn_pose_icp)
                 self.instance_results[data_key]['dist_position']['nn_icp'] = nn_pose_icp_metrics['dist_position']
                 self.instance_results[data_key]['angle_diff']['nn_icp'] = nn_pose_icp_metrics['angle_diff']
@@ -189,7 +189,7 @@ class TestApp:
 
                     self.instance_results[data_key]['ADD_kp'] = metrics.compute_ADD_np(ee_centered_points, data.pose, kp_pose)
 
-                    kp_pose_icp = self._inference_engine.match_icp(ee_raw_points, kp_pose)
+                    kp_pose_icp = self._inference_engine.match_icp(ee_raw_points, kp_pose) if _config.INFERENCE.icp_enabled else kp_pose
                     kp_pose_icp_metrics = metrics.compute_pose_metrics(data.pose, kp_pose_icp)
                     self.instance_results[data_key]['dist_position']['kp_icp'] = kp_pose_icp_metrics['dist_position']
                     self.instance_results[data_key]['angle_diff']['kp_icp'] = kp_pose_icp_metrics['angle_diff']

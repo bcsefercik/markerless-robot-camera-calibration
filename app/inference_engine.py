@@ -53,6 +53,9 @@ _device = torch.device("cuda" if _use_cuda else "cpu")
 
 class InferenceEngine:
     def __init__(self, calibration_only=False) -> None:
+        # CAD to PCD, ICP inits
+        self.match_icp = icp.get_point2point_matcher()
+
         if not calibration_only:
             self.cluster_util = out_utils.ClusterUtil()
 
@@ -121,9 +124,6 @@ class InferenceEngine:
             self._key_points_model.eval()
 
             _logger.info("Loaded all models.")
-
-            # CAD to PCD, ICP inits
-            self.match_icp = icp.get_point2point_matcher()
 
             self.reference_key_points = np.array(
                 [
