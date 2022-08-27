@@ -10,11 +10,12 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils import config, logger, aruco, utils, metrics
 from utils.transformation import get_base2cam_pose, transform_pose2pose
-from app.test import TestApp
+from utils.data import get_ee_idx
 
 import data_engine
 from inference_engine import InferenceEngine
 from dto import TestResultDTO, RawDTO, CalibrationResultDTO
+from app.test import TestApp
 
 _config = config.Config()
 _logger = logger.Logger().get()
@@ -43,6 +44,25 @@ class ArucoTestApp(TestApp):
             )
 
             if ee_pose is not None:
+                if _config.INFERENCE.icp_enabled:
+                    ee_idx = get_ee_idx(
+                        data.points,
+                        ee_pose,
+                        switch_w=False,
+                        ee_dim={
+                            'min_z': -0.02,
+                            'max_z': 0.07,
+                            'min_x': -0.05,
+                            'max_x': 0.05,
+                            'min_y': -0.15,
+                            'max_y': 0.15
+                        }
+                    )
+
+                    ee_raw_points = data.points[ee_idx]
+
+                    result_dto.ee_pose = self._inference_engine.match_icp(ee_raw_points, ee_pose)
+
                 result_dto.is_confident = True
                 self.instance_results[data_key]['position'] = data.other['position']
                 nn_pose_metrics = metrics.compute_pose_metrics(data.pose, result_dto.ee_pose)
