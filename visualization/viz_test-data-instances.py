@@ -62,9 +62,10 @@ if __name__ == "__main__":
 
     roi_mask = get_roi_mask(
         points,
-        max_z=1.5,
+        max_z=1.1,
         max_y=0.5,
-        min_x=-0.4,
+        min_x=-0.45,
+        max_x=0.2,
     )
 
     pcd = o3d.geometry.PointCloud()
@@ -77,8 +78,8 @@ if __name__ == "__main__":
         [pcd, kinect_mesh] + coordinate_frames,
         # [pcd, kinect_mesh, kinect_frame],
         # [pcd, ee_frame, ref_shapes, obbox],
-        zoom=0.2,
+        zoom=0.5,
         front=[0., -0., -0.1],
-        lookat=[0, -0.3, -0.2],
+        lookat=[0, -0.5, -0.],
         up=[-0., -0.2768, -1.9]
     )
